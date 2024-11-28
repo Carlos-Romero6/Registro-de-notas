@@ -1,6 +1,6 @@
 from django.db import models
 
-# Create your models here.
+# Modelos de las tablas de la base de datos.
 
 class Pensum(models.Model):
     nombre_pensum = models.CharField(max_length=50)
@@ -25,11 +25,11 @@ class Materias(models.Model):
     pensum = models.ForeignKey(Pensum, on_delete=models.CASCADE)
 
 class Notas(models.Model):
-    primer_lapso = models.FloatField()
-    segundo_lapso = models.FloatField()
-    tercer_lapso = models.FloatField()
-    definitiva = models.FloatField()
-    revision = models.FloatField()
+    primer_lapso = models.FloatField(null=True)
+    segundo_lapso = models.FloatField(null=True)
+    tercer_lapso = models.FloatField(null=True)
+    definitiva = models.FloatField(null=True)
+    revision = models.FloatField(null=True)
     estudiante = models.ForeignKey(Estudiantes, on_delete=models.CASCADE)
     materia = models.ForeignKey(Materias, on_delete=models.CASCADE)
 
