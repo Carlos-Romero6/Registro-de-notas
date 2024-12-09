@@ -43,10 +43,6 @@ class Notas(models.Model):
         definitiva = Decimal((self.primer_momento + self.segundo_momento + self.tercer_momento) / n_momentos).quantize(0, ROUND_HALF_UP)
         return definitiva
 
-    # Funcion para realizar UPDATE en el campo de definitiva.
-    def updateDefinitiva(self, definitiva): 
-        pass
-
 class Justificaciones(models.Model):
     primer_momento = models.CharField(max_length=3, null=True)
     segundo_momento = models.CharField(max_length=3, null=True)
