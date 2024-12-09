@@ -1,4 +1,5 @@
 from django.db import models
+from decimal import Decimal, ROUND_HALF_UP
 
 # Modelos de las tablas de la base de datos.
 
@@ -14,8 +15,10 @@ class Estudiantes(models.Model):
     nombres = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
     ci = models.CharField(max_length=6)
+    genero = models.CharField(max_length=10)
     seccion = models.CharField(max_length=1)
     estado = models.BooleanField(default=True)
+    flotante = models.BooleanField(default=False)
     materias_reprobadas  = models.IntegerField(default=0)
     matricula = models.ForeignKey(Matricula, on_delete=models.CASCADE)
 
@@ -25,11 +28,28 @@ class Materias(models.Model):
     pensum = models.ForeignKey(Pensum, on_delete=models.CASCADE)
 
 class Notas(models.Model):
-    primer_lapso = models.FloatField(null=True)
-    segundo_lapso = models.FloatField(null=True)
-    tercer_lapso = models.FloatField(null=True)
+    primer_momento = models.FloatField(null=True)
+    segundo_momento = models.FloatField(null=True)
+    tercer_momento = models.FloatField(null=True)
     definitiva = models.FloatField(null=True)
     revision = models.FloatField(null=True)
+    estado = models.CharField(max_length=10, null=True)
     estudiante = models.ForeignKey(Estudiantes, on_delete=models.CASCADE)
     materia = models.ForeignKey(Materias, on_delete=models.CASCADE)
+    
+    # Funcion para calcular definitiva.
+    def calcularDefinitiva(self): 
+        n_momentos = 3
+        definitiva = Decimal((self.primer_momento + self.segundo_momento + self.tercer_momento) / n_momentos).quantize(0, ROUND_HALF_UP)
+        return definitiva
+
+    # Funcion para realizar UPDATE en el campo de definitiva.
+    def updateDefinitiva(self, definitiva): 
+        pass
+
+class Justificaciones(models.Model):
+    primer_momento = models.CharField(max_length=3, null=True)
+    segundo_momento = models.CharField(max_length=3, null=True)
+    tercer_momento = models.CharField(max_length=3, null=True)
+    notas = models.ForeignKey(Notas, on_delete=models.CASCADE)
 
