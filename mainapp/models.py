@@ -15,7 +15,7 @@ class Estudiantes(models.Model):
     nombres = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
     ci = models.CharField(max_length=6)
-    genero = models.CharField(max_length=10)
+    genero = models.CharField(max_length=10, null=True)
     seccion = models.CharField(max_length=1)
     estado = models.BooleanField(default=True)
     flotante = models.BooleanField(default=False)
