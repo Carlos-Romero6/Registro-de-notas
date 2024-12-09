@@ -1,0 +1,12 @@
+<form action="{% url "notas" %}">
+    {% csrf_token %}
+
+    <label for="curso">Curso:</label>
+    <input type="text" name="curso" required id="curso">
+
+    <label for="seccion">Seccion:</label>
+    <input type="text" name="seccion" required id="seccion">
+
+    <label for="materia">Materia:</label>
+    <input type="text" name="materia">
+</form>
