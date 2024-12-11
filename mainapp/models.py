@@ -25,6 +25,7 @@ class Estudiantes(models.Model):
 class Materias(models.Model):
     nombre_materia = models.CharField(max_length=100)
     curso = models.IntegerField()
+    cualitativa = models.BooleanField(default=False)
     pensum = models.ForeignKey(Pensum, on_delete=models.CASCADE)
 
 class Notas(models.Model):

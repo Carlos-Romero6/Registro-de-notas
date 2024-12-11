@@ -1,4 +1,4 @@
-<form action="{% url "notas" %}">
+<form action="{% url "notas" %}" method="POST">
     {% csrf_token %}
 
     <label for="curso">Curso:</label>
@@ -7,6 +7,4 @@
     <label for="seccion">Seccion:</label>
     <input type="text" name="seccion" required id="seccion">
 
-    <label for="materia">Materia:</label>
-    <input type="text" name="materia">
 </form>
