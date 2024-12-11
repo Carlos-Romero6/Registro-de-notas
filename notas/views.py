@@ -8,8 +8,6 @@ def notas(request):
     
     elif request.method == 'POST':
             tblestudiantes_curso_seccion = Estudiantes.get_list_or_404(curso=request.POST['curso'], seccion = request.POST['seccion'])
-            
-            
             return render(request, 'estudiantes-resultado.html',{
                 'tblestudiantes': tblestudiantes_curso_seccion
             })
