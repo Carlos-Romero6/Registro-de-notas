@@ -37,11 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mainapp',
-    'estudiantes',
-    'matricula',
-    'notas',
-    'ver',
+    'mainapp.apps.MainappConfig',
+    'estudiantes.apps.EstudiantesConfig',
+    'matricula.apps.MatriculaConfig',
+    'notas.apps.NotasConfig',
+    'ver.apps.VerConfig',
 ]
 
 MIDDLEWARE = [

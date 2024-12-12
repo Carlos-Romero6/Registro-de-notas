@@ -1,7 +1,8 @@
-{{ error }}
+{% if error %}
+<p>{{ error }}</p>
+{% endif %}
 
-<form action="{% url 'login' %}" method="POST">
-    {% csrf_token %}
+<form action="{% url 'login-process' %}" method="POST"> {% csrf_token %}
     <label for="username">Nombre de usuario:</label>
     <input type="text" required name="username" id="username" class="form-control">
     <label for="password">Contraseña:</label>
