@@ -4,4 +4,9 @@ from django.shortcuts import render
 
 # Menu inicial de la seccion de gestion de estudiantes
 def menuEstudiantes(request):
-    return render(request, 'menuEstudiantes.html')
+    if request.method == 'GET':
+        return render(request, 'menuEstudiantes.html')
+
+def busquedaEstudiantes(request):
+    if request.method == 'POST':
+        pass
