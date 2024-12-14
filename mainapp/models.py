@@ -1,6 +1,6 @@
 from django.db import models
 from decimal import Decimal, ROUND_HALF_UP
-
+from django.utils import timezone
 # Modelos de las tablas de la base de datos.
 
 class Pensum(models.Model):
@@ -9,6 +9,7 @@ class Pensum(models.Model):
 class Matricula(models.Model):
     promocion = models.CharField(max_length=50)
     curso = models.IntegerField(default=1)
+    n_secciones = models.IntegerField(default=1)
     pensum = models.ForeignKey(Pensum, on_delete=models.CASCADE)
 
 class Estudiantes(models.Model):
@@ -28,6 +29,9 @@ class Materias(models.Model):
     cualitativa = models.BooleanField(default=False)
     pensum = models.ForeignKey(Pensum, on_delete=models.CASCADE)
 
+class Periodos(models.Model):
+    inicio = models.IntegerField (default=timezone.now().year)
+    finalizacion = models.IntegerField(null=True)
 class Notas(models.Model):
     primer_momento = models.FloatField(null=True)
     segundo_momento = models.FloatField(null=True)
@@ -37,6 +41,7 @@ class Notas(models.Model):
     estado = models.CharField(max_length=10, null=True)
     estudiante = models.ForeignKey(Estudiantes, on_delete=models.CASCADE)
     materia = models.ForeignKey(Materias, on_delete=models.CASCADE)
+    periodos = models.ForeignKey(Periodos, on_delete=models.CASCADE)
     
     # Funcion para calcular definitiva.
     def calcularDefinitiva(self): 
@@ -49,4 +54,6 @@ class Justificaciones(models.Model):
     segundo_momento = models.CharField(max_length=3, null=True)
     tercer_momento = models.CharField(max_length=3, null=True)
     notas = models.ForeignKey(Notas, on_delete=models.CASCADE)
+
+
 

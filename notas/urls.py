@@ -3,5 +3,5 @@ from . import views
 
 #Create your urls here
 urlpatterns = [
-    path('notas/', views.notas, name="notas"),
+    path('', views.notas, name="notas"),
 ]
