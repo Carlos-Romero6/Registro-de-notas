@@ -5,7 +5,7 @@ document.getElementById('curso').addEventListener('change', function () { // Ubi
   seccionSelector.innerHTML = '<option value="">Cargando...</option>'; //Cambia el contenido de la opcion por "Cargando..."
 
   // Llama a la url que ejecuta la funcion en el backend que devolveria un json
-  fetch(`/estudiantes/consultar-secciones/?curso=${cursoSeleccionado}`)
+  fetch(`/consultar-secciones/?curso=${cursoSeleccionado}`)
     .then(response => response.json()) // El json tiene los datos de las secciones del curso que se seleccionó
     .then(data => {
       seccionSelector.innerHTML = '<option value="">Seleccione una sección</option>'; // Limpia el selector
