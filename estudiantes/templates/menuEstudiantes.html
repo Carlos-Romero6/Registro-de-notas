@@ -7,7 +7,7 @@
 <main class="container">
   <section class="row">
     <div class="col-md-4 offset-md-4 mt-5">
-      <form action="" method="POST" class="card card-body">
+      <form action="{% url 'me-buscar-estudiantes' %}" method="POST" class="card card-body">
         {% csrf_token %}
         <h2 class="Display-3">Gestión estudiantil</h2>
 
@@ -17,11 +17,9 @@
           <select name="curso" required class="form-select form-select-lg mb-5" id="curso"
             aria-label="Selecciona el curso del estudiante">
             <option value="">Selecciona el año</option>
-            <option class="" value="1">1er año</option>
-            <option class="" value="2">2do año</option>
-            <option class="" value="3">3er año</option>
-            <option class="" value="4">4to año</option>
-            <option class="" value="5">5to año</option>
+            {% for curso in cursos %} {# Itera sobre la lista de diccionarios con los valores de los cursos #}
+            <option value="{{ curso.id }}" {% if not curso.habilitado %}disabled{% endif %}>{{ curso.nombre }}</option>
+            {% endfor %}
           </select>
         </div>
 

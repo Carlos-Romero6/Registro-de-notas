@@ -1,0 +1,20 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+
+<h2>Gestion estudiantil</h2>
+<table>
+  {% for registro in estudiantes %}
+  <tr>
+    <td>
+      {{ forloop.counter }}
+    </td>
+    <td>
+      {{ registro.nombre }}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+
+{% endblock %}
