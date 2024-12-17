@@ -1,3 +1,5 @@
-{{% for estudiante in tblestudiantes_curso_seccion %}}
-    {{ tblestudiantes_curso_seccion }}
-{{% endfor %}}
+{% for estudiante in estudiantes %}
+    <ul>
+        <li>Nombres {{ estudiante.nombres | title }} {{ estudiante.apellidos }} {{ estudiante.ci }}</li>
+    </ul>
+{% endfor %}

@@ -22,6 +22,9 @@ class Estudiantes(models.Model):
     flotante = models.BooleanField(default=False)
     materias_reprobadas  = models.IntegerField(default=0)
     matricula = models.ForeignKey(Matricula, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.nombres
 
 class Materias(models.Model):
     nombre_materia = models.CharField(max_length=100)
