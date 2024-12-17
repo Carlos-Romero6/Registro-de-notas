@@ -8,5 +8,5 @@ def menuEstudiantes(request):
         return render(request, 'menuEstudiantes.html', cursosDisponibles.obtener())
 
 def busquedaEstudiantes(request):
-    if request.method == 'POST':
+    if request.method == 'GET':
         return render(request, 'buscarEstudiantes.html', buscarEstudiantes.obtener(request))

@@ -7,13 +7,13 @@
 <main class="container">
   <section class="row">
     <div class="col-md-4 offset-md-4 mt-5">
-      <form action="{% url 'me-buscar-estudiantes' %}" method="POST" class="card card-body">
+      <form action="{% url 'me-buscar-estudiantes' %}" method="GET" class="card card-body">
         {% csrf_token %}
         <h2 class="Display-3">Gestión estudiantil</h2>
 
         <!-- Selector de Curso -->
         <div class="d-flex">
-          <label for="curso" class="btn btn-outline-primary mb-5">Curso:</label>
+          <label for="curso" class="btn btn-outline-dark mb-5">Curso:</label>
           <select name="curso" required class="form-select form-select-lg mb-5" id="curso"
             aria-label="Selecciona el curso del estudiante">
             <option value="">Selecciona el año</option>
@@ -25,7 +25,7 @@
 
         <!-- Selector de Sección -->
         <div class="d-flex">
-          <label class="btn btn-outline-primary mb-5" for="seccion">Seccion:</label>
+          <label class="btn btn-outline-dark mb-5" for="seccion">Seccion:</label>
           <select name="seccion" required class="form-select form-select-lg mb-5" id="seccion"
             aria-label="Selecciona la seccion del estudiante en su curso.">
             <option value="">Seleccione una sección</option>
@@ -33,7 +33,7 @@
         </div>
 
         <script src="{% static 'dom/selectorCursos.js' %}"></script>
-        <button class="btn btn-primary" type="submit">
+        <button class="btn btn-dark" type="submit">
           Buscar
         </button>
       </form>

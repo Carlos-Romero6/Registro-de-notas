@@ -1,20 +1,47 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
+{% load static %}
 
 <h2>Gestion estudiantil</h2>
-<table>
-  {% for registro in estudiantes %}
+<h3>Curso: {{ curso }} - Sección: {{ seccion }}</h3>
+<table class="table table-success table-striped">
+  <tr>
+    <th scope="col">#</th>
+    <th scope="col">Nombres</th>
+    <th scope="col">Apellidos</th>
+    <th scope="col">C.I</th>
+    <th scope="col">Género</th>
+    <th scope="col">Acciones</th>
+  </tr>
+  {% for estudiante in estudiantes %}
   <tr>
     <td>
       {{ forloop.counter }}
     </td>
     <td>
-      {{ registro.nombre }}
+      {{ estudiante.nombres }}
+    </td>
+    <td>
+      {{ estudiante.apellidos }}
+    </td>
+    <td>
+      {{ estudiante.ci }}
+    </td>
+    <td>
+      {{ estudiante.genero }}
+    </td>
+    <td>
+      <button style="cursor: pointer; border: none; outline: none; background-color: transparent">
+        <img src="{% static 'images/icons/trash-icon.png' %}" alt="Eliminar" width="30" height="30">
+      </button>
     </td>
   </tr>
   {% endfor %}
 </table>
 
+<button class="btn btn-outline-dark">
+  Agregar Estudiante
+</button>
 
 {% endblock %}

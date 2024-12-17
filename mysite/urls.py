@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from utils import cursosDeSeccionAjax
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('<str:prefix>/consultar-secciones/', cursosDeSeccionAjax.consultarSecciones, name="consultarSecciones"),
     path('estudiantes/', include('estudiantes.urls')),
     path('notas/', include('notas.urls')),
     path('', include('mainapp.urls')),
