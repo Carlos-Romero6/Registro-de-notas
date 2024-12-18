@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from mainapp.models import Matricula
 
-def consultarSecciones(request, prefix):
+def consultarSecciones(request):
     curso = request.GET.get('curso') # Se obtiene el curso elegido en el selector desde el frontend
     if not curso:
         return JsonResponse({'error' : 'Curso no proporcionado'})
