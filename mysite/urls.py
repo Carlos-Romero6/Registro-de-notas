@@ -21,7 +21,7 @@ from utils import cursosDeSeccionAjax
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('consultar-secciones/', cursosDeSeccionAjax.consultarSecciones, name="consultarSecciones"),
-    path('estudiantes/', include('estudiantes.urls')),
-    path('notas/', include('notas.urls')),
+    path('estudiantes/', include('estudiantes.urls'), name="estudiantes"),
+    path('notas/', include('notas.urls'), name="notas"),
     path('', include('mainapp.urls')),
 ]

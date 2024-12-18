@@ -49,44 +49,87 @@
 </table>
 
 {# Boton para abrir modal para agregar estudiante #}
-<button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#modalAgregarEstudiante">
-  Agregar Estudiante
-</button>
+<div class="text-center">
+  <a href="{% url 'estudiantes' %}" class="md-5">
+    <button class="btn btn-outline-dark">Volver</button>
+  </a>
 
+  <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalAgregarEstudiante">
+    Agregar Estudiante
+  </button>
+</div>
 <script src="{% static 'dom/eliminarEstudiante.js' %}"></script>
+
+
 
 {# Modal #}
 <div class="modal fade" id="modalAgregarEstudiante" tabindex="-1" data-bs-keyboard="false">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content bg-dark text-white rounded-0">
       <div class="modal-header">
         <h5 class="modal-title fs5" id="modalLabel">Agregar estudiante</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body">
-        <form action="" id="agregarEstudiante">
+        <form id="agregarEstudiante">
           {% csrf_token %}
 
           {# Campo para nombre #}
           <div class="mb-3">
             <label for="nombres" class="form-label">Nombres:</label>
-            <input type="text" class="form-control" id="nombres" name="nombres" required>
+            <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Escribe los nombres del estudiante" required>
           </div>
 
           {# Campo para apellidos #}
           <div class="mb-3">
-            <label for="apellidos">Apellidos:</label>
-            <input type="text" class="form-control" id="apellidos" name="apellidos" required>
+            <label for="apellidos" class="form-label">Apellidos:</label>
+            <input type="text" class="form-control" id="apellidos" name="apellidos" placeholder="Escribe los apellidos del estudiante" required>
           </div>
 
           {# Campo para cedula de identidad #}
           <div class="mb-3">
-            <label for="cedula">Cedula de identidad:</label>
-            <input type="text" class="form-control" id="cedula" name="cedula" required>
+            <label for="cedula" class="form-label">Cedula de identidad:</label>
+            <input type="text" class="form-control" id="cedula" name="cedula" placeholder="Escribe la cedulad de indentidad del estudiante" required>
           </div>
 
-          <button type="submit" class="btn btn-primary">Guardar estudiante</button>
+          {# Campo para género #}
+          <div class="mb-5">
+            <label for="genero" class="form-label">Género:</label>
+            <select name="genero" id="genero" class="form-control" required>
+              <option value="">Elige el género del estudiante</option>
+              <option value="Femenino">Femenino</option>
+              <option value="Masculino">Masculino</option>
+            </select>
+          </div>
+
+          {# Campo de curso y sección #}
+          <div class="mb-3 d-flex">
+            <div class="btn btn-secondary rounded-end-0">
+              <label for="curso" class="form-label">Curso:</label>
+            </div>
+            <select id="curso" class="form-control rounded-start-0" disabled>
+              <option selected>{{ curso }}</option>
+            </select>
+            {# El curso será el mismo de la tabla en la que nos encontramos #}
+            <input type="hidden" name="curso" value="{{ curso }}">
+
+          </div>
+          <div class="mb-3 d-flex">
+            <div class="btn btn-secondary rounded-end-0">
+              <label for="seccion" class="form-label">Sección:</label>
+            </div>
+            <select class="form-control rounded-start-0" id="seccion" disabled>
+              <option selected>{{ seccion }}</option>
+            </select>
+          </div>
+          {# La seccion será la misma de la tabla en la que nos encontramos #}
+          <input type="hidden" name="seccion" value="{{ seccion }}">
+
+          <div class="text-center">
+            <button onClick="submit" class="btn btn-light rounded-0 pd-5">Guardar estudiante</button>
+          </div>
         </form>
+        <script src="{% static 'dom/registrarEstudiante.js' %}"></script>
       </div>
     </div>
   </div>
