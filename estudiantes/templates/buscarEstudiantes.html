@@ -40,13 +40,56 @@
         </button>
       </td>
     </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6" class="text-center">No se encontraron estudiantes</td>
+    </tr>
     {% endfor %}
   </tbody>
 </table>
 
-<button class="btn btn-outline-dark">
+{# Boton para abrir modal para agregar estudiante #}
+<button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#modalAgregarEstudiante">
   Agregar Estudiante
 </button>
 
 <script src="{% static 'dom/eliminarEstudiante.js' %}"></script>
+
+{# Modal #}
+<div class="modal fade" id="modalAgregarEstudiante" tabindex="-1" data-bs-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fs5" id="modalLabel">Agregar estudiante</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form action="" id="agregarEstudiante">
+          {% csrf_token %}
+
+          {# Campo para nombre #}
+          <div class="mb-3">
+            <label for="nombres" class="form-label">Nombres:</label>
+            <input type="text" class="form-control" id="nombres" name="nombres" required>
+          </div>
+
+          {# Campo para apellidos #}
+          <div class="mb-3">
+            <label for="apellidos">Apellidos:</label>
+            <input type="text" class="form-control" id="apellidos" name="apellidos" required>
+          </div>
+
+          {# Campo para cedula de identidad #}
+          <div class="mb-3">
+            <label for="cedula">Cedula de identidad:</label>
+            <input type="text" class="form-control" id="cedula" name="cedula" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Guardar estudiante</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

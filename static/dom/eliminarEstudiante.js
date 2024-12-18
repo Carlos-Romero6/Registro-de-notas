@@ -5,11 +5,12 @@ function borrarEstudiante(estudiante_id) {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert(data.message)
+                alert(data.message);
+                window.location.reload();
             } else {
-                alert("Error al eliminar estudiante.")
+                alert("Error al eliminar estudiante.");
             }
         })
-        .catch(error => console.error("Error:", error))
+        .catch(error => console.error("Error:", error));
     }
 }
