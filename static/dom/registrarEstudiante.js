@@ -10,7 +10,8 @@ document.getElementById('agregarEstudiante').addEventListener('submit', function
   .then(data => {
     if (data.success) {
       alert("Se ha agregado correctamente.");
-      $('#modalAgregarEstudiante').modal('hide');
+      let modal = new bootstrap.Modal(document.getElementById('modalAgregarEstudiante'));
+      modal.hide();
       window.location.reload();
     } else {
       alert("Error al cargar estudiante.");
