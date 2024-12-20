@@ -1,5 +1,33 @@
-{% for estudiante in estudiantes %}
-    <ul>
-        <li>Nombres {{ estudiante.nombres | title }} {{ estudiante.apellidos }} {{ estudiante.ci }}</li>
-    </ul>
-{% endfor %}
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+    <h1>Año: {{ curso }} - Sección: {{ seccion }} </h1>
+<table class="table table-success table-striped table-bordered display">
+    <thead class="table-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nombres</th>
+            <th scope="col">Apellidos</th>
+            <th scope="col">C.I</th>
+            <th scope="col">Género</th>
+            <th scope="col">Materias reprobadas</th>
+            <th scope="col"> Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for estudiante in estudiantes %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ estudiante.nombres }}</td>
+                <td>{{ estudiante.apellidos }}</td>
+                <td>{{ estudiante.ci }}</td>
+                <td>{{ estudiante.genero }}</td>
+                <td>{{ estudiante.materias_reprobadas }}</td>
+                <td><button class="btn btn-dark"><a href="{% url 'notas-estudiante' estudiante.id %}">Ir</a></button></td>
+            </tr>
+    </tbody>
+        {% endfor %}
+    </table>
+    {% endblock  %}

@@ -1,0 +1,33 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+{% load static %}
+<main class="container">
+    <section class="row">
+        <div class="col-md-4 offset-md-4 mt-5">
+            <h2 class="Display-3 container"> Gestion de notas </h2>
+                <form action="{% url "notas" %}" method="POST" class="card card-body">
+                    {% csrf_token %}
+                    <div class="d-flex">
+                        <label for="curso" class="btn btn-outline-dark mb-5">Curso:</label>
+                        <select name="curso" id="curso" class="form-select form-select-lg mb-5" aria-label="Selecciona el curso del estudiante">
+                            <option value="">Selecciona el año</option>
+                            {% for curso in cursos %}
+                                <option value="{{ curso.id }}" {% if not curso.habilitado %}disabled{% endif %}>{{ curso.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>  
+                
+                    <div class="d-flex">
+                        <label for="seccion" class="btn btn-outline-dark mb-5">Seccion:</label>
+                        <select name="seccion" id="seccion" class="form-select form-select-lg mb-5" aria-label="Selecciona la sección del estudiante">
+                            <option value="">Selecciona una sección</option>
+                        </select>
+                    </div>
+                    <script src="{% static "dom/selectorCursos.js" %}"></script>
+                    <button class="btn btn-dark pd-contain" type="submit">Buscar</button>
+        </div>
+        </form>
+    </section>
+</main>
+{% endblock  %}

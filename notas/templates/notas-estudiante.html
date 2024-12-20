@@ -1,0 +1,48 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+    <h1>Periodo: {{ periodo_actual.inicio }} - {{ periodo_actual.finalizacion}} </h1>
+    <h2 class="Display-3">Notas del estudiante: {{ estudiante.nombres }} {{ estudiante.apellidos }} </h2>
+
+        <table class="table table-success table-striped table-bordered display">
+            <thead class="table-dark">
+                <tr>
+                    <th style="text-align: center">#</th>
+                    <th style="text-align: center">Materia</th>
+                    <th style="text-align: center">Primer momento</th>
+                    <th style="text-align: center">Justificación</th>
+                    <th style="text-align: center">Segundo momento</th>
+                    <th style="text-align: center">Justificación</th>
+                    <th style="text-align: center">Tercer momento</th>
+                    <th style="text-align: center">Justificación</th>
+                    <th style="text-align: center">Definitiva</th>
+                    <th style="text-align: center">Revisión</th>
+                    <th style="text-align: center">Estado</th>
+                    <th style="text-align: center"> Acciones</th>
+
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for justificacion in justificaciones %}
+                    <tr>
+                        <td style="text-align: center">{{ forloop.counter }}</td>
+                        <td style="text-align: center">{{ justificacion.notas.materia.nombre_materia }}</td>
+                        <td style="text-align: center">{% if justificacion.notas.primer_momento is None %} No proporcionado. {% else %} {{ justificacion.notas.primer_momento }} {% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.primer_momento is None %} No proporcionado. {% else %} {{ justificacion.primer_momento }} {% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.notas.segundo_momento is None %} No proporcionado. {% else %}{{ justificacion.notas.segundo_momento }}{% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.segundo_momento is None %} No proporcionado. {% else %} {{ justificacion.segundo_momento }} {% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.notas.tercer_momento is None %} No proporcionado. {% else %} {{ justificacion.notas.tercer_momento }} {% endif %}</td>
+                        <td style="text-align: center"> {% if justificacion.tercer_momento is None %} No proporcionado. {% else %} {{ justificacion.tercer_momento }} {% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.notas.definitiva is None %} A confirmar. {% else %} {{ justificacion.notas.definitiva }} {% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.notas.revision is None %} No proporcionado. {% else %} {{ justifificacion.notas.revision }} {% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.notas.estado is None %} A confirmar. {% else %}{{ justificacion.notas.estado }} {% endif %}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="11" class="text-center">No se encontraron notas cargadas.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+{% endblock %}
