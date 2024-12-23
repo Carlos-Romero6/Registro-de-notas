@@ -1,5 +1,5 @@
 {% extends "layouts/base.html" %}
-
+{% load static %}
 {% block content %}
     <h1>Periodo: {{ periodo_actual.inicio }} - {{ periodo_actual.finalizacion}} </h1>
     <h2 class="Display-3">Notas del estudiante: {{ estudiante.nombres }} {{ estudiante.apellidos }} </h2>
@@ -37,12 +37,99 @@
                         <td style="text-align: center">{% if justificacion.notas.definitiva is None %} A confirmar. {% else %} {{ justificacion.notas.definitiva }} {% endif %}</td>
                         <td style="text-align: center">{% if justificacion.notas.revision is None %} No proporcionado. {% else %} {{ justifificacion.notas.revision }} {% endif %}</td>
                         <td style="text-align: center">{% if justificacion.notas.estado is None %} A confirmar. {% else %}{{ justificacion.notas.estado }} {% endif %}</td>
+                        <td> 
+                            <button style="cursor: pointer; border: none; outline: none; background-color: transparent">
+                                <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="30" height="30">
+                            </button>
+                        </td>
+                            
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="11" class="text-center">No se encontraron notas cargadas.</td>
+                        <td colspan="12" class="text-center">No se encontraron notas cargadas.</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+
+
+
+
+        <div class="text-center">
+            <a class="md-5" >
+                <button class="btn btn-outline-dark" onclick=regresarPaginaAnterior()>Volver</button>
+            </a>
+
+            <a class="md-5">
+                    <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#cargarNotaModal">
+                        Cargar nota
+                    </button>
+            </a>
+        </div>
+
+    
+
+    {# Ventana modal#}
+    
+    <div class="modal fade" id="cargarNotaModal" tabindex="-1" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white rounded-0">
+            <div class="modal-header">
+                <h5 class="modal-title fs5" id="modalLabel">Cargar notas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+    
+        <div class="modal-body">
+                <form id="cargarNota">
+                {% csrf_token %}
+
+                    <div class="mb-3"> 
+                        <label for="materia" class="form-label">Materia:</label>
+                        <select name="materia" id="materia" class="form-select form-select-lg mb-3" aria-label="Selecione una materia" required>
+                            <option value="">Seleccione una materia</option>
+                            {% for materia in materias  %}
+                                <option value="{{ materia.id }}">{{ materia.nombre_materia }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="momento" class="form-label">Momento:</label>
+                            <select name="momento" id="momento" class="form-select form-select-lg mb-3" aria-label="Selecione un momento" required>
+                                <option value="">Seleccione un momento</option>
+                            </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="nota">Nota:</label>
+                        <input id="nota" type="number" max="20" min="0" step="0.01" name="nota" class="form-control form-control-lg" placeholder="Ingrese la nota respectiva" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="justificacion" class="form-label">Justificación</label>
+                            <select name="justificacion" id="justificacion" class="form-select form-select-lg mb-3" aria-label="Selecione una justificacion" required>
+                                <option value="">Seleccione una justificacion</option>
+                                <option value="C">C (cursado)</option>
+                                <option value="I">I (inasistente)</option>
+                                <option value="NC">NC (no cursado)</option>
+                                <option value="NP">NP (no presentado)</option>
+                                <option value="EXO">EXO (exonerado)</option>
+                                <option value="RT">RT (retirado)</option>
+                                <option value="DES">DES (desertor)</option>
+                            </select>
+                    </div>
+                    <div class="text-center">
+                        <button  onClick="submit" class="btn btn-light rounded-0 pd-5" style="text-center">Cargar</button>
+                    </div>
+                    <input type="text" value="{{ estudiante.id }}" name="estudiante" style="display:none;" id="estudiante" hidden>
+                    <input type="text" value="{{ periodo_actual.id }}" name="periodo" style="display:none;" id="periodo" hidden>
+                </form>
+            </div>
+        </div>
+    </div>
+        
+        <script src= {% static "dom/regresarPaginaAnterior.js" %}></script>
+        <script src= {% static "dom/selectorMomentos.js" %}></script>
+        <script src= {% static "dom/selectorRevision.js" %}></script>
 {% endblock %}
