@@ -1,6 +1,9 @@
 {% extends "layouts/base.html" %}
 {% load static %}
 {% block content %}
+
+    <!-- Tabla de notas del estudiante -->
+
     <h1>Periodo: {{ periodo_actual.inicio }} - {{ periodo_actual.finalizacion}} </h1>
     <h2 class="Display-3">Notas del estudiante: {{ estudiante.nombres }} {{ estudiante.apellidos }} </h2>
 
@@ -24,6 +27,8 @@
                 </tr>
             </thead>
             <tbody>
+
+                {# Notas del estudiate en la tabla con sus respectivos momentos y justificaciones#}
                 {% for justificacion in justificaciones %}
                     <tr>
                         <td style="text-align: center">{{ forloop.counter }}</td>
@@ -35,8 +40,10 @@
                         <td style="text-align: center">{% if justificacion.notas.tercer_momento is None %} No proporcionado. {% else %} {{ justificacion.notas.tercer_momento }} {% endif %}</td>
                         <td style="text-align: center"> {% if justificacion.tercer_momento is None %} No proporcionado. {% else %} {{ justificacion.tercer_momento }} {% endif %}</td>
                         <td style="text-align: center">{% if justificacion.notas.definitiva is None %} A confirmar. {% else %} {{ justificacion.notas.definitiva }} {% endif %}</td>
-                        <td style="text-align: center">{% if justificacion.notas.revision is None %} No proporcionado. {% else %} {{ justifificacion.notas.revision }} {% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.notas.revision is None %} No proporcionado. {% else %} {{ justificacion.notas.revision }} {% endif %}</td>
                         <td style="text-align: center">{% if justificacion.notas.estado is None %} A confirmar. {% else %}{{ justificacion.notas.estado }} {% endif %}</td>
+
+                        <!-- Botón para modificar la nota -->
                         <td> 
                             <button style="cursor: pointer; border: none; outline: none; background-color: transparent">
                                 <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="30" height="30">
@@ -44,7 +51,10 @@
                         </td>
                             
                     </tr>
+
                     {% empty %}
+
+                    {# Mensaje en caso de que no se encuentren notas cargadas#}
                     <tr>
                         <td colspan="12" class="text-center">No se encontraron notas cargadas.</td>
                     </tr>
@@ -52,14 +62,17 @@
             </tbody>
         </table>
 
+        <!-- Botones para volver a la página anterior y cargar una nueva nota -->
 
+        <div class="d-flex justify-content-center">
 
-
-
-        <div class="text-center">
-            <a class="md-5" >
-                <button class="btn btn-outline-dark" onclick=regresarPaginaAnterior()>Volver</button>
-            </a>
+            {# Botón para volver a la página anterior usando un formulario para transferir datos#}
+            <form action="{% url "notas" %}" method="POST">
+                {% csrf_token %}
+                <input type="text" value="{{ estudiante.seccion }}" name="seccion" hidden>
+                <input type="text" value="{{ matricula.curso }}" name="curso" hidden>
+                    <button type="submit" class="btn btn-outline-dark me-3">Volver</button>
+            </form>
 
             <a class="md-5">
                     <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#cargarNotaModal">
@@ -68,10 +81,11 @@
             </a>
         </div>
 
-    
 
-    {# Ventana modal#}
-    
+    <!-- Ventana modal para cargar notas -->
+
+            <!-- Encabezado de la ventana modal -->
+
     <div class="modal fade" id="cargarNotaModal" tabindex="-1" data-bs-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content bg-dark text-white rounded-0">
@@ -79,11 +93,13 @@
                 <h5 class="modal-title fs5" id="modalLabel">Cargar notas</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-    
+
+            <!-- Formulario para cargar notas -->
         <div class="modal-body">
                 <form id="cargarNota">
                 {% csrf_token %}
 
+                {# Selector de materias #}
                     <div class="mb-3"> 
                         <label for="materia" class="form-label">Materia:</label>
                         <select name="materia" id="materia" class="form-select form-select-lg mb-3" aria-label="Selecione una materia" required>
@@ -94,22 +110,25 @@
                         </select>
                     </div>
 
+                {# Selector de momentos (uso de función AJAX)#}
                     <div class="mb-3">
                         <label for="momento" class="form-label">Momento:</label>
                             <select name="momento" id="momento" class="form-select form-select-lg mb-3" aria-label="Selecione un momento" required>
                                 <option value="">Seleccione un momento</option>
                             </select>
                     </div>
-
+                
+                {# Formulario de notas #}
                     <div class="mb-3">
                         <label class="form-label" for="nota">Nota:</label>
                         <input id="nota" type="number" max="20" min="0" step="0.01" name="nota" class="form-control form-control-lg" placeholder="Ingrese la nota respectiva" required>
                     </div>
-
+                
+                {# Selector de justificaciones (uso de función de Javascript para dinamismo en caso de revision)#}
                     <div class="mb-3">
                         <label for="justificacion" class="form-label">Justificación</label>
                             <select name="justificacion" id="justificacion" class="form-select form-select-lg mb-3" aria-label="Selecione una justificacion" required>
-                                <option value="">Seleccione una justificacion</option>
+                                <option value="">Seleccione una justificación</option>
                                 <option value="C">C (cursado)</option>
                                 <option value="I">I (inasistente)</option>
                                 <option value="NC">NC (no cursado)</option>
@@ -120,16 +139,48 @@
                             </select>
                     </div>
                     <div class="text-center">
-                        <button  onClick="submit" class="btn btn-light rounded-0 pd-5" style="text-center">Cargar</button>
+                        <button id="cargar" type="submit" class="btn btn-light rounded-0 pd-5" style="text-center">Cargar</button>
                     </div>
+
+                    {# Campos ocultos para transferir datos a otras funciones (selectorDeMomentos, cargarNotas)#}
                     <input type="text" value="{{ estudiante.id }}" name="estudiante" style="display:none;" id="estudiante" hidden>
                     <input type="text" value="{{ periodo_actual.id }}" name="periodo" style="display:none;" id="periodo" hidden>
                 </form>
             </div>
         </div>
     </div>
-        
-        <script src= {% static "dom/regresarPaginaAnterior.js" %}></script>
+        {# Scripts para el funcionamiento de la ventana modal#}
+
         <script src= {% static "dom/selectorMomentos.js" %}></script>
         <script src= {% static "dom/selectorRevision.js" %}></script>
+
+
+        {# Script para cargar notas #}
+        <script>
+            document.getElementById('cargarNota').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "cargarNota" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha cargado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('cargarNotaModal'));
+                    modal.hide();
+                    window.location.reload();
+                    } else {
+                    alert("Error al cargar nota.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error: ', error);
+                    alert("Ocurrió un error inesperado.");
+                });
+            
+            })
+            
+        </script>
 {% endblock %}

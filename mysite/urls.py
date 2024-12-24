@@ -22,7 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('consultar-secciones/', cursosDeSeccionAjax.consultarSecciones, name="consultarSecciones"),
     path('estudiantes/', include('estudiantes.urls'), name="estudiantes"),
-    path('notas/', include('notas.urls'), name="notas"),
+    path('notas/', include('notas.urls')),
     path('', include('mainapp.urls')),
     path('consultar-momentos/', momentosDisponibles.consultarMomento, name="consultar-momento"),
+    # path('cargarNota/',cargarNota.cargarNota, name="cargarNota"),
 ]
