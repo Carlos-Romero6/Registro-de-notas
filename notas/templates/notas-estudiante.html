@@ -4,7 +4,7 @@
 
     <!-- Tabla de notas del estudiante -->
 
-    <h1>Periodo: {{ periodo_actual.inicio }} - {{ periodo_actual.finalizacion}} </h1>
+    <h1>Período: {{ periodo_actual.inicio }} - {{ periodo_actual.finalizacion}} </h1>
     <h2 class="Display-3">Notas del estudiante: {{ estudiante.nombres }} {{ estudiante.apellidos }} </h2>
 
         <table class="table table-success table-striped table-bordered display">
@@ -45,13 +45,98 @@
 
                         <!-- Botón para modificar la nota -->
                         <td> 
-                            <button style="cursor: pointer; border: none; outline: none; background-color: transparent">
+                            <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarNotaModal{{ forloop.counter }}">
                                 <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="30" height="30">
                             </button>
                         </td>
-                            
                     </tr>
 
+            <!--Ventana modal para modificar notas-->
+
+        <div class="modal fade" id="modificarNotaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark text-white rounded-0">
+                    <div class="modal-header">
+                            <h5 class="modal-title">Modificar notas</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </button>
+                    </div>
+                    <!--Formularios para modificar notas-->
+                    <div class="modal-body">
+                        <div class="alert alert-warning">
+                            <p>Cuando presione el botón "Modificar" se actualizarán las notas aparecidas en pantalla de forma simultánea.</p>
+                        </div>
+                        <form id="modificarNotaForm{{ forloop.counter }}">
+                            {% csrf_token %}
+
+                            {# Materia #}
+                            <div class="mb-3">
+                                <label for="materia_modificar" class="form-label">Materia:</label>
+                                <select name="materia_modificar" id="materia_modificar" class="form-select form-select-lg mb-3" required>
+                                    <option value="{{ justificacion.notas.materia.id}}"> {{ justificacion.notas.materia.nombre_materia }}</option>
+                                </select>
+                            </div>
+                            <div>
+                                <input type="text" name="estudiante_modificar" value="{{ estudiante.id }}" hidden>
+                                <input type="text" name="periodo_modificar" value="{{ periodo_actual.id }}" hidden>
+                                <input type="text" name="notas_modificar" value="{{ justificacion.notas.id}}" hidden>
+                            </div>
+                            <div class="mb-3">
+                                <label for="primer_momento_modificar" class="form-label">Primer momento:</label>
+                                <input type="number" id="primer_momento_modificar" max="20" min="0" step="0.01"  class="form-control form-control-lg" value= "{{ justificacion.notas.primer_momento }}" name="primer_momento_modificar" {% if justificacion.notas.primer_momento is None %} disabled placeholder="No proporcionado.">{% endif %}
+                            </div>
+                            <div>
+                                <label for="justificacion_primer_momento_modificar">Justificacion</label>
+                                <input type="text" name="justificacion_primer_momento_modificar" class="form-control form-control-lg" value="{{ justificacion.primer_momento }}" {% if justificacion.primer_momento is None %} disabled placeholder="No proporcionado.">{% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="segundo_momento_modificar" class="form-label">Segundo momento:</label>
+                                <input type="number" id="segundo_momento_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value= "{{ justificacion.notas.segundo_momento }}" name="segundo_momento_modificar"  {% if justificacion.notas.segundo_momento is None %} disabled placeholder="No proporcionado.">{% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="tercer_momento_modificar" class="form-label">Tercer momento</label>
+                                <input type="number" id="tercer_momento_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value="{{ justificacion.notas.tercer_momento }}" name="tercer_momento_modificar" {% if justificacion.notas.tercer_momento is None %} disabled placeholder="No proporcionado.">{% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="revision_modificar" class="form-label">Revisión</label>
+                                <input type="number" id="revision_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value="{{ justificacion.notas.revision }}" name="revision_modificar" {% if justificacion.notas.revision is None %} disabled placeholder="No proporcionado.">{% endif %}
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+        <script>
+            document.getElementById('modificarNotaForm{{ forloop.counter }}').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "modificarNota" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha modificado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('modificarNotaModal{{ forloop.counter }}'));
+                    modal.hide();
+                    window.location.reload();
+                    } 
+                    else {
+                    alert("Error al modificar nota.");
+                    }
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                        alert("Ocurrió un error inesperado.");
+                    });
+                })
+        </script>
                     {% empty %}
 
                     {# Mensaje en caso de que no se encuentren notas cargadas#}
@@ -149,6 +234,8 @@
             </div>
         </div>
     </div>
+
+
         {# Scripts para el funcionamiento de la ventana modal#}
 
         <script src= {% static "dom/selectorMomentos.js" %}></script>
@@ -171,7 +258,8 @@
                     const modal = new bootstrap.Modal(document.getElementById('cargarNotaModal'));
                     modal.hide();
                     window.location.reload();
-                    } else {
+                    } 
+                    else {
                     alert("Error al cargar nota.");
                     }
                 })
@@ -183,4 +271,5 @@
             })
             
         </script>
+
 {% endblock %}

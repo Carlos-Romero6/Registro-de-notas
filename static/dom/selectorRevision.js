@@ -8,7 +8,7 @@ document.getElementById("momento").addEventListener("change", function() {
     const justificacion = document.getElementById("justificacion");
 
     if (momento === "revision") {
-        justificacion.innerHTML = "<option value='revision' selected disable>Las revisiones no tienen justificaciones</option>";
+        justificacion.innerHTML = "<option value='revision'>Las revisiones no tienen justificaciones</option>";
     }
     else {
         options = [

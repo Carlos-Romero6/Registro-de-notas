@@ -40,10 +40,7 @@ def notasEstudiante(request, id_estudiante):
             'materias': materias,
             'matricula': matricula
         })
-        
-        
-from django.http import JsonResponse
-from mainapp.models import Notas, Justificaciones, Estudiantes, Materias, Periodos
+
 
 def cargarNota(request):
     print("Cargando nota")
@@ -98,3 +95,39 @@ def cargarNota(request):
     # Se envía un mensaje de error si ocurre un fallo inesperado
     except:
         return JsonResponse({'success': False, 'message': 'Ha ocurrido un fallo inesperado: '})
+    
+def modificarNota(request):
+    try:
+        if request.method == 'POST':
+            print(request.POST)
+            periodo_id = request.POST.get('periodo_modificar')
+            print(periodo_id)
+            estudiante_id = request.POST.get('estudiante_modificar')
+            print(estudiante_id)
+            notas_id = request.POST.get('notas_modificar')
+            print(notas_id)
+            materia_id = request.POST.get('materia_modificar')
+            print(materia_id)
+            primer_momento = request.POST.get('primer_momento_modificar')
+            segundo_momento = request.POST.get('segundo_momento_modificar')
+            tercer_momento = request.POST.get('tercer_momento_modificar')
+            revision = request.POST.get('revision_modificar')
+            materia = Materias.objects.get(pk=materia_id)
+            periodo = Periodos.objects.get(pk=periodo_id)
+            estudiante = Estudiantes.objects.get(pk=estudiante_id)
+            notas = Notas.objects.get(pk=notas_id, estudiante=estudiante, periodos=periodo, materia=materia)
+
+            if notas.primer_momento:
+                notas.primer_momento = primer_momento
+            if notas.segundo_momento:
+                notas.segundo_momento = segundo_momento
+            if notas.tercer_momento:
+                notas.tercer_momento = tercer_momento
+            if notas.revision:
+                notas.revision = revision
+            notas.save()
+        
+        return JsonResponse({'success': True, 'message': "Nota modificada exitosamente."})
+    
+    except:
+        return JsonResponse({'success': False, 'message': 'Ha ocurrido un fallo inesperado'})

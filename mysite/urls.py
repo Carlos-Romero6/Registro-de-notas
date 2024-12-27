@@ -25,5 +25,4 @@ urlpatterns = [
     path('notas/', include('notas.urls')),
     path('', include('mainapp.urls')),
     path('consultar-momentos/', momentosDisponibles.consultarMomento, name="consultar-momento"),
-    # path('cargarNota/',cargarNota.cargarNota, name="cargarNota"),
 ]
