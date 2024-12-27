@@ -29,7 +29,8 @@ function disponerSecciones() {
 // Llenar formulario con datos del estudiante
 function editarEstudiante(estudiante_id) {
     if (confirm("¿Estás seguro de que quieres editar datos de este estudiante?")) {
-        const formulario = document.getElementById('modalAgregarEstudiante');
+        let formulario = new bootstrap.Modal(document.getElementById('modalEditarEstudiante'));
+        formulario.show();
         ESTUDIANTE_ID = estudiante_id;
 
         fetch(`../obtener-datos/?estudiante=${estudiante_id}`)

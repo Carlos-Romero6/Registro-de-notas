@@ -1,4 +1,14 @@
 // Agregar estudiante
+
+function modalAgregarEstudiante() {
+  document.getElementById('nombres').value = "";
+  document.getElementById('apellidos').value = "";
+  document.getElementById('cedula').value = "";
+  document.getElementById('genero').value = "";
+  let ventana = new bootstrap.Modal(document.getElementById('modalAgregarEstudiante'));
+  ventana.show();
+}
+
 document.getElementById('agregarEstudiante').addEventListener('submit', function(event) {
   event.preventDefault();
   const formData = new FormData(this);

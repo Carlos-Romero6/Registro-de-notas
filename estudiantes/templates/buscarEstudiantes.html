@@ -1,12 +1,43 @@
-{% extends 'layouts/base.html' %}
+{% extends 'layouts/sidebar.html' %}
 
-{% block content %}
+{% block main %}
 {% load static %}
 
+<style>
+  .btn-custom {
+    background: linear-gradient(to left, #233c43, #406d70);
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    min-width: 7rem;
+  }
+  .btn-custom:hover {
+    background: linear-gradient(to left, #455e65, #628f92);
+    color: white;
+  }
+  .btn-outline-custom {
+    border: 2px solid #223941;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #3c6569;  
+  }
+  .btn-outline-custom:hover {
+    border: 2px solid #6f989c;
+    color: #6f989c;
+    border-radius: 5px;    
+  }
+  .table-container {
+    overflow-y: scroll;
+    width: 100%;
+    height: 70vh;
+  }
+</style>
+<section class="d-flex flex-column align-items-center">
 <h2>Gestion estudiantil</h2>
 <h3>Curso: {{ curso }} - Sección: {{ seccion }}</h3>
+<div class="table-container mb-3">
 <table class="table table-success table-striped table-bordered">
-  <thead class="table-dark">
+  <thead class="table-dark" style="position: sticky; top: 0;">
     <tr>
       <th scope="col">#</th>
       <th scope="col">Nombres</th>
@@ -36,8 +67,7 @@
       </td>
       <td>
         {# Boton para editar #}
-        <button title="Editar" style="cursor:pointer; border: none; outline: none; background-color: transparent" onClick="editarEstudiante({{ estudiante.id }})"
-        data-bs-toggle="modal" data-bs-target="#modalEditarEstudiante">
+        <button title="Editar" style="cursor:pointer; border: none; outline: none; background-color: transparent" onClick="editarEstudiante({{ estudiante.id }})">
           <img src="{% static 'images/icons/edit-icon.png' %}" alt="Editar" width="30" height="30">
         </button>
         {# boton para eliminar #}
@@ -53,14 +83,15 @@
     {% endfor %}
   </tbody>
 </table>
+</div>
+</section>
 
 {# Boton para abrir modal para agregar estudiante #}
-<div class="text-center">
-  <a href="{% url 'estudiantes' %}" class="md-5">
-    <button class="btn btn-outline-dark">Volver</button>
+<div class="d-flex">
+  <a href="{% url 'estudiantes' %}" class="md-5 me-2">
+    <button class="btn btn-outline-custom">Volver</button>
   </a>
-
-  <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalAgregarEstudiante">
+  <button class="btn btn-custom" onClick="modalAgregarEstudiante()">
     Agregar Estudiante
   </button>
 </div>
@@ -211,4 +242,4 @@
   </div>
 </div>
 
-{% endblock %}
+{% endblock main %}
