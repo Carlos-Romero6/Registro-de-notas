@@ -1,0 +1,282 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+{% load static %}
+
+</head>
+<style>
+.logo {
+    width: 50px; 
+    height: 50px;
+    left: 260px;
+    position: absolute;
+    right: 10px; /* Distancia desde el borde derecho del contenedor */
+    top: 0; /* Posición vertical (ajusta según tus necesidades) */
+}
+.table {
+  border: 1px solid #ccc; /* Ajusta el color y grosor del borde según sea necesario */
+  border-radius: 4px; /* Añade bordes redondeados */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Añade una sombra suave */
+  width: 100%; /* Asegúra de que la tabla ocupe el 100% del contenedor */
+  max-width: 350; /* Establece un ancho máximo para las tablas */
+}
+
+.table td {
+  padding: 1px; /* Ajusta el relleno de las celdas */
+  text-align: center; /* Centra el texto en las celdas */
+}
+
+.text-center {
+    text-align: center;
+}
+
+.table.table-bordered {
+    border: 1px solid #ccc;
+    border-radius: 1px;
+}
+.scroll-container {
+    overflow-x: auto; /* Permite el desplazamiento horizontal */
+    white-space: nowrap; /* Evita que las tablas se envuelvan */
+    height: 550px;
+    right: 50px;
+}
+
+.container {
+    display: inline-block; /* Permite que las tablas se alineen horizontalmente */
+    margin: 35px 65px; /* Espacio superior y lateral (top, right/left) */
+    max-width: 300px; /* Establece un ancho máximo para el contenedor */
+    width: 100%; /* Asegúrate de que el contenedor ocupe el 100% del espacio disponible */
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+}
+
+</style>
+
+<body>
+    <div>
+        <img src="{% static 'images/icons/edit-icon.png' %}"  alt="Logo del pensum" class="logo">
+        <h1>Pénsum {{ pensum.nombre_pensum }}</h1>
+    </div>
+        <div class="scroll-container">
+            <div class="container">
+                <div class = "text-center">
+                    <h2>1er Año</h2>
+                    </div>
+                <table class="table table-bordered">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Materias</th>
+                            <th>Cuantitativa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for materia in materias %}
+                        {% if materia.curso == 1 %}
+                            <tr>
+                                <td>{{ materia.nombre_materia }}</td>
+                                <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
+                            </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
+                    <img src="{% static 'images/icons/trash-icon.png' %}" alt="Eliminar" width="50" height="50">
+                </button>
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
+                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Eliminar" width="50" height="50">
+                </button>
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
+                    <img src="{% static 'images/icons/add-icon.png' %}" alt="Eliminar" width="50" height="50">
+                </button>
+            </div>
+            <div class="container">
+                <div class = "text-center">
+                <h2>2do Año</h2>
+                </div>
+                <table class="table table-bordered">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Materias</th>
+                            <th>Cuantitativa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for materia in materias %}
+                        {% if materia.curso == 2 %}
+                            <tr>
+                                <td>{{ materia.nombre_materia }}</td>
+                                <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
+                            </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
+                    <img src="{% static 'images/icons/trash-icon.png' %}" alt="Eliminar" width="50" height="50">
+                </button>
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
+                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Eliminar" width="50" height="50">
+                </button>
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modalAgregarMateria">
+                    <img src="{% static 'images/icons/add-icon.png' %}" alt="Eliminar" width="50" height="50">
+                </button>
+            </div>
+            <div class="container">
+                <div class = "text-center">
+                    <h2>3er Año</h2>
+                    </div>
+                <table class="table table-bordered">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Materias</th>
+                            <th>Cuantitativa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for materia in materias %}
+                        {% if materia.curso == 3 %}
+                            <tr>
+                                <td>{{ materia.nombre_materia }}</td>
+                                <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
+                            </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
+                    <img src="{% static 'images/icons/trash-icon.png' %}" alt="Eliminar" width="50" height="50">
+                </button>
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
+                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Eliminar" width="50" height="50">
+                </button>
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
+                    <img src="{% static 'images/icons/add-icon.png' %}" alt="Eliminar" width="50" height="50">
+                </button>
+            </div>
+            <div class="container">
+                <div class = "text-center">
+                    <h2>4to Año</h2>
+                    </div>
+                <table class="table table-bordered">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Materias</th>
+                            <th>Cuantitativa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for materia in materias %}
+                        {% if materia.curso == 4 %}
+                            <tr>
+                                <td>{{ materia.nombre_materia }}</td>
+                                <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
+                            </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
+                    <img src="{% static 'images/icons/trash-icon.png' %}" alt="Eliminar" width="50" height="50">
+                </button>
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
+                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Eliminar" width="50" height="50">
+                </button>
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
+                    <img src="{% static 'images/icons/add-icon.png' %}" alt="Eliminar" width="50" height="50">
+                </button>
+            </div>
+            <div class="container">
+                <div class = "text-center">
+                    <h2>5to Año</h2>
+                    </div>
+                <table class="table table-bordered">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Materias</th>
+                            <th>Cuantitativa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for materia in materias %}
+                        {% if materia.curso == 5 %}
+                            <tr>
+                                <td>{{ materia.nombre_materia }}</td>
+                                <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
+                            </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
+                    <img src="{% static 'images/icons/trash-icon.png' %}" alt="Eliminar" width="50" height="50">
+                </button>
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
+                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Eliminar" width="50" height="50">
+                </button>
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
+                    <img src="{% static 'images/icons/add-icon.png' %}" alt="Eliminar" width="50" height="50">
+                </button>
+            </div>
+        </div>
+</body>
+
+{# Modal para agregar materia #}
+<div class="modal fade" id="modalAgregarMateria" tabindex="-1" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white rounded-0">
+        <div class="modal-header">
+            <h5 class="modal-title fs5" id="modalLabel">Agregar materia</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+            <form id="agregarMateria">
+            {% csrf_token %}
+
+            {# Campo para curso #}
+            <div class="mb-3">
+                <label for="cursomateria" class="form-label">Curso:</label>
+                <select class="form-control" id="cursomateria" name="cursomateria" required>
+                    <option value="" disabled selected>Selecciona el curso</option> <!-- Opción por defecto -->
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            {# Campo para nombre de la materia #}
+            <div class="mb-3">
+                <label for="nombremateria" class="form-label">Nombre de la materia:</label>
+                <input type="text" class="form-control" id="nombremateria" name="nombremateria" placeholder="Escribe el nombre de la materia" required>
+            </div>
+            {# Campo para cuantitativo #}
+            <div class="mb-3">
+                <label for="cuantitativomateria" class="form-label">Cuantitativo:</label>
+                <select class="form-control" id="cuantitativomateria" name="cuantitativomateria" required>
+                    <option value="False">Sí</option>  <!-- Se guarda como False -->
+                    <option value="True">No</option>    <!-- Se guarda como True -->
+                </select>
+            </div>  
+            {# Campo de pensum #}
+            <div class="mb-3 d-flex">
+                <div class="btn btn-secondary rounded-end-0">
+                <label for="pensummateria" class="form-label">Pensum:</label>
+                </div>
+                <select id="pensummateria" class="form-control rounded-start-0" disabled>
+                <option selected>{{ pensum.nombre_pensum }}</option>
+                </select>
+                {# El curso será el mismo de la tabla en la que nos encontramos #}
+                <input type="hidden" name="pensummateria" value="{{ pensum.nombre_pensum }}">
+            </div>    
+
+            <div class="text-center">
+                <button onClick="submit" class="btn btn-light rounded-0 pd-5">Guardar Materia</button>
+            </div>
+            </form>
+            <script src="{% static 'dom/registrarMateria.js' %}"></script>
+        </div>
+        </div>
+    </div>
+</div>
+
+{% endblock%}

@@ -1,0 +1,45 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+{% load static %}
+
+<style>
+    body {
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, white 0%, white 50%, rgb(224, 224, 224) 50%, rgb(224, 224, 224)100%);
+    }
+
+    h2{
+        color: rgb(0, 0, 0);
+    }
+</style>
+<header>
+    <div class="row justify-content-center mx-auto">
+        <div class="col-md-4 text-center mb-5">
+            <h2>Gestión de matrícula y pensum</h2>
+        </div>
+    </div>
+</header>
+<div class="container mt-5">
+    <div class="row justify-content-center mx-auto">
+        <div class="col-md-5">
+            <a href="" class="btn btn-primary btn-lg">
+                Matrícula
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'menu-pensum' %}" class="btn btn-primary btn-lg">
+                Pénsum
+            </a>
+            <div id="pensum">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

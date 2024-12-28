@@ -1,0 +1,113 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+{% load static %}
+<head>
+    <title>Pénsums</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            position: relative; /* Para el posicionamiento absoluto de los botones */
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            overflow-x: auto;
+            margin: 100px;
+            justify-content: center;
+        }
+        .button {
+            background-color: rgb(184, 214, 202);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px 60px;
+            margin: 30px;
+            text-align: center;
+            font-size: 35px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex: 0 0 20%; /* Define el ancho de cada botón */
+            max-width: 20%; /* Limita el ancho máximo */
+        }
+        .button:hover {
+            background-color: #e0e0e0;
+        }
+        h1 {
+            margin-left: 250px;
+            text-align: left;
+            margin-top: 20px;
+            font-size: 40px; /* Aumenta el tamaño del texto del encabezado */
+        }
+        /* Estilos para los botones de la derecha */
+        .side-buttons {
+            position: fixed; /* Fijo en la pantalla */
+            right: 40px; /* Espacio desde la derecha */
+            top: 50%; /* Centrado verticalmente */
+            transform: translateY(-50%); /* Ajusta el centrado */
+            display: flex;
+            flex-direction: column; /* Coloca los botones en columna */
+        }
+    </style>
+</head>
+<body>
+    <h1>Pénsums</h1>
+    <div class="container">
+        {% for pensum in pensums %}
+        <a href="{% url 'materias_pensum' pensum.id %}" class="button">{{ pensum.nombre_pensum }}</a>
+        {% empty %}
+        <h1>No se encontraron pénsums</h1>
+        {% endfor %}
+    </div>
+
+    <!-- Botones en el lado derecho -->
+    <div class="side-buttons">
+        <button style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="">
+            <img src="{% static 'images/icons/edit-icon.png' %}" alt="Editar" width="50" height="50">
+        </button>
+        <button style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modalAgregarPensum">
+            <img src="{% static 'images/icons/add-icon.png' %}" alt="Añadir" width="50" height="50">
+        </button>
+    </div>
+
+    <script>
+        // Aquí se puede agregar cualquier funcionalidad adicional si es necesario
+    </script>
+</body>
+
+{# Modal para agregar pensum #}
+<div class="modal fade" id="modalAgregarPensum" tabindex="-1" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white rounded-0">
+        <div class="modal-header">
+            <h5 class="modal-title fs5" id="modalLabel">Agregar pénsum</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+            <form id="agregarPensum">
+            {% csrf_token %}
+
+            {# Campo para nombre #}
+            <div class="mb-3">
+                <label for="pensum" class="form-label">Nombre del Pénsum:</label>
+                <input type="text" class="form-control" id="pensum" name="pensum" placeholder="Escribe el nombre del pénsum" required>
+            </div>
+
+            <div class="text-center">
+                <button onClick="submit" class="btn btn-light rounded-0 pd-5">Guardar pénsum</button>
+            </div>
+            </form>
+            <script src="{% static 'dom/registrarPensum.js' %}"></script>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center">
+    <a class="md-5" href="{% url 'pensum-matricula' %}">
+        <button class="btn btn-outline-dark">Volver</button>
+    </a>
+</div>
+
+{% endblock %}
