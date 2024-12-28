@@ -71,10 +71,11 @@
 
                             {# Materia #}
                             <div class="mb-3">
-                                <label for="materia_modificar" class="form-label">Materia:</label>
-                                <select name="materia_modificar" id="materia_modificar" class="form-select form-select-lg mb-3" required>
+                                <label for="materia_mostrar" class="form-label">Materia:</label>
+                                <select name="materia_mostrar" id="materia_mostrar" class="form-select form-select-lg mb-3" disabled required>
                                     <option value="{{ justificacion.notas.materia.id}}"> {{ justificacion.notas.materia.nombre_materia }}</option>
                                 </select>
+                                <input type="text" name="materia_modificar" id="materia_modificar" value="{{ justificacion.notas.materia.id }}" hidden>
                             </div>
                             <div>
                                 <input type="text" name="estudiante_modificar" value="{{ estudiante.id }}" hidden>
@@ -104,7 +105,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="justificacion_segundo_momento_modificar">Justificación</label>
-                                <select id="justificacion_segundo_momento_modificar" name="justificacion_primer_segundo_modificar" class="form-control form-select-lg" value="{{ justificacion.segundo_momento }}" {% if justificacion.segundo_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                <select id="justificacion_segundo_momento_modificar" name="justificacion_segundo_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.segundo_momento }}" {% if justificacion.segundo_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
                                     <option value="{{ justificacion.segundo_momento }}">{% if justificacion.segundo_momento is None %} No proporcionado. {% else %}{{ justificacion.segundo_momento }}</option> {% endif %}
                                     <option value="C">C (cursado)</option>
                                     <option value="I">I (inasistente)</option>

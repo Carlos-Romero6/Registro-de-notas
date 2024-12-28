@@ -99,33 +99,48 @@ def cargarNota(request):
 def modificarNota(request):
     try:
         if request.method == 'POST':
-            print(request.POST)
+            
+            # Obtención de los datos ingresados en el formulario
             periodo_id = request.POST.get('periodo_modificar')
-            print(periodo_id)
             estudiante_id = request.POST.get('estudiante_modificar')
-            print(estudiante_id)
             notas_id = request.POST.get('notas_modificar')
-            print(notas_id)
             materia_id = request.POST.get('materia_modificar')
-            print(materia_id)
+            justificacion_primer_momento = request.POST.get('justificacion_primer_momento_modificar')
+            justificacion_segundo_momento = request.POST.get('justificacion_segundo_momento_modificar')            
+            justificacion_tercer_momento = request.POST.get('justificacion_tercer_momento_modificar')
             primer_momento = request.POST.get('primer_momento_modificar')
             segundo_momento = request.POST.get('segundo_momento_modificar')
             tercer_momento = request.POST.get('tercer_momento_modificar')
             revision = request.POST.get('revision_modificar')
+
+            # Dterminación del registro de las notas y justificaciones que cumplen con la materia, el periodo y el estudiante en cuestión
             materia = Materias.objects.get(pk=materia_id)
             periodo = Periodos.objects.get(pk=periodo_id)
             estudiante = Estudiantes.objects.get(pk=estudiante_id)
             notas = Notas.objects.get(pk=notas_id, estudiante=estudiante, periodos=periodo, materia=materia)
-
-            if notas.primer_momento:
-                notas.primer_momento = primer_momento
-            if notas.segundo_momento:
+            justificacion = Justificaciones.objects.get(notas=notas.id)
+            
+            
+            # Modificación de las notas y justificaciones según lo ingresado por el usuario
+            if notas.primer_momento and justificacion.primer_momento:
+                notas.primer_momento = primer_momento 
+                justificacion.primer_momento = justificacion_primer_momento
+            
+            if notas.segundo_momento and justificacion.segundo_momento:
                 notas.segundo_momento = segundo_momento
-            if notas.tercer_momento:
+                justificacion.segundo_momento = justificacion_segundo_momento
+            
+            if notas.tercer_momento and justificacion.tercer_momento:
                 notas.tercer_momento = tercer_momento
+                justificacion.tercer_momento = justificacion_tercer_momento
+            
             if notas.revision:
                 notas.revision = revision
+                
+            # Guardado de lo modificado en la base de datos
             notas.save()
+            justificacion.save()
+        
         
         return JsonResponse({'success': True, 'message': "Nota modificada exitosamente."})
     
