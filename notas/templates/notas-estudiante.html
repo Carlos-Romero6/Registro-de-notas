@@ -73,7 +73,7 @@
                             <div class="mb-3">
                                 <label for="materia_modificar" class="form-label">Materia:</label>
                                 <select name="materia_modificar" id="materia_modificar" class="form-select form-select-lg mb-3" required>
-                                      <option value="{{ justificacion.notas.materia.id}}"> {{ justificacion.notas.materia.nombre_materia }}</option>
+                                    <option value="{{ justificacion.notas.materia.id}}"> {{ justificacion.notas.materia.nombre_materia }}</option>
                                 </select>
                             </div>
                             <div>
@@ -83,62 +83,58 @@
                             </div>
                             <div class="mb-3">
                                 <label for="primer_momento_modificar" class="form-label">Primer momento:</label>
-                                <input type="number" id="primer_momento_modificar" max="20" min="0" step="0.01"  class="form-control form-control-lg" value= "{{ justificacion.notas.primer_momento }}" name="primer_momento_modificar" {% if justificacion.notas.primer_momento is None %} disabled placeholder="No proporcionado.">{% endif %}
+                                <input type="number" id="primer_momento_modificar" max="20" min="0" step="0.01"  class="form-control form-control-lg" value= "{{ justificacion.notas.primer_momento }}" name="primer_momento_modificar" {% if justificacion.notas.primer_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
                             </div>
-                            <div clsss="mb-3">
-                                <label for="justificacion_primer_momento_modificar">Justificacion</label>
-                                <select id="justificacion_primer_momento_modificar" class="form-control form-select-lg" required {% if justificacion.primer_momento is None %} dissbled placeholder="No proporcionsdo."{% endif %}>
-                                  <option value="{{ justificacion.primer_momento }}">{{ justificacion.primer_momento }}</option>
-                                  <option value="C">C (cursado)</option>
-                                  <option value="I">I (inasistente)</option>
-                                  <option value="NC">NC (no cursado)</option>
-                                  <option value="NP">NP (no presentado)</option>
-                                  <option value="EXO">EXO (exonerado)</option>
-                                  <option value="RT">RT (retirado)</option>
-                                  <option value="DES">DES (desertor)</option>
+                            <div class="mb-3">
+                                <label for="justificacion_primer_momento_modificar">Justificación</label>
+                                <select id="justificacion_primer_momento_modificar" name="justificacion_primer_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.primer_momento }}" {% if justificacion.primer_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                    <option value="{{ justificacion.primer_momento }}">{% if justificacion.primer_momento is None %} No proporcionado. {% else %}{{ justificacion.primer_momento }}</option> {% endif %}
+                                    <option value="C">C (cursado)</option>
+                                    <option value="I">I (inasistente)</option>
+                                    <option value="NC">NC (no cursado)</option>
+                                    <option value="NP">NP (no presentado)</option>
+                                    <option value="EXO">EXO (exonerado)</option>
+                                    <option value="RT">RT (retirado)</option>
+                                    <option value="DES">DES (desertor)</option>
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label for="segundo_momento_modificar" class="form-label">Segundo momento:</label>
-                                <input type="number" id="segundo_momento_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value= "{{ justificacion.notas.segundo_momento }}" name="segundo_momento_modificar"  {% if justificacion.notas.segundo_momento is None %} disabled placeholder="No proporcionado.">{% endif %}
+                                <input type="number" id="segundo_momento_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value= "{{ justificacion.notas.segundo_momento }}" name="segundo_momento_modificar"  {% if justificacion.notas.segundo_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
                             </div>
-                           <div clsss="mb-3">
-                                <label for="justificacion_segundo_momento_modificar">Justificacion</label>
-                                <select id="justificacion_segundo_momento_modificar" class="form-control form-select-lg" required {% if justificacion.segundo_momento is None %} dissbled placeholder="No proporcionsdo."{% endif %}
-                                <option value="{{ justificacion.segundo_momento }}">{{justificacion.segundo_momento }} </option>
-                                  <option value="C">C (cursado)</option>
-                                  <option value="I">I (inasistente)</option>
-                                  <option value="NC">NC (no cursado)</option>
-                                  <option value="NP">NP (no presentado)</option>
-                                  <option value="EXO">EXO (exonerado)</option>
-                                  <option value="RT">RT (retirado)</option>
-                                  <option value="DES">DES (desertor)</option>
+                            <div class="mb-3">
+                                <label for="justificacion_segundo_momento_modificar">Justificación</label>
+                                <select id="justificacion_segundo_momento_modificar" name="justificacion_primer_segundo_modificar" class="form-control form-select-lg" value="{{ justificacion.segundo_momento }}" {% if justificacion.segundo_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                    <option value="{{ justificacion.segundo_momento }}">{% if justificacion.segundo_momento is None %} No proporcionado. {% else %}{{ justificacion.segundo_momento }}</option> {% endif %}
+                                    <option value="C">C (cursado)</option>
+                                    <option value="I">I (inasistente)</option>
+                                    <option value="NC">NC (no cursado)</option>
+                                    <option value="NP">NP (no presentado)</option>
+                                    <option value="EXO">EXO (exonerado)</option>
+                                    <option value="RT">RT (retirado)</option>
+                                    <option value="DES">DES (desertor)</option>
                                 </select>
                             </div>
- 
                             <div class="mb-3">
                                 <label for="tercer_momento_modificar" class="form-label">Tercer momento</label>
-                                <input type="number" id="tercer_momento_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value="{{ justificacion.notas.tercer_momento }}" name="tercer_momento_modificar" {% if justificacion.notas.tercer_momento is None %} disabled placeholder="No proporcionado.">{% endif %}
+                                <input type="number" id="tercer_momento_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value="{{ justificacion.notas.tercer_momento }}" name="tercer_momento_modificar" {% if justificacion.notas.tercer_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
                             </div>
-
-                             <div clsss="mb-3">
+                            <div class="mb-3">
                                 <label for="justificacion_tercer_momento_modificar">Justificacion</label>
-                                <select id="justificacion_tercer_momento_modificar" class="form-control form-select-lg" required {% if justificacion.tercer_momento is None %} dissbled placeholder="No proporcionsdo."{% endif %}
->
-                                  <option value="{{ justificacion.tercer_momento }}">{{ justificacion.tercer_momento }} </option>
-                                  <option value="C">C (cursado)</option>
-                                  <option value="I">I (inasistente)</option>
-                                  <option value="NC">NC (no cursado)</option>
-                                  <option value="NP">NP (no presentado)</option>
-                                  <option value="EXO">EXO (exonerado)</option>
-                                  <option value="RT">RT (retirado)</option>
-                                  <option value="DES">DES (desertor)</option>
+                                <select id="justificacion_tercer_momento_modificar" name="justificacion_tercer_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.tercer_momento }}" {% if justificacion.tercer_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                    <option value="{{ justificacion.tercer_momento }}">{% if justificacion.tercer_momento is None %} No proporcionado. {% else %}{{ justificacion.tercer_momento }}</option> {% endif %}
+                                    <option value="C">C (cursado)</option>
+                                    <option value="I">I (inasistente)</option>
+                                    <option value="NC">NC (no cursado)</option>
+                                    <option value="NP">NP (no presentado)</option>
+                                    <option value="EXO">EXO (exonerado)</option>
+                                    <option value="RT">RT (retirado)</option>
+                                    <option value="DES">DES (desertor)</option>
                                 </select>
                             </div>
-
                             <div class="mb-3">
                                 <label for="revision_modificar" class="form-label">Revisión</label>
-                                <input type="number" id="revision_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value="{{ justificacion.notas.revision }}" name="revision_modificar" {% if justificacion.notas.revision is None %} disabled placeholder="No proporcionado.">{% endif %}
+                                <input type="number" id="revision_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value="{{ justificacion.notas.revision }}" name="revision_modificar" {% if justificacion.notas.revision is None %} disabled placeholder="No proporcionado."{% endif %}>
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
