@@ -114,19 +114,19 @@
           {# Campo para nombre #}
           <div class="mb-3">
             <label for="nombres" class="form-label">Nombres:</label>
-            <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Escribe los nombres del estudiante" required>
+            <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Escribe los nombres del estudiante" minlength="3" maxlength="100" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" required>
           </div>
 
           {# Campo para apellidos #}
           <div class="mb-3">
             <label for="apellidos" class="form-label">Apellidos:</label>
-            <input type="text" class="form-control" id="apellidos" name="apellidos" placeholder="Escribe los apellidos del estudiante" required>
+            <input type="text" class="form-control" id="apellidos" name="apellidos" placeholder="Escribe los apellidos del estudiante" minlength="3" maxlength="100" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" required>
           </div>
 
           {# Campo para cedula de identidad #}
           <div class="mb-3">
             <label for="cedula" class="form-label">Cedula de identidad:</label>
-            <input type="text" class="form-control" id="cedula" name="cedula" placeholder="Escribe la cedulad de indentidad del estudiante" required>
+            <input type="text" class="form-control" id="cedula" name="cedula" placeholder="Escribe la cedulad de indentidad del estudiante" minlength="7" maxlength="8" pattern="[0-9]+" required>
           </div>
 
           {# Campo para género #}
