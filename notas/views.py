@@ -108,6 +108,9 @@ def modificarNota(request):
             print(notas_id)
             materia_id = request.POST.get('materia_modificar')
             print(materia_id)
+            justificacion_primer_momento = request.POST.get('justificacion_primer_momento_modificar')
+            justificacion_segundo_momento = request.POST.get('justificacion_segundo_momento_modificar')
+            justificacion_tercer_momento = request.POST.get('justificacion_tercer_momento_modificar')
             primer_momento = request.POST.get('primer_momento_modificar')
             segundo_momento = request.POST.get('segundo_momento_modificar')
             tercer_momento = request.POST.get('tercer_momento_modificar')
@@ -116,16 +119,21 @@ def modificarNota(request):
             periodo = Periodos.objects.get(pk=periodo_id)
             estudiante = Estudiantes.objects.get(pk=estudiante_id)
             notas = Notas.objects.get(pk=notas_id, estudiante=estudiante, periodos=periodo, materia=materia)
-
-            if notas.primer_momento:
+            justificacion = Justificaciones.objects.get(notas=notas.id)
+            if notas.primer_momento and justificacion.primer_momento:
                 notas.primer_momento = primer_momento
-            if notas.segundo_momento:
+                print(justificacion.primer_momento)
+                justificacion.primer_momento = justificacion_primer_momento
+            if notas.segundo_momento and justificacion.segundo_momento:
                 notas.segundo_momento = segundo_momento
-            if notas.tercer_momento:
+                justificacion.segundo_momento = justificacion_segundo_momento
+            if notas.tercer_momento and justificacion.tercer_momento:
                 notas.tercer_momento = tercer_momento
+                justificacion.tercer_momento = justificacion_tercer_momento
             if notas.revision:
                 notas.revision = revision
             notas.save()
+            justificacion.save()
         
         return JsonResponse({'success': True, 'message': "Nota modificada exitosamente."})
     

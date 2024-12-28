@@ -104,7 +104,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="justificacion_segundo_momento_modificar">Justificación</label>
-                                <select id="justificacion_segundo_momento_modificar" name="justificacion_primer_segundo_modificar" class="form-control form-select-lg" value="{{ justificacion.segundo_momento }}" {% if justificacion.segundo_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                <select id="justificacion_segundo_momento_modificar" name="justificacion_segundo_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.segundo_momento }}" {% if justificacion.segundo_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
                                     <option value="{{ justificacion.segundo_momento }}">{% if justificacion.segundo_momento is None %} No proporcionado. {% else %}{{ justificacion.segundo_momento }}</option> {% endif %}
                                     <option value="C">C (cursado)</option>
                                     <option value="I">I (inasistente)</option>
