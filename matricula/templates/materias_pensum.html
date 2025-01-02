@@ -49,6 +49,14 @@
     box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
 }
 
+.side-buttons {
+            position: fixed; /* Fijo en la pantalla */
+            left: 700px; /* Espacio desde la derecha */
+            bottom: 20px; /* Espacio desde la parte inferior */
+            transform: translateX(-50%); /* Ajusta el centrado */
+            display: flex;
+        }
+
 </style>
 
 <body>
@@ -66,6 +74,7 @@
                         <tr>
                             <th>Materias</th>
                             <th>Cuantitativa</th>
+                            <th>Ac</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -74,20 +83,94 @@
                             <tr>
                                 <td>{{ materia.nombre_materia }}</td>
                                 <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
+                                <td>
+                                    <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarMateriaModal{{ forloop.counter }}">
+                                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="20" height="20">
+                                    </button>
+                                    </td>
                             </tr>
+                            <!--Ventana modal para modificar Materias-->
+
+        <div class="modal fade" id="modificarMateriaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark text-white rounded-0">
+                    <div class="modal-header">
+                            <h5 class="modal-title">Modificar materia</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </button>
+                    </div>
+                    <!--Formularios para modificar la materia-->
+                    <div class="modal-body">
+                        <form id="modificarMateriaForm{{ forloop.counter }}">
+                            {% csrf_token %}
+
+                            {# Materia #}
+                            <div class="mb-3">
+                                <label for="nombremateria_modificar" class="form-label">Materia:</label>
+                                <input type="text" name="nombremateria_modificar" id="nombremateria_modificar" class="form-control form-control-lg" value= '{{materia.nombre_materia}}' required>
+                            </div>
+
+                            {# Cualitativa #}
+                            <div class="mb-3">
+                                <label for="cualitativomateria_modificar" class="form-label">Cuantitativo:</label>
+                                <select name="cualitativomateria_modificar" id="cualitativomateria_modificar" class="form-select form-select-lg mb-3" required>
+                                    <option value="False">Sí</option>
+                                    <option value="True">No</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                {# input oculto Curso #}
+                                <input type="text" name="cursomateria_modificar" value="{{ materia.curso }}" hidden>
+
+                                {# input oculto Pensum #}
+                                <input type="text" name="pensummateria_modificar" value="{{ pensum.id }}" hidden>
+
+                                {# input oculto Materia_id #}
+                                <input type="text" name="materiaid_modificar" value="{{ materia.id }}" hidden>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('modificarMateriaForm{{ forloop.counter }}').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "modificarMateria" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha modificado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('modificarMateriaModal{{ forloop.counter }}'));
+                    modal.hide();
+                    window.location.reload();
+                    } 
+                    else {
+                    alert("Error al modificar la materia.");
+                    }
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                        alert("Ocurrió un error inesperado.");
+                    });
+                })
+        </script>
                         {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
-                    <img src="{% static 'images/icons/trash-icon.png' %}" alt="Eliminar" width="50" height="50">
-                </button>
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
-                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Eliminar" width="50" height="50">
-                </button>
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
-                    <img src="{% static 'images/icons/add-icon.png' %}" alt="Eliminar" width="50" height="50">
-                </button>
+
             </div>
             <div class="container">
                 <div class = "text-center">
@@ -98,6 +181,7 @@
                         <tr>
                             <th>Materias</th>
                             <th>Cuantitativa</th>
+                            <th>Ac</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -106,20 +190,94 @@
                             <tr>
                                 <td>{{ materia.nombre_materia }}</td>
                                 <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
+                                <td>
+                                <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarMateriaModal{{ forloop.counter }}">
+                                <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="20" height="20">
+                                </button>
+                                </td>
                             </tr>
+                                        <!--Ventana modal para modificar Materias-->
+
+        <div class="modal fade" id="modificarMateriaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark text-white rounded-0">
+                    <div class="modal-header">
+                            <h5 class="modal-title">Modificar materia</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </button>
+                    </div>
+                    <!--Formularios para modificar la materia-->
+                    <div class="modal-body">
+                        <form id="modificarMateriaForm{{ forloop.counter }}">
+                            {% csrf_token %}
+
+                            {# Materia #}
+                            <div class="mb-3">
+                                <label for="nombremateria_modificar" class="form-label">Materia:</label>
+                                <input type="text" name="nombremateria_modificar" id="nombremateria_modificar" class="form-control form-control-lg" value= '{{materia.nombre_materia}}' required>
+                            </div>
+
+                            {# Cualitativa #}
+                            <div class="mb-3">
+                                <label for="cualitativomateria_modificar" class="form-label">Cuantitativo:</label>
+                                <select name="cualitativomateria_modificar" id="cualitativomateria_modificar" class="form-select form-select-lg mb-3" required>
+                                    <option value="False">Sí</option>
+                                    <option value="True">No</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                {# input oculto Curso #}
+                                <input type="text" name="cursomateria_modificar" value="{{ materia.curso }}" hidden>
+
+                                {# input oculto Pensum #}
+                                <input type="text" name="pensummateria_modificar" value="{{ pensum.id }}" hidden>
+
+                                {# input oculto Materia_id #}
+                                <input type="text" name="materiaid_modificar" value="{{ materia.id }}" hidden>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('modificarMateriaForm{{ forloop.counter }}').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "modificarMateria" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha modificado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('modificarMateriaModal{{ forloop.counter }}'));
+                    modal.hide();
+                    window.location.reload();
+                    } 
+                    else {
+                    alert("Error al modificar la materia.");
+                    }
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                        alert("Ocurrió un error inesperado.");
+                    });
+                })
+        </script>
+
                         {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
-                    <img src="{% static 'images/icons/trash-icon.png' %}" alt="Eliminar" width="50" height="50">
-                </button>
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
-                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Eliminar" width="50" height="50">
-                </button>
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modalAgregarMateria">
-                    <img src="{% static 'images/icons/add-icon.png' %}" alt="Eliminar" width="50" height="50">
-                </button>
             </div>
             <div class="container">
                 <div class = "text-center">
@@ -130,6 +288,7 @@
                         <tr>
                             <th>Materias</th>
                             <th>Cuantitativa</th>
+                            <th>Ac</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -138,20 +297,94 @@
                             <tr>
                                 <td>{{ materia.nombre_materia }}</td>
                                 <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
+                                <td>
+                                    <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarMateriaModal{{ forloop.counter }}">
+                                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="20" height="20">
+                                    </button>
+                                    </td>
                             </tr>
+                            <!--Ventana modal para modificar Materias-->
+
+        <div class="modal fade" id="modificarMateriaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark text-white rounded-0">
+                    <div class="modal-header">
+                            <h5 class="modal-title">Modificar materia</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </button>
+                    </div>
+                    <!--Formularios para modificar la materia-->
+                    <div class="modal-body">
+                        <form id="modificarMateriaForm{{ forloop.counter }}">
+                            {% csrf_token %}
+
+                            {# Materia #}
+                            <div class="mb-3">
+                                <label for="nombremateria_modificar" class="form-label">Materia:</label>
+                                <input type="text" name="nombremateria_modificar" id="nombremateria_modificar" class="form-control form-control-lg" value= '{{materia.nombre_materia}}' required>
+                            </div>
+
+                            {# Cualitativa #}
+                            <div class="mb-3">
+                                <label for="cualitativomateria_modificar" class="form-label">Cuantitativo:</label>
+                                <select name="cualitativomateria_modificar" id="cualitativomateria_modificar" class="form-select form-select-lg mb-3" required>
+                                    <option value="False">Sí</option>
+                                    <option value="True">No</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                {# input oculto Curso #}
+                                <input type="text" name="cursomateria_modificar" value="{{ materia.curso }}" hidden>
+
+                                {# input oculto Pensum #}
+                                <input type="text" name="pensummateria_modificar" value="{{ pensum.id }}" hidden>
+
+                                {# input oculto Materia_id #}
+                                <input type="text" name="materiaid_modificar" value="{{ materia.id }}" hidden>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('modificarMateriaForm{{ forloop.counter }}').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "modificarMateria" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha modificado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('modificarMateriaModal{{ forloop.counter }}'));
+                    modal.hide();
+                    window.location.reload();
+                    } 
+                    else {
+                    alert("Error al modificar la materia.");
+                    }
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                        alert("Ocurrió un error inesperado.");
+                    });
+                })
+        </script>
                         {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
-                    <img src="{% static 'images/icons/trash-icon.png' %}" alt="Eliminar" width="50" height="50">
-                </button>
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
-                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Eliminar" width="50" height="50">
-                </button>
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
-                    <img src="{% static 'images/icons/add-icon.png' %}" alt="Eliminar" width="50" height="50">
-                </button>
+
             </div>
             <div class="container">
                 <div class = "text-center">
@@ -162,6 +395,7 @@
                         <tr>
                             <th>Materias</th>
                             <th>Cuantitativa</th>
+                            <th>Ac</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -170,20 +404,94 @@
                             <tr>
                                 <td>{{ materia.nombre_materia }}</td>
                                 <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
+                                <td>
+                                    <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarMateriaModal{{ forloop.counter }}">
+                                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="20" height="20">
+                                    </button>
+                                    </td>
                             </tr>
+                            <!--Ventana modal para modificar Materias-->
+
+        <div class="modal fade" id="modificarMateriaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark text-white rounded-0">
+                    <div class="modal-header">
+                            <h5 class="modal-title">Modificar materia</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </button>
+                    </div>
+                    <!--Formularios para modificar la materia-->
+                    <div class="modal-body">
+                        <form id="modificarMateriaForm{{ forloop.counter }}">
+                            {% csrf_token %}
+
+                            {# Materia #}
+                            <div class="mb-3">
+                                <label for="nombremateria_modificar" class="form-label">Materia:</label>
+                                <input type="text" name="nombremateria_modificar" id="nombremateria_modificar" class="form-control form-control-lg" value= '{{materia.nombre_materia}}' required>
+                            </div>
+
+                            {# Cualitativa #}
+                            <div class="mb-3">
+                                <label for="cualitativomateria_modificar" class="form-label">Cuantitativo:</label>
+                                <select name="cualitativomateria_modificar" id="cualitativomateria_modificar" class="form-select form-select-lg mb-3" required>
+                                    <option value="False">Sí</option>
+                                    <option value="True">No</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                {# input oculto Curso #}
+                                <input type="text" name="cursomateria_modificar" value="{{ materia.curso }}" hidden>
+
+                                {# input oculto Pensum #}
+                                <input type="text" name="pensummateria_modificar" value="{{ pensum.id }}" hidden>
+
+                                {# input oculto Materia_id #}
+                                <input type="text" name="materiaid_modificar" value="{{ materia.id }}" hidden>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('modificarMateriaForm{{ forloop.counter }}').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "modificarMateria" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha modificado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('modificarMateriaModal{{ forloop.counter }}'));
+                    modal.hide();
+                    window.location.reload();
+                    } 
+                    else {
+                    alert("Error al modificar la materia.");
+                    }
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                        alert("Ocurrió un error inesperado.");
+                    });
+                })
+        </script>
                         {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
-                    <img src="{% static 'images/icons/trash-icon.png' %}" alt="Eliminar" width="50" height="50">
-                </button>
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
-                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Eliminar" width="50" height="50">
-                </button>
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
-                    <img src="{% static 'images/icons/add-icon.png' %}" alt="Eliminar" width="50" height="50">
-                </button>
+
             </div>
             <div class="container">
                 <div class = "text-center">
@@ -194,6 +502,7 @@
                         <tr>
                             <th>Materias</th>
                             <th>Cuantitativa</th>
+                            <th>Ac</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -202,19 +511,97 @@
                             <tr>
                                 <td>{{ materia.nombre_materia }}</td>
                                 <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
+                                <td>
+                                    <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarMateriaModal{{ forloop.counter }}">
+                                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="20" height="20">
+                                    </button>
+                                    </td>
                             </tr>
+                            <!--Ventana modal para modificar Materias-->
+
+        <div class="modal fade" id="modificarMateriaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark text-white rounded-0">
+                    <div class="modal-header">
+                            <h5 class="modal-title">Modificar materia</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </button>
+                    </div>
+                    <!--Formularios para modificar la materia-->
+                    <div class="modal-body">
+                        <form id="modificarMateriaForm{{ forloop.counter }}">
+                            {% csrf_token %}
+
+                            {# Materia #}
+                            <div class="mb-3">
+                                <label for="nombremateria_modificar" class="form-label">Materia:</label>
+                                <input type="text" name="nombremateria_modificar" id="nombremateria_modificar" class="form-control form-control-lg" value= '{{materia.nombre_materia}}' required>
+                            </div>
+
+                            {# Cualitativa #}
+                            <div class="mb-3">
+                                <label for="cualitativomateria_modificar" class="form-label">Cuantitativo:</label>
+                                <select name="cualitativomateria_modificar" id="cualitativomateria_modificar" class="form-select form-select-lg mb-3" required>
+                                    <option value="False">Sí</option>
+                                    <option value="True">No</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                {# input oculto Curso #}
+                                <input type="text" name="cursomateria_modificar" value="{{ materia.curso }}" hidden>
+
+                                {# input oculto Pensum #}
+                                <input type="text" name="pensummateria_modificar" value="{{ pensum.id }}" hidden>
+
+                                {# input oculto Materia_id #}
+                                <input type="text" name="materiaid_modificar" value="{{ materia.id }}" hidden>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('modificarMateriaForm{{ forloop.counter }}').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "modificarMateria" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha modificado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('modificarMateriaModal{{ forloop.counter }}'));
+                    modal.hide();
+                    window.location.reload();
+                    } 
+                    else {
+                    alert("Error al modificar la materia.");
+                    }
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                        alert("Ocurrió un error inesperado.");
+                    });
+                })
+        </script>
                         {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
-                    <img src="{% static 'images/icons/trash-icon.png' %}" alt="Eliminar" width="50" height="50">
-                </button>
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
-                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Eliminar" width="50" height="50">
-                </button>
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="">
-                    <img src="{% static 'images/icons/add-icon.png' %}" alt="Eliminar" width="50" height="50">
+            </div>
+            <div class="side-buttons">
+                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modalAgregarMateria">
+                    <img src="{% static 'images/icons/add-icon.png' %}" alt="Añadir" width="50" height="50">
                 </button>
             </div>
         </div>

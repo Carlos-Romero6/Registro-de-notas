@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_list_or_404, redirect 
 from django.http import JsonResponse
 from mainapp.models import Notas, Estudiantes, Materias, Matricula, Pensum, Justificaciones, Periodos
+from django.urls import reverse
 # Create your views here.
 
 def pensum_matricula(request):
@@ -27,5 +28,28 @@ def materias_pensum(request, id_pensum):
             'materias': materias,
             'pensum': pensum
             })  
+
+def modificarMateria(request):
+    try:
+        if request.method == 'POST':
+            print(request.POST)
+            pensum_id = request.POST.get('pensummateria_modificar')
+            print(pensum_id)
+            materia_id = request.POST.get('materiaid_modificar')
+            print(materia_id)
+            curso = request.POST.get('cursomateria_modificar')
+            cualitativa = request.POST.get('cualitativomateria_modificar')
+            nombre_materia = request.POST.get('nombremateria_modificar')
+            pensum = Pensum.objects.get(pk=pensum_id)
+            materia = Materias.objects.get(pk=materia_id, pensum=pensum)
+            materia.nombre_materia = nombre_materia
+            materia.curso = curso
+            materia.cualitativa = cualitativa
+            materia.save()
+        
+        return JsonResponse({'success': True, 'message': "La materia ha sido modificada exitosamente."})
+    
+    except:
+        return JsonResponse({'success': False, 'message': 'Ha ocurrido un fallo inesperado'})
 
         
