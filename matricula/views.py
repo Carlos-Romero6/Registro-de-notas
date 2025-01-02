@@ -2,11 +2,17 @@ from django.shortcuts import render, get_list_or_404, redirect
 from django.http import JsonResponse
 from mainapp.models import Notas, Estudiantes, Materias, Matricula, Pensum, Justificaciones, Periodos
 from django.urls import reverse
+from utils import pensumscursosdisponibles
 # Create your views here.
 
 def pensum_matricula(request):
     if request.method == 'GET':
         return render(request, 'menu-pensum-matricula.html')
+
+def menu_matricula(request):
+    if request.method == 'GET':
+        matriculas = Matricula.objects.all()
+        return render(request, 'menu-matricula.html', pensumscursosdisponibles.obtener_pensums(), {'matriculas': matriculas})
     
 def menu_pensum(request):
     if request.method == 'GET':
@@ -23,10 +29,12 @@ def menu_pensum(request):
 def materias_pensum(request, id_pensum):
     if request.method == 'GET':
         pensum = Pensum.objects.get(pk=id_pensum)
-        materias = Materias.objects.filter(pensum__nombre_pensum=pensum.nombre_pensum)
+        matriculas = Matricula.objects.filter(pensum=pensum.id)
+        materias = Materias.objects.filter(pensum=pensum.id)
         return render(request, 'materias_pensum.html', {
             'materias': materias,
-            'pensum': pensum
+            'pensum': pensum,
+            "matriculas": matriculas
             })  
 
 def modificarMateria(request):
