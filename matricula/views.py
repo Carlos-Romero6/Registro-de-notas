@@ -51,5 +51,21 @@ def modificarMateria(request):
     
     except:
         return JsonResponse({'success': False, 'message': 'Ha ocurrido un fallo inesperado'})
+    
+def modificarPensum(request):
+    try:
+        if request.method == 'POST':
+            print(request.POST)
+            pensum_id = request.POST.get('pensumid_modificar')
+            print(pensum_id)
+            nombre_pensum = request.POST.get('nombre_pensum_modificar')
+            pensum = Pensum.objects.get(pk=pensum_id)
+            pensum.nombre_pensum = nombre_pensum
+            pensum.save()
+        
+        return JsonResponse({'success': True, 'message': "El Pensum ha sido modificado exitosamente."})
+    
+    except:
+        return JsonResponse({'success': False, 'message': 'Ha ocurrido un fallo inesperado'})
 
         

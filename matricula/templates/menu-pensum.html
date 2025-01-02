@@ -56,6 +56,71 @@
     <div class="container">
         {% for pensum in pensums %}
         <a href="{% url 'materias_pensum' pensum.id %}" class="button">{{ pensum.nombre_pensum }}</a>
+
+        <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarPensumModal{{ forloop.counter }}">
+        <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="40" height="40">
+        </button>
+        <!--Ventana modal para modificar Pensums-->
+
+        <div class="modal fade" id="modificarPensumModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark text-white rounded-0">
+                    <div class="modal-header">
+                            <h5 class="modal-title">Modificar Pensum</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </button>
+                    </div>
+                    <!--Formulario para modificar el pensum-->
+                    <div class="modal-body">
+                        <form id="modificarPensumForm{{ forloop.counter }}">
+                            {% csrf_token %}
+                            
+                            {# Pensum #}
+                            <div class="mb-3">
+                                <label for="nombre_pensum_modificar" class="form-label">Pensum:</label>
+                                <input type="text" name="nombre_pensum_modificar" id="nombre_pensum_modificar" class="form-control form-control-lg" value= '{{pensum.nombre_pensum}}' required>
+                            </div>
+                            
+                            <div>
+                                {# input oculto Pensumid #}
+                                <input type="text" name="pensumid_modificar" value="{{ pensum.id }}" hidden>
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+                            
+        <script>
+            document.getElementById('modificarPensumForm{{ forloop.counter }}').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "modificarPensum" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha modificado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('modificarPensumModal{{ forloop.counter }}'));
+                    modal.hide();
+                    window.location.reload();
+                    } 
+                    else {
+                    alert("Error al modificar la pensum.");
+                    }
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                        alert("Ocurrió un error inesperado.");
+                    });
+                })
+        </script>
         {% empty %}
         <h1>No se encontraron pénsums</h1>
         {% endfor %}
@@ -63,9 +128,6 @@
 
     <!-- Botones en el lado derecho -->
     <div class="side-buttons">
-        <button style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="">
-            <img src="{% static 'images/icons/edit-icon.png' %}" alt="Editar" width="50" height="50">
-        </button>
         <button style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modalAgregarPensum">
             <img src="{% static 'images/icons/add-icon.png' %}" alt="Añadir" width="50" height="50">
         </button>

@@ -9,4 +9,5 @@ urlpatterns = [
     path('materias_pensum/<int:id_pensum>/', views.materias_pensum, name="materias_pensum"),
     path('agregar2/', registrarMateria.agregar, name="agregarMateria"),
     path('modificarMateria/', views.modificarMateria, name="modificarMateria"),
+    path('modificarPensum/', views.modificarPensum, name="modificarPensum"),
 ]
