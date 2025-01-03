@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .utils import registrarPensum, registrarMateria
+from .utils import registrarPensum, registrarMateria, registrarMatricula
 
 urlpatterns = [
     path('', views.pensum_matricula, name="pensum-matricula"),
@@ -11,4 +11,5 @@ urlpatterns = [
     path('agregar2/', registrarMateria.agregar, name="agregarMateria"),
     path('modificarMateria/', views.modificarMateria, name="modificarMateria"),
     path('modificarPensum/', views.modificarPensum, name="modificarPensum"),
+    path('agregarmatricula/', registrarMatricula.agregar, name="agregarMatricula"),
 ]

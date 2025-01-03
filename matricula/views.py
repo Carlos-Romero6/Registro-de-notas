@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from mainapp.models import Notas, Estudiantes, Materias, Matricula, Pensum, Justificaciones, Periodos
 from django.urls import reverse
 from utils import pensumscursosdisponibles
+from django.db.models import Count
 # Create your views here.
 
 def pensum_matricula(request):
@@ -11,8 +12,14 @@ def pensum_matricula(request):
 
 def menu_matricula(request):
     if request.method == 'GET':
-        matriculas = Matricula.objects.all()
-        return render(request, 'menu-matricula.html', pensumscursosdisponibles.obtener_pensums(), {'matriculas': matriculas})
+        matriculas = Matricula.objects.filter(curso__range=(1, 5))
+        pensums = Pensum.objects.all()
+        num_matriculas_curso_1 = Matricula.objects.filter(curso=1).count()
+        return render(request, 'menu-matricula.html', {
+            'matriculas': matriculas,
+            'pensums': pensums,
+            'matriculas_curso_1': num_matriculas_curso_1
+            })
     
 def menu_pensum(request):
     if request.method == 'GET':

@@ -78,10 +78,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for matricula in matriculas %}
                         {% for materia in materias %}
                         {% if materia.curso == 1 %}
-                        {% if materia.curso == matricula.curso %}
                             <tr>
                                 <td>{{ materia.nombre_materia }}</td>
                                 <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
@@ -169,8 +167,6 @@
                 })
         </script>
                         {% endif %}
-                        {% endif %}
-                        {% endfor %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -189,10 +185,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for matricula in matriculas %}
                         {% for materia in materias %}
                         {% if materia.curso == 2 %}
-                        {% if materia.curso == matricula.curso %}
                             <tr>
                                 <td>{{ materia.nombre_materia }}</td>
                                 <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
@@ -280,8 +274,6 @@
                 })
         </script>
                         {% endif %}
-                        {% endif %}
-                        {% endfor %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -299,10 +291,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for matricula in matriculas %}
                         {% for materia in materias %}
                         {% if materia.curso == 3 %}
-                        {% if materia.curso == matricula.curso %}
                             <tr>
                                 <td>{{ materia.nombre_materia }}</td>
                                 <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
@@ -390,8 +380,6 @@
                 })
         </script>   
                         {% endif %}
-                        {% endif %}
-                        {% endfor %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -410,10 +398,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for matricula in matriculas %}
                         {% for materia in materias %}
                         {% if materia.curso == 4 %}
-                        {% if materia.curso == matricula.curso %}
                             <tr>
                                 <td>{{ materia.nombre_materia }}</td>
                                 <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
@@ -501,8 +487,6 @@
                 })
         </script>
                         {% endif %}
-                        {% endif %}
-                        {% endfor %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -521,10 +505,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for matricula in matriculas %}
                         {% for materia in materias %}
                         {% if materia.curso == 5 %}
-                        {% if materia.curso == matricula.curso %}
                             <tr>
                                 <td>{{ materia.nombre_materia }}</td>
                                 <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
@@ -612,8 +594,6 @@
                 })
         </script>
                         {% endif %}
-                        {% endif %}
-                        {% endfor %}
                         {% endfor %}
                     </tbody>
                 </table>

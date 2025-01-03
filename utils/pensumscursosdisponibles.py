@@ -34,4 +34,4 @@ def obtener_pensums():
         num_matriculas=Count('matricula')
     ).filter(num_matriculas__lt=5)
     pensums = [{'id': pensum.id, 'nombre_pensum': pensum.nombre_pensum, 'num_matriculas': pensum.num_matriculas} for pensum in pensums2]
-    return {'pensums' : pensums} # Devuelve los pensums obtenidos
+    return pensums # Devuelve los pensums obtenidos
