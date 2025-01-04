@@ -12,4 +12,6 @@ urlpatterns = [
     path('modificarMateria/', views.modificarMateria, name="modificarMateria"),
     path('modificarPensum/', views.modificarPensum, name="modificarPensum"),
     path('agregarmatricula/', registrarMatricula.agregar, name="agregarMatricula"),
+    path('secciones_matricula/<int:id_matricula>/', views.secciones_matricula, name="secciones_matricula"),
+    path('modificarMatricula/', views.modificarMatricula, name="modificarMatricula"),
 ]

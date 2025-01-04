@@ -2,7 +2,6 @@ from django.shortcuts import render, get_list_or_404, redirect
 from django.http import JsonResponse
 from mainapp.models import Notas, Estudiantes, Materias, Matricula, Pensum, Justificaciones, Periodos
 from django.urls import reverse
-from utils import pensumscursosdisponibles
 from django.db.models import Count
 # Create your views here.
 
@@ -83,4 +82,43 @@ def modificarPensum(request):
     except:
         return JsonResponse({'success': False, 'message': 'Ha ocurrido un fallo inesperado'})
 
+def secciones_matricula(request, id_matricula):
+    if request.method == 'GET':
+        matricula = Matricula.objects.get(pk=id_matricula)
+        pensums = Pensum.objects.all()
+        secciones = ['A', 'B', 'C', 'D', 'E', 'F'][:matricula.n_secciones]
+
+        pensum = Pensum.objects.get(pk=matricula.pensum.id)
+        return render(request, 'secciones_matricula.html', {
+            'pensum': pensum,
+            'matricula': matricula,
+            'secciones': secciones,
+            'pensums': pensums
+            })
+
+def modificarMatricula(request):
+    try:
+        if request.method == 'POST':
+            print(request.POST)
+            pensum_id_nuevo = request.POST.get('pensumnuevo_modificar')
+            print(pensum_id_nuevo)
+            pensum_id = request.POST.get('pensum_modificar')
+            print(pensum_id)
+            matricula_id = request.POST.get('matriculaid_modificar')
+            print(matricula_id)
+            curso = request.POST.get('curso_modificar')
+            promocion = request.POST.get('promocion_modificar')
+            n_secciones = request.POST.get('secciones_modificar')
+            pensum = Pensum.objects.get(pk=pensum_id)
+            pensum_nuevo = Pensum.objects.get(pk=pensum_id_nuevo)
+            matricula = Matricula.objects.get(pk=matricula_id, pensum=pensum)
+            matricula.promocion = promocion
+            matricula.curso = curso
+            matricula.n_secciones = n_secciones
+            matricula.pensum = pensum_nuevo
+            matricula.save()
         
+        return JsonResponse({'success': True, 'message': "La matricula ha sido modificada exitosamente."})
+    
+    except:
+        return JsonResponse({'success': False, 'message': 'Ha ocurrido un fallo inesperado'})

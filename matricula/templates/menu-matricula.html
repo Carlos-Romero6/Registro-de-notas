@@ -55,7 +55,7 @@
     <h1>Matriculas</h1>
     <div class="container">
         {% for matricula in matriculas %}
-        <a href="" class="button">{{ matricula.promocion}}</a>
+        <a href="{% url 'secciones_matricula' matricula.id %}" class="button">{{ matricula.promocion}}</a>
 
         {% empty %}
         <h1>No se encontraron matriculas</h1>

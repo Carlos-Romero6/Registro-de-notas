@@ -623,9 +623,11 @@
                 <label for="cursomateria" class="form-label">Curso:</label>
                 <select class="form-control" id="cursomateria" name="cursomateria" required>
                     <option value="" disabled selected>Selecciona el curso</option> <!-- Opción por defecto -->
-                    {% for matricula in matriculas %} {# Itera sobre la lista de diccionarios con los valores de las matriculas #}
-                    <option value="{{ matricula.curso }}">{{ matricula.curso }}</option>
-                    {% endfor %}
+                    <option value="1">1er Año</option>
+                    <option value="2">2do Año</option>
+                    <option value="3">3er Año</option>
+                    <option value="4">4to Año</option>
+                    <option value="5">5to Año</option>
                 </select>
             </div>
             {# Campo para nombre de la materia #}
