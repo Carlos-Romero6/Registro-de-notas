@@ -1,44 +1,82 @@
-{% extends 'layouts/base.html' %}
+{% extends 'layouts/sidebar.html' %}
 
-{% block content %}
+{% block main %}
 {% load static %}
 
-<!-- Buscador de estudiantes -->
-<main class="container">
-  <section class="row">
-    <div class="col-md-4 offset-md-4 mt-5">
-      <form action="{% url 'me-buscar-estudiantes' %}" method="GET" class="card card-body">
-        {% csrf_token %}
-        <h2 class="Display-3">Gestión estudiantil</h2>
+<style>
+  .btn-custom {
+    font-size: 20px;
+    letter-spacing: 1px;
+    background: linear-gradient(to left, #233c43, #406d70);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    min-width: 7rem;
+  }
+  .btn-custom:hover {
+    background: linear-gradient(to left, #455e65, #628f92);
+    color: white;
+  }
+  .form-select {
+    border: 2px solid #223941;
+    border-radius: 5px;
+  }
+  .btn-outline-custom {
+    border: 2px solid #223941;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #3c6569;  
+  }
+  .btn-outline-custom:hover {
+    border: 2px solid #6f989c;
+    color: #6f989c;;
+    border-radius: 5px;    
+  }
+  .right-column {
+    height: 100vh;
+  }
+</style>
 
-        <!-- Selector de Curso -->
-        <div class="d-flex">
-          <label for="curso" class="btn btn-outline-dark mb-5">Curso:</label>
-          <select name="curso" required class="form-select form-select-lg mb-5" id="curso"
+<div class="row w-100">
+  {# Columna izquierda (formulario) #}
+  <div class="col-md-8 d-flex flex-column align-items-center justify-content-center">
+      {# Formulario #}
+      <form class="p-4" style="width: 70%; max-width: 600px;" action="{% url 'me-buscar-estudiantes' %}" method="GET">
+        {% csrf_token %}
+          <div class="mb-4">
+              <div class="d-flex">
+                <label for="curso" class="form-label btn btn-custom me-1 mb-3 d-flex align-items-center justify-content-center"><strong>Curso</strong></label>
+                <select name="curso" required class="form-select form-select-lg mb-3" id="curso"
             aria-label="Selecciona el curso del estudiante">
             <option value="">Selecciona el año</option>
             {% for curso in cursos %} {# Itera sobre la lista de diccionarios con los valores de los cursos #}
             <option value="{{ curso.id }}" {% if not curso.habilitado %}disabled{% endif %}>{{ curso.nombre }}</option>
             {% endfor %}
           </select>
-        </div>
-
-        <!-- Selector de Sección -->
-        <div class="d-flex">
-          <label class="btn btn-outline-dark mb-5" for="seccion">Seccion:</label>
-          <select name="seccion" required class="form-select form-select-lg mb-5" id="seccion"
+              </div>
+          </div>
+          <div class="mb-4">
+              <div class="d-flex">
+                <label for="seccion" class="form-label btn btn-custom me-1 mb-5 d-flex align-items-center justify-content-center"><strong>Sección</strong></label>
+                <select name="seccion" required class="form-select form-select-lg mb-5" id="seccion"
             aria-label="Selecciona la seccion del estudiante en su curso.">
             <option value="">Seleccione una sección</option>
           </select>
-        </div>
+              </div>
+          </div>
 
-        <script src="{% static 'dom/selectorCursos.js' %}"></script>
-        <button class="btn btn-dark" type="submit">
-          Buscar
-        </button>
+          <script src="{% static 'dom/selectorCursos.js' %}"></script>
+          <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-outline-custom" style="width: 8em;">Buscar</button>
+          </div>
       </form>
-    </div>
-  </section>
-</main>
+  </div>
+  {# Columna derecha (texto) #}
+  <div class="col-md-4 d-flex align-items-center justify-content-center right-column" style="background-color: #dadedf;">
+      <p class="text-center text-muted" style="font-size:1.5rem; padding: 20px;">
+          Seleccione curso y sección para modificar los datos de cada estudiante.
+      </p>
+  </div>
+</div>
 
-{% endblock %}
+{% endblock main %}

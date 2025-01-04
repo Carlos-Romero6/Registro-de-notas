@@ -1,0 +1,68 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+{% load static %}
+
+<style>
+    .sidebar {
+      background: linear-gradient(to right, #233c43, #406d70);
+      height: 100vh;
+      padding: 15px;
+    }
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin: auto;
+      margin-bottom: 20px;
+      font-size: 1.2em;
+    }
+    .sidebar button:hover {
+      background-color: #ededed11;
+    }
+  </style>
+  
+  <div class="container-fluid">
+    <div class="row">
+        {# Sidebar #}
+        <nav class="col-md-3 col-lg-2 d-flex flex-column sidebar font-white">
+            <div class="text-center mb-4">
+                <img src="{% static "images/icons/sidebar-user.png" %}" style="width: 7em; height: 7em;">
+            </div>
+  
+            <a href="{% url "notas" %}">
+              <button class="btn" title="Gestion de notas">
+                <img src="{% static 'images/icons/sidebar-grades-icon.png' %}" style="width: 5em; height: 5em;">
+              </button>
+            </a>
+            <a href="">
+              <button class="btn" title="Pensum y matrícula">
+                <img src="{% static 'images/icons/sidebar-pensum-icon.png' %}" style="width: 4em; height: 4em;">
+              </button>
+            </a>
+            <a href="{% url "estudiantes" %}">
+              <button class="btn" title="Gestión estudiantil">
+                <img src="{% static 'images/icons/sidebar-student-icon.png' %}" style="width: 4em; height: 4em;">
+              </button>
+            </a>
+            <a href="">
+              <button class="btn" title="Ver">
+                <img src="{% static 'images/icons/sidebar-see-icon.png' %}" style="width: 3.5em; height: 4.5em;">
+              </button>
+            </a>
+            <a href="{% url 'logout' %}">
+              <button class="btn" title="Cerrar sesión">
+                <img src="{% static 'images/icons/sidebar-logout-icon.png' %}" style="width: 3.5em; height: 4.5em;">
+              </button>
+            </a>
+        </nav>
+  
+        {# Main content #}
+        <main class="col-md-9 col-lg-10 d-flex flex-column justify-content-center align-items-center">
+            {% block main %}
+            {% endblock main %}
+        </main>
+    </div>
+  </div>
+
+{% endblock content %}
