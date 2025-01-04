@@ -39,7 +39,7 @@
                         <td style="text-align: center">{% if justificacion.segundo_momento is None %} No proporcionado. {% else %} {{ justificacion.segundo_momento }} {% endif %}</td>
                         <td style="text-align: center">{% if justificacion.notas.tercer_momento is None %} No proporcionado. {% else %} {{ justificacion.notas.tercer_momento }} {% endif %}</td>
                         <td style="text-align: center"> {% if justificacion.tercer_momento is None %} No proporcionado. {% else %} {{ justificacion.tercer_momento }} {% endif %}</td>
-                        <td style="text-align: center">{% if justificacion.notas.definitiva is None %} A confirmar. {% else %} {{ justificacion.notas.definitiva }} {% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.notas.definitiva is None %} {{ justificacion.definitivaTemplate }} {% else %} {{ justificacion.notas.definitiva }} {% endif %}</td>
                         <td style="text-align: center">{% if justificacion.notas.revision is None %} No proporcionado. {% else %} {{ justificacion.notas.revision }} {% endif %}</td>
                         <td style="text-align: center">{% if justificacion.notas.estado is None %} A confirmar. {% else %}{{ justificacion.notas.estado }} {% endif %}</td>
 

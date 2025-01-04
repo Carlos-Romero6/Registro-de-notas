@@ -3,6 +3,9 @@ from django.http import JsonResponse
 from mainapp.models import Notas, Estudiantes, Materias, Matricula, Pensum, Justificaciones, Periodos
 from django.urls import reverse
 from utils import cursosDisponibles
+from notas.utils.calculoDefinitiva import calcularDefinitiva
+from django.db.models import F, FloatField
+from django.db.models.functions import Cast, Coalesce, Round
 # Create your views here.
 
 # Filtrado de estudiantes por curso y sección
@@ -29,7 +32,11 @@ def notasEstudiante(request, id_estudiante):
         pensum = matricula.pensum
         materias = Materias.objects.filter(pensum=pensum, curso=curso)
         notas = Notas.objects.filter(estudiante=id_estudiante, materia__pensum=pensum, materia__curso=curso)
-        justificaciones = Justificaciones.objects.filter(notas__in=notas)
+        justificaciones = Justificaciones.objects.filter(notas__in=notas).annotate(
+            definitivaTemplate=Cast(
+                Round((Coalesce(F('notas__primer_momento'), 0) + Coalesce(F('notas__segundo_momento'), 0) + Coalesce(F('notas__tercer_momento'), 0)) / 3, 2), FloatField()
+                )
+            )
         periodo_actual = Periodos.objects.latest('id')
         return render(request, 'notas-estudiante.html', {
             
@@ -38,12 +45,12 @@ def notasEstudiante(request, id_estudiante):
             'periodo_actual': periodo_actual,
             'justificaciones': justificaciones,  
             'materias': materias,
-            'matricula': matricula
+            'matricula': matricula,
         })
 
 
 def cargarNota(request):
-    print("Cargando nota")
+    
     try: 
         if request.method == 'POST':
         
@@ -59,7 +66,7 @@ def cargarNota(request):
             estudiante = Estudiantes.objects.get(pk=estudiante_id)
             periodo = Periodos.objects.get(pk=periodo_id)
             materia = Materias.objects.get(pk=materia_id)
-    
+
             # Conversion de la nota enviada a float
             nota = float(nota)
             
@@ -69,7 +76,7 @@ def cargarNota(request):
                 nueva_nota.save()
                 nueva_justificacion = Justificaciones(notas=nueva_nota, primer_momento=justificacion)
                 nueva_justificacion.save()
-                print("Nueva nota creada:", nueva_nota)
+                
             
             # Si la nota ya existe, se actualiza
             else:
@@ -138,11 +145,13 @@ def modificarNota(request):
                 notas.revision = revision
                 
             # Guardado de lo modificado en la base de datos
-            notas.save()
+            
             justificacion.save()
-        
+            notas.save()         
         
         return JsonResponse({'success': True, 'message': "Nota modificada exitosamente."})
     
     except:
         return JsonResponse({'success': False, 'message': 'Ha ocurrido un fallo inesperado'})
+
+

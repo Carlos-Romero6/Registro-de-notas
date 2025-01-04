@@ -6,10 +6,11 @@ document.getElementById("materia").addEventListener("change", function()  {
     const estudiante = document.getElementById("estudiante").value;
     const materiaSeleccionada = this.value;
     const momentoSelector = document.getElementById("momento");
+    const periodo = document.getElementById("periodo").value;
     momentoSelector.innerHTML = "<option value=''>Cargando...</option>";
 
     // Llamada a la función momentosDisponibles
-    fetch(`/consultar-momentos/?materia=${materiaSeleccionada}&estudiante=${estudiante}`)
+    fetch(`/consultar-momentos/?materia=${materiaSeleccionada}&estudiante=${estudiante}&periodo=${periodo}`)
         .then(response => response.json())
         .then(data => {
 

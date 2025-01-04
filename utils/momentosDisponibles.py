@@ -7,14 +7,14 @@ def consultarMomento(request):
     # Se obtienen los datos enviados por la función de JavaScript en el front
     materia = request.GET.get('materia')
     estudiante = request.GET.get('estudiante')
-    
+    periodo = request.GET.get('periodo')
     
     try:
         if not materia:
             return JsonResponse({'error' : 'Materia no proporcionada'})
 
         # Se obtiene el registro que pertenece a un estudiante y a una materia
-        notas = Notas.objects.filter(materia=materia, estudiante=estudiante).first()
+        notas = Notas.objects.filter(materia=materia, estudiante=estudiante, periodos=periodo).first()
         momentos_nulos = []
         if not notas:
             # Si no hay resgistos, se envía el primer momento como nulo
