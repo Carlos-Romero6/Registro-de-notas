@@ -1,19 +1,39 @@
-{% extends "layouts/base.html" %}
+{% extends 'layouts/sidebar.html' %}
 
-{% block content %}
+{% block main %}
 {% load static %}
 
 <style>
-    body {
+
+    .matricula-container {
+    background-color: #e0e0e0; /* Color de fondo gris claro */
+         border: 1px solid #ccc; /* Borde gris claro */
+         border-radius: 5px; /* Bordes redondeados */
+         padding: 0px 20px; /* Espacio interno */
+        text-align: center; /* Centra el texto horizontalmente */
+        font-size: 18px; /* Tamaño de la fuente */
+        font-weight: 500; /* Fuente en negrita */
+         color: #333; /* Color del texto gris oscuro */
         display: flex;
-        justify-content: center; /* Centra horizontalmente */
-        align-items: center; /* Centra verticalmente */
-        height: 100vh; /* Altura completa de la ventana */
-        margin: 0; /* Elimina márgenes por defecto */
+        margin-top: -500px;
+        color: #233c43; /* Cambia el color del texto a verde oscuro */
+        position: fixed;
+    }
+
+    .matricula-text {
+        margin-right: 100px; /* Agregamos un margen a la derecha del texto */
+        font-size: 40px;
     }
 
     .content-container {
         text-align: center; /* Centra el texto */
+        margin-top: 50px;
+    }
+
+    .logo {
+        margin-top: 6px;
+        width: 50px; 
+        height: 50px;
     }
 
     .section-list {
@@ -21,67 +41,86 @@
         padding: 0;
     }
 
-    table {
-        width: 350px;
-        margin: 0 auto; /* Centra la tabla */
-        border-collapse: collapse; /* Mejora la apariencia de la tabla */
-    }
-
-    th, td {
-        text-align: center;
-        padding: 8px; /* Espaciado interno */
-        border: 1px solid #ddd; /* Borde de la tabla */
-    }
 
     tr:nth-child(even) {
     background-color: #f2f2f2; /* Alternar colores de fondo */
     }
 
-    .logo {
-    width: 50px; 
-    height: 50px;
-    left: 820px;
-    position: absolute;
-    right: 10px; /* Distancia desde el borde derecho del contenedor */
-    top: 15px; /* Posición vertical (ajusta según tus necesidades) */
+    h3, h4{
+        color:#233c43; /* Cambia el color del texto a verde oscuro */
     }
 
-    h1 {
-    margin-bottom: 80px;
-    margin-top: -120px;
+    .section-list li {
+        list-style: none; /* Elimina los marcadores de lista */
+        border: 1px solid #233c43; /* Agrega un borde */
+        border-radius: 10px; /* Redondea las esquinas */
+        padding: 6px;
+        margin-bottom: 4px;
+        font-weight: bold; /* Fuente en negrita */
+        color:#233c43; /* Cambia el color del texto a verde oscuro */
+        font-size: 18px;
+        display: flex;
+        justify-content: center;
+        margin: 4px;
+        justify-content: flex-start;
     }
+
+    .grissecciones{
+        background-color: #f5f5f5; /* Color de fondo gris claro */
+    }
+
+    .seccion-label {
+        padding-right: 150px;
+        padding-left: 10px;
+    }
+
+    .right-column {
+    height: 100vh;
+    }
+
 </style>
 
 
-<div class="content-container">
-    <div>
-        <h1>Matrícula {{ matricula.promocion }} </h1>
+<div class="row w-100">
+    {# Columna izquierda (formulario) #}
+    <div class="col-md-8 d-flex flex-column align-items-center justify-content-center">
+    <div class="matricula-container">
+        <span class="matricula-text">Matrícula {{ matricula.promocion }}</span>
         <img src="{% static 'images/icons/edit-icon.png' %}"  alt="Logo del pensum" class="logo">
     </div>
 
-    <h3>Pensum {{ pensum.nombre_pensum }}</h3>
+    <div class="content-container">    
 
-    <ul class="section-list">
-        <table>
-            <thead>
-                <tr>
-                    Curso: {{matricula.curso}}
-                </tr>
-            </thead>
-            <tbody>
+        <h3>Pensum {{ pensum.nombre_pensum }}</h3>
+
+        <ul class="section-list">
+            <h4>Curso: {{ matricula.curso }}</h4>
+            <li>
+                <ul>
                 {% for seccion in secciones %}
-                <tr>
-                    <td>Sección</td>
-                    <td>{{ seccion }}</td>
-                </tr>
+                    <li class="grissecciones">
+                        <span class="seccion-label">Sección </span>
+                        <span class="seccion-value">{{ seccion }}</span>
+                    </li>
                 {% endfor %}
-            </tbody>
-        </table>
-    </ul>
-    <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarMatriculaModal">
-    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="50" height="50">
-    </button>
+                </ul>
+            </li>
+        </ul>
+        <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarMatriculaModal">
+        <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="50" height="50">
+        </button></div>
+
+    </div>
+
+    {# Columna derecha (texto) #}
+    <div class="col-md-4 d-flex align-items-center justify-content-center right-column" style="background-color: #dadedf;">
+    <p class="text-center text-muted" style="font-size:1.5rem; padding: 20px;">
+        Puedes modificar las secciónes que pertenecen a la promoción(matricula), asi como también su nombre y el pénsum al que pertenece.
+    </p>
+    </div>
 </div>
+
+
 
 <div class="modal fade" id="modificarMatriculaModal" tabindex="-1" data-bs-keyboard="false">
     <div class="modal-dialog">
@@ -97,7 +136,7 @@
 
                     {# Promocion #}
                     <div class="mb-3">
-                        <label for="promocion_modificar" class="form-label">Matricula:</label>
+                        <label for="promocion_modificar" class="form-label">Promoción:</label>
                         <input type="text" name="promocion_modificar" id="promocion_modificar" class="form-control form-control-lg" value= '{{matricula.promocion}}' required>
                     </div>
 
@@ -175,4 +214,4 @@
         })
 </script>
 
-{% endblock %}
+{% endblock main %}

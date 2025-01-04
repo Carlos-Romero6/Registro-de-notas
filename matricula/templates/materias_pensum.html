@@ -1,6 +1,6 @@
-{% extends "layouts/base.html" %}
+{% extends 'layouts/sidebar.html' %}
 
-{% block content %}
+{% block main %}
 {% load static %}
 
 </head>
@@ -14,16 +14,18 @@
     top: 0; /* Posición vertical (ajusta según tus necesidades) */
 }
 .table {
-  border: 1px solid #ccc; /* Ajusta el color y grosor del borde según sea necesario */
-  border-radius: 4px; /* Añade bordes redondeados */
+  border: 1px solid #233c43; /* Ajusta el color y grosor del borde según sea necesario */
+  border-radius: 10px; /* Añade bordes redondeados */
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Añade una sombra suave */
   width: 100%; /* Asegúra de que la tabla ocupe el 100% del contenedor */
   max-width: 350; /* Establece un ancho máximo para las tablas */
 }
 
 .table td {
-  padding: 1px; /* Ajusta el relleno de las celdas */
-  text-align: center; /* Centra el texto en las celdas */
+    padding: 1px; /* Ajusta el relleno de las celdas */
+    text-align: center; /* Centra el texto en las celdas */
+    color:#233c43; /* Cambia el color del texto a verde oscuro */
+    font-weight:500; /* Fuente en negrita */
 }
 
 .text-center {
@@ -31,21 +33,27 @@
 }
 
 .table.table-bordered {
-    border: 1px solid #ccc;
-    border-radius: 1px;
+    border: 2px solid black;
+    border-radius: 50px;
+    width: 100%;
 }
 .scroll-container {
     overflow-x: auto; /* Permite el desplazamiento horizontal */
     white-space: nowrap; /* Evita que las tablas se envuelvan */
-    height: 550px;
+    height: 600px;
     right: 50px;
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+    width: 100%;
+}
+
+h2, h1{
+    color: #233c43; /* Cambia el color del texto a verde oscuro */
 }
 
 .container {
     display: inline-block; /* Permite que las tablas se alineen horizontalmente */
     margin: 35px 65px; /* Espacio superior y lateral (top, right/left) */
-    max-width: 300px; /* Establece un ancho máximo para el contenedor */
-    width: 100%; /* Asegúrate de que el contenedor ocupe el 100% del espacio disponible */
+    max-width: 500px; /* Establece un ancho máximo para el contenedor */
     box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
 }
 
@@ -60,10 +68,6 @@
 </style>
 
 <body>
-    <div>
-        <img src="{% static 'images/icons/edit-icon.png' %}"  alt="Logo del pensum" class="logo">
-        <h1>Pénsum {{ pensum.nombre_pensum }}</h1>
-    </div>
         <div class="scroll-container">
             <div class="container">
                 <div class = "text-center">
@@ -89,6 +93,7 @@
                                     </button>
                                     </td>
                             </tr>
+            
                             <!--Ventana modal para modificar Materias-->
 
         <div class="modal fade" id="modificarMateriaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
@@ -139,6 +144,7 @@
                 
             </div>
         </div>
+        
 
         <script>
             document.getElementById('modificarMateriaForm{{ forloop.counter }}').addEventListener('submit', function(event) {
@@ -170,7 +176,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
-
+                
             </div>
             <div class="container">
                 <div class = "text-center">
@@ -196,6 +202,7 @@
                                 </button>
                                 </td>
                             </tr>
+                </div>
                                         <!--Ventana modal para modificar Materias-->
 
         <div class="modal fade" id="modificarMateriaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
@@ -302,6 +309,7 @@
                                     </button>
                                     </td>
                             </tr>
+            </div>
                             <!--Ventana modal para modificar Materias-->
 
         <div class="modal fade" id="modificarMateriaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
@@ -409,6 +417,7 @@
                                     </button>
                                     </td>
                             </tr>
+            </div>
                             <!--Ventana modal para modificar Materias-->
 
         <div class="modal fade" id="modificarMateriaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
@@ -516,6 +525,7 @@
                                     </button>
                                     </td>
                             </tr>
+            </div>
                             <!--Ventana modal para modificar Materias-->
 
         <div class="modal fade" id="modificarMateriaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
@@ -666,4 +676,4 @@
 </div>
 
 
-{% endblock%}
+{% endblock main %}

@@ -1,6 +1,6 @@
-{% extends "layouts/base.html" %}
+{% extends 'layouts/sidebar.html' %}
 
-{% block content %}
+{% block main %}
 {% load static %}
 <head>
     <title>Matriculas</title>
@@ -15,35 +15,41 @@
             display: flex;
             flex-wrap: wrap;
             overflow-x: auto;
-            margin: 100px;
-            justify-content: center;
+            margin-top: 15px;
+            margin-left: 200px;
+            margin-right: 100px;
         }
         .button {
-            background-color: rgb(184, 214, 202);
+            background-color: #dadedf;
             border: 1px solid #ccc;
             border-radius: 5px;
-            padding: 20px 60px;
-            margin: 30px;
+            padding: 5px 90px;
+            margin: 20px;
             text-align: center;
             font-size: 35px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            flex: 0 0 20%; /* Define el ancho de cada botón */
-            max-width: 20%; /* Limita el ancho máximo */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-decoration: none;
+            font-weight:500;
+            color: #233c43; /* Cambia el color del texto a verde oscuro */
         }
         .button:hover {
-            background-color: #e0e0e0;
+            background-color: #fafafa;
         }
         h1 {
-            margin-left: 250px;
+            margin-left: -800px;
             text-align: left;
-            margin-top: 20px;
-            font-size: 40px; /* Aumenta el tamaño del texto del encabezado */
+            margin-top: -30px;
+            font-size: 35px; /* Aumenta el tamaño del texto del encabezado */
+            color:#233c43; /* Cambia el color del texto a verde oscuro */
         }
         /* Estilos para los botones de la derecha */
         .side-buttons {
             position: fixed; /* Fijo en la pantalla */
-            right: 40px; /* Espacio desde la derecha */
+            right: 30px; /* Espacio desde la derecha */
             top: 50%; /* Centrado verticalmente */
             transform: translateY(-50%); /* Ajusta el centrado */
             display: flex;
@@ -132,4 +138,4 @@
     </a>
 </div>
 
-{% endblock %}
+{% endblock main %}

@@ -1,38 +1,46 @@
-{% extends "layouts/base.html" %}
+{% extends 'layouts/sidebar.html' %}
 
-{% block content %}
+{% block main %}
 {% load static %}
 
 <style>
-    body {
+    main {
     margin: 0;
     padding: 0;
     background-color: #fff;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(to right, white 0%, white 50%, rgb(224, 224, 224) 50%, rgb(224, 224, 224)100%);
+    background: linear-gradient(to right, white 0%, white 50%, #dadedf 50%, #dadedf 100%);
     }
 
-    h2{
-        color: rgb(0, 0, 0);
+    .container {
+    position: absolute;
+    top: 150px;
     }
+    
+    .btn-custom {
+    font-size: 30px;
+    letter-spacing: 1px;
+    background: linear-gradient(to left, #233c43, #406d70);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    width: 100px;
+    text-decoration: none;
+    font-weight:500;
+    padding: 5px 15px;
+    }
+
 </style>
-<header>
-    <div class="row justify-content-center mx-auto">
-        <div class="col-md-4 text-center mb-5">
-            <h2>Gestión de matrícula y pensum</h2>
-        </div>
-    </div>
-</header>
-<div class="container mt-5">
-    <div class="row justify-content-center mx-auto">
+<div class="container">
+    <div class="row justify-content-center mx-auto margin-left-right: 30px">
         <div class="col-md-5">
-            <a href="{% url 'menu-matricula' %}" class="btn btn-primary btn-lg">
+            <a href="{% url 'menu-matricula' %}" class="btn-custom ">
                 Matrícula
             </a>
         </div>
         <div class="col-md-2">
-            <a href="{% url 'menu-pensum' %}" class="btn btn-primary btn-lg">
+            <a href="{% url 'menu-pensum' %}" class="btn-custom ">
                 Pénsum
             </a>
             <div id="pensum">
@@ -42,4 +50,4 @@
     </div>
 </div>
 
-{% endblock %}
+{% endblock main %}
