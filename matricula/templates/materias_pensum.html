@@ -5,18 +5,8 @@
 
 </head>
 <style>
-.logo {
-    width: 50px; 
-    height: 50px;
-    left: 260px;
-    position: absolute;
-    right: 10px; /* Distancia desde el borde derecho del contenedor */
-    top: 0; /* Posición vertical (ajusta según tus necesidades) */
-}
 .table {
-  border: 1px solid #233c43; /* Ajusta el color y grosor del borde según sea necesario */
-  border-radius: 10px; /* Añade bordes redondeados */
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Añade una sombra suave */
+  border: 1px solid #233c43; /*  */
   width: 100%; /* Asegúra de que la tabla ocupe el 100% del contenedor */
   max-width: 350; /* Establece un ancho máximo para las tablas */
 }
@@ -28,13 +18,8 @@
     font-weight:500; /* Fuente en negrita */
 }
 
-.text-center {
-    text-align: center;
-}
-
 .table.table-bordered {
     border: 2px solid black;
-    border-radius: 50px;
     width: 100%;
 }
 .scroll-container {
@@ -61,9 +46,20 @@ h2, h1{
             position: fixed; /* Fijo en la pantalla */
             left: 700px; /* Espacio desde la derecha */
             bottom: 20px; /* Espacio desde la parte inferior */
-            transform: translateX(-50%); /* Ajusta el centrado */
             display: flex;
-        }
+}
+
+.button1 {
+    position: absolute;
+    bottom: 10px;
+    left:20px
+}
+
+.button2 {
+    position: absolute;
+    bottom: 10px;
+    right: 0px;
+}
 
 </style>
 
@@ -608,10 +604,24 @@ h2, h1{
                     </tbody>
                 </table>
             </div>
+
+            {# boton para volver #}
             <div class="side-buttons">
-                <button style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modalAgregarMateria">
-                    <img src="{% static 'images/icons/add-icon.png' %}" alt="Añadir" width="50" height="50">
-                </button>
+                <div class = "button1">
+                    <a class="md-5" href="{% url 'menu-pensum' %}">
+                        <button class="btn btn-outline-dark">Volver</button>
+                    </a>
+                </div>
+            </div>
+
+            {# boton para añadir materias #}
+            <div class="side-buttons">
+                <div class= "button2">
+                    <button style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modalAgregarMateria">
+                        <img src="{% static 'images/icons/add-icon.png' %}" alt="Añadir" width="50" height="50">
+                    </button>
+                </div>
+
             </div>
         </div>
 </body>
@@ -674,6 +684,8 @@ h2, h1{
         </div>
     </div>
 </div>
+
+
 
 
 {% endblock main %}

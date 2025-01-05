@@ -78,6 +78,14 @@
     height: 100vh;
     }
 
+    .button1 {
+        position: fixed; /* Fijo en la pantalla */
+            left: 560px; /* Espacio desde la izquierda */
+            bottom: 10px; /* Espacio desde la parte inferior */
+            display: flex;
+    }
+
+
 </style>
 
 
@@ -110,6 +118,12 @@
         <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="50" height="50">
         </button></div>
 
+        {# boton para volver #}
+        <div class="button1">
+            <a class="md-5" href="{% url 'menu-matricula' %}">
+                <button class="btn btn-outline-dark">Volver</button>
+            </a>
+        </div>
     </div>
 
     {# Columna derecha (texto) #}
