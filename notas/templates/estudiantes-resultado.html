@@ -1,5 +1,48 @@
-{% for estudiante in estudiantes %}
-    <ul>
-        <li>Nombres {{ estudiante.nombres | title }} {{ estudiante.apellidos }} {{ estudiante.ci }}</li>
-    </ul>
-{% endfor %}
+{% extends "layouts/base.html" %}
+
+{% block content %}
+{% load static %}
+
+<!-- Tabla de estudiantes por curso y sección -->
+
+    <h1>Año: {{ curso }} - Sección: {{ seccion }} </h1>
+<table class="table table-success table-striped table-bordered display">
+    <thead class="table-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nombres</th>
+            <th scope="col">Apellidos</th>
+            <th scope="col">C.I</th>
+            <th scope="col">Género</th>
+            <th scope="col">Materias reprobadas</th>
+            <th scope="col"> Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for estudiante in estudiantes %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ estudiante.nombres }}</td>
+                <td>{{ estudiante.apellidos }}</td>
+                <td>{{ estudiante.ci }}</td>
+                <td>{{ estudiante.genero }}</td>
+                <td>{{ estudiante.materias_reprobadas }}</td>
+                <td>
+                    <a href="{% url 'notas-estudiante' estudiante.id %}">
+                        <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" arial-label="Ir a detalles del estudiante">
+                            <img src="{% static "images/icons/ir_1.png" %}" alt="Ir a detalles del estudiante" width="40" height="40">
+                        </button>
+                    </a>
+            </td>
+            </tr>
+    </tbody>
+        {% endfor %}
+    </table>
+
+    <div class="text-center">
+        <a class="md-5" href="{% url "notas" %}">
+            <button class="btn btn-outline-dark">Volver</button>
+        </a>
+    </div>
+    {% endblock  %}

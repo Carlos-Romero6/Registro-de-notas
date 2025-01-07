@@ -1,0 +1,310 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block content %}
+
+    <!-- Tabla de notas del estudiante -->
+
+    <h1>Período: {{ periodo_actual.inicio }} - {{ periodo_actual.finalizacion}} </h1>
+    <h2 class="Display-3">Notas del estudiante: {{ estudiante.nombres }} {{ estudiante.apellidos }} </h2>
+
+        <table class="table table-success table-striped table-bordered display">
+            <thead class="table-dark">
+                <tr>
+                    <th style="text-align: center">#</th>
+                    <th style="text-align: center">Materia</th>
+                    <th style="text-align: center">Primer momento</th>
+                    <th style="text-align: center">Justificación</th>
+                    <th style="text-align: center">Segundo momento</th>
+                    <th style="text-align: center">Justificación</th>
+                    <th style="text-align: center">Tercer momento</th>
+                    <th style="text-align: center">Justificación</th>
+                    <th style="text-align: center">Definitiva</th>
+                    <th style="text-align: center">Revisión</th>
+                    <th style="text-align: center">Estado</th>
+                    <th style="text-align: center"> Acciones</th>
+
+                    
+                </tr>
+            </thead>
+            <tbody>
+
+                {# Notas del estudiate en la tabla con sus respectivos momentos y justificaciones#}
+                {% for justificacion in justificaciones %}
+                    <tr>
+                        <td style="text-align: center">{{ forloop.counter }}</td>
+                        <td style="text-align: center">{{ justificacion.notas.materia.nombre_materia }}</td>
+                        <td style="text-align: center">{% if justificacion.notas.primer_momento is None %} No proporcionado. {% else %} {{ justificacion.notas.primer_momento }} {% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.primer_momento is None %} No proporcionado. {% else %} {{ justificacion.primer_momento }} {% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.notas.segundo_momento is None %} No proporcionado. {% else %}{{ justificacion.notas.segundo_momento }}{% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.segundo_momento is None %} No proporcionado. {% else %} {{ justificacion.segundo_momento }} {% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.notas.tercer_momento is None %} No proporcionado. {% else %} {{ justificacion.notas.tercer_momento }} {% endif %}</td>
+                        <td style="text-align: center"> {% if justificacion.tercer_momento is None %} No proporcionado. {% else %} {{ justificacion.tercer_momento }} {% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.notas.definitiva is None %} A confirmar. {% else %} {{ justificacion.notas.definitiva }} {% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.notas.revision is None %} No proporcionado. {% else %} {{ justificacion.notas.revision }} {% endif %}</td>
+                        <td style="text-align: center">{% if justificacion.notas.estado is None %} A confirmar. {% else %}{{ justificacion.notas.estado }} {% endif %}</td>
+
+                        <!-- Botón para modificar la nota -->
+                        <td> 
+                            <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarNotaModal{{ forloop.counter }}">
+                                <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="30" height="30">
+                            </button>
+                        </td>
+                    </tr>
+
+            <!--Ventana modal para modificar notas-->
+
+        <div class="modal fade" id="modificarNotaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark text-white rounded-0">
+                    <div class="modal-header">
+                            <h5 class="modal-title">Modificar notas</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </button>
+                    </div>
+                    <!--Formularios para modificar notas-->
+                    <div class="modal-body">
+                        <div class="alert alert-warning">
+                            <p>Cuando presione el botón "Modificar" se actualizarán las notas aparecidas en pantalla de forma simultánea.</p>
+                        </div>
+                        <form id="modificarNotaForm{{ forloop.counter }}">
+                            {% csrf_token %}
+
+                            {# Materia #}
+                            <div class="mb-3">
+                                <label for="materia_modificar" class="form-label">Materia:</label>
+                                <select name="materia_modificar" id="materia_modificar" class="form-select form-select-lg mb-3" required>
+                                    <option value="{{ justificacion.notas.materia.id}}"> {{ justificacion.notas.materia.nombre_materia }}</option>
+                                </select>
+                            </div>
+                            <div>
+                                <input type="text" name="estudiante_modificar" value="{{ estudiante.id }}" hidden>
+                                <input type="text" name="periodo_modificar" value="{{ periodo_actual.id }}" hidden>
+                                <input type="text" name="notas_modificar" value="{{ justificacion.notas.id}}" hidden>
+                            </div>
+                            <div class="mb-3">
+                                <label for="primer_momento_modificar" class="form-label">Primer momento:</label>
+                                <input type="number" id="primer_momento_modificar" max="20" min="0" step="0.01"  class="form-control form-control-lg" value= "{{ justificacion.notas.primer_momento }}" name="primer_momento_modificar" {% if justificacion.notas.primer_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                            </div>
+                            <div class="mb-3">
+                                <label for="justificacion_primer_momento_modificar">Justificación</label>
+                                <select id="justificacion_primer_momento_modificar" name="justificacion_primer_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.primer_momento }}" {% if justificacion.primer_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                    <option value="{{ justificacion.primer_momento }}">{% if justificacion.primer_momento is None %} No proporcionado. {% else %}{{ justificacion.primer_momento }}</option> {% endif %}
+                                    <option value="C">C (cursado)</option>
+                                    <option value="I">I (inasistente)</option>
+                                    <option value="NC">NC (no cursado)</option>
+                                    <option value="NP">NP (no presentado)</option>
+                                    <option value="EXO">EXO (exonerado)</option>
+                                    <option value="RT">RT (retirado)</option>
+                                    <option value="DES">DES (desertor)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="segundo_momento_modificar" class="form-label">Segundo momento:</label>
+                                <input type="number" id="segundo_momento_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value= "{{ justificacion.notas.segundo_momento }}" name="segundo_momento_modificar"  {% if justificacion.notas.segundo_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                            </div>
+                            <div class="mb-3">
+                                <label for="justificacion_segundo_momento_modificar">Justificación</label>
+                                <select id="justificacion_segundo_momento_modificar" name="justificacion_segundo_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.segundo_momento }}" {% if justificacion.segundo_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                    <option value="{{ justificacion.segundo_momento }}">{% if justificacion.segundo_momento is None %} No proporcionado. {% else %}{{ justificacion.segundo_momento }}</option> {% endif %}
+                                    <option value="C">C (cursado)</option>
+                                    <option value="I">I (inasistente)</option>
+                                    <option value="NC">NC (no cursado)</option>
+                                    <option value="NP">NP (no presentado)</option>
+                                    <option value="EXO">EXO (exonerado)</option>
+                                    <option value="RT">RT (retirado)</option>
+                                    <option value="DES">DES (desertor)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tercer_momento_modificar" class="form-label">Tercer momento</label>
+                                <input type="number" id="tercer_momento_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value="{{ justificacion.notas.tercer_momento }}" name="tercer_momento_modificar" {% if justificacion.notas.tercer_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                            </div>
+                            <div class="mb-3">
+                                <label for="justificacion_tercer_momento_modificar">Justificacion</label>
+                                <select id="justificacion_tercer_momento_modificar" name="justificacion_tercer_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.tercer_momento }}" {% if justificacion.tercer_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                    <option value="{{ justificacion.tercer_momento }}">{% if justificacion.tercer_momento is None %} No proporcionado. {% else %}{{ justificacion.tercer_momento }}</option> {% endif %}
+                                    <option value="C">C (cursado)</option>
+                                    <option value="I">I (inasistente)</option>
+                                    <option value="NC">NC (no cursado)</option>
+                                    <option value="NP">NP (no presentado)</option>
+                                    <option value="EXO">EXO (exonerado)</option>
+                                    <option value="RT">RT (retirado)</option>
+                                    <option value="DES">DES (desertor)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="revision_modificar" class="form-label">Revisión</label>
+                                <input type="number" id="revision_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value="{{ justificacion.notas.revision }}" name="revision_modificar" {% if justificacion.notas.revision is None %} disabled placeholder="No proporcionado."{% endif %}>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+        <script>
+            document.getElementById('modificarNotaForm{{ forloop.counter }}').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "modificarNota" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha modificado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('modificarNotaModal{{ forloop.counter }}'));
+                    modal.hide();
+                    window.location.reload();
+                    } 
+                    else {
+                    alert("Error al modificar nota.");
+                    }
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                        alert("Ocurrió un error inesperado.");
+                    });
+                })
+        </script>
+                    {% empty %}
+
+                    {# Mensaje en caso de que no se encuentren notas cargadas#}
+                    <tr>
+                        <td colspan="12" class="text-center">No se encontraron notas cargadas.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Botones para volver a la página anterior y cargar una nueva nota -->
+
+        <div class="d-flex justify-content-center">
+
+            {# Botón para volver a la página anterior usando un formulario para transferir datos#}
+            <form action="{% url "notas" %}" method="POST">
+                {% csrf_token %}
+                <input type="text" value="{{ estudiante.seccion }}" name="seccion" hidden>
+                <input type="text" value="{{ matricula.curso }}" name="curso" hidden>
+                    <button type="submit" class="btn btn-outline-dark me-3">Volver</button>
+            </form>
+
+            <a class="md-5">
+                    <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#cargarNotaModal">
+                        Cargar nota
+                    </button>
+            </a>
+        </div>
+
+
+    <!-- Ventana modal para cargar notas -->
+
+            <!-- Encabezado de la ventana modal -->
+
+    <div class="modal fade" id="cargarNotaModal" tabindex="-1" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white rounded-0">
+            <div class="modal-header">
+                <h5 class="modal-title fs5" id="modalLabel">Cargar notas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <!-- Formulario para cargar notas -->
+        <div class="modal-body">
+                <form id="cargarNota">
+                {% csrf_token %}
+
+                {# Selector de materias #}
+                    <div class="mb-3"> 
+                        <label for="materia" class="form-label">Materia:</label>
+                        <select name="materia" id="materia" class="form-select form-select-lg mb-3" aria-label="Selecione una materia" required>
+                            <option value="">Seleccione una materia</option>
+                            {% for materia in materias  %}
+                                <option value="{{ materia.id }}">{{ materia.nombre_materia }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                {# Selector de momentos (uso de función AJAX)#}
+                    <div class="mb-3">
+                        <label for="momento" class="form-label">Momento:</label>
+                            <select name="momento" id="momento" class="form-select form-select-lg mb-3" aria-label="Selecione un momento" required>
+                                <option value="">Seleccione un momento</option>
+                            </select>
+                    </div>
+                
+                {# Formulario de notas #}
+                    <div class="mb-3">
+                        <label class="form-label" for="nota">Nota:</label>
+                        <input id="nota" type="number" max="20" min="0" step="0.01" name="nota" class="form-control form-control-lg" placeholder="Ingrese la nota respectiva" required>
+                    </div>
+                
+                {# Selector de justificaciones (uso de función de Javascript para dinamismo en caso de revision)#}
+                    <div class="mb-3">
+                        <label for="justificacion" class="form-label">Justificación</label>
+                            <select name="justificacion" id="justificacion" class="form-select form-select-lg mb-3" aria-label="Selecione una justificacion" required>
+                                <option value="">Seleccione una justificación</option>
+                                <option value="C">C (cursado)</option>
+                                <option value="I">I (inasistente)</option>
+                                <option value="NC">NC (no cursado)</option>
+                                <option value="NP">NP (no presentado)</option>
+                                <option value="EXO">EXO (exonerado)</option>
+                                <option value="RT">RT (retirado)</option>
+                                <option value="DES">DES (desertor)</option>
+                            </select>
+                    </div>
+                    <div class="text-center">
+                        <button id="cargar" type="submit" class="btn btn-light rounded-0 pd-5" style="text-center">Cargar</button>
+                    </div>
+
+                    {# Campos ocultos para transferir datos a otras funciones (selectorDeMomentos, cargarNotas)#}
+                    <input type="text" value="{{ estudiante.id }}" name="estudiante" style="display:none;" id="estudiante" hidden>
+                    <input type="text" value="{{ periodo_actual.id }}" name="periodo" style="display:none;" id="periodo" hidden>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+        {# Scripts para el funcionamiento de la ventana modal#}
+
+        <script src= {% static "dom/selectorMomentos.js" %}></script>
+        <script src= {% static "dom/selectorRevision.js" %}></script>
+
+
+        {# Script para cargar notas #}
+        <script>
+            document.getElementById('cargarNota').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "cargarNota" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha cargado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('cargarNotaModal'));
+                    modal.hide();
+                    window.location.reload();
+                    } 
+                    else {
+                    alert("Error al cargar nota.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error: ', error);
+                    alert("Ocurrió un error inesperado.");
+                });
+            
+            })
+            
+        </script>
+
+{% endblock %}

@@ -2,3 +2,4 @@ __pycache__/
 Script.py 
 generar_datos.py
 db.sqlite3
+script_notas.py
