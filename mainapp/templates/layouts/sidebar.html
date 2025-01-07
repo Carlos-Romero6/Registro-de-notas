@@ -20,14 +20,22 @@
     .sidebar button:hover {
       background-color: #ededed11;
     }
+    .user-sidebar {
+    color: #ffff;
+    margin: 2 0;
+    font-weight: 600;
+    text-align: center;
+    display: block;
+    }
   </style>
   
   <div class="container-fluid">
     <div class="row">
         {# Sidebar #}
         <nav class="col-md-3 col-lg-2 d-flex flex-column sidebar font-white">
-            <div class="text-center mb-4">
+            <div class="text-center mb-3">
                 <img src="{% static "images/icons/sidebar-user.png" %}" style="width: 7em; height: 7em;">
+                {% if  user.is_staff %} <span class="user-sidebar">Administrador</span> {% else %} <span class="user-sidebar">Usuario</span>{% endif %}
             </div>
   
             <a href="{% url "notas" %}">

@@ -1,5 +1,4 @@
 from django.db import models
-from decimal import Decimal, ROUND_HALF_UP
 from django.utils import timezone
 # Modelos de las tablas de la base de datos.
 
@@ -45,12 +44,6 @@ class Notas(models.Model):
     estudiante = models.ForeignKey(Estudiantes, on_delete=models.CASCADE)
     materia = models.ForeignKey(Materias, on_delete=models.CASCADE)
     periodos = models.ForeignKey(Periodos, on_delete=models.CASCADE)
-    
-    # Funcion para calcular definitiva.
-    def calcularDefinitiva(self): 
-        n_momentos = 3
-        definitiva = Decimal((self.primer_momento + self.segundo_momento + self.tercer_momento) / n_momentos).quantize(0, ROUND_HALF_UP)
-        return definitiva
 
 class Justificaciones(models.Model):
     primer_momento = models.CharField(max_length=3, null=True)

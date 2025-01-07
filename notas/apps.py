@@ -6,4 +6,4 @@ class NotasConfig(AppConfig):
     name = 'notas'
 
     def ready(self):
-        from . import signals
+        from . import receivers

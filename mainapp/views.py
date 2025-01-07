@@ -17,7 +17,10 @@ def signin(request):
 
 @login_required
 def main(request):
-    return render(request, 'main.html')
+    user = request.user
+    return render(request, 'main.html',{
+        'user': user
+    })
 
 @login_required
 def signout(request):

@@ -1,14 +1,15 @@
-from django.shortcuts import render, get_list_or_404, redirect
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from mainapp.models import Notas, Estudiantes, Materias, Matricula, Pensum, Justificaciones, Periodos
-from django.urls import reverse
 from utils import cursosDisponibles
-from notas.utils.calculoDefinitiva import calcularDefinitiva
 from django.db.models import F, FloatField
 from django.db.models.functions import Cast, Coalesce, Round
+from .utils.definitivasCualitativas import isCualitativa
 # Create your views here.
 
 # Filtrado de estudiantes por curso y sección
+@login_required
 def notas(request):
     if request.method == 'GET':
         return render(request, 'menuNotas.html',cursosDisponibles.obtener())
@@ -23,10 +24,12 @@ def notas(request):
             })
 
 # Filtrado de notas de un estudiante en cada materia con sus respectivas justificaciones
+@login_required
 def notasEstudiante(request, id_estudiante):
 
     if request.method == 'GET':
-        estudiante = Estudiantes.objects.get(pk=id_estudiante)
+        usuario = request.user
+        estudiante = Estudiantes.objects.get(pk=id_estudiante, estado=1)
         matricula = Matricula.objects.get(pk=estudiante.matricula_id)
         curso = matricula.curso
         pensum = matricula.pensum
@@ -37,10 +40,13 @@ def notasEstudiante(request, id_estudiante):
                 Round((Coalesce(F('notas__primer_momento'), 0) + Coalesce(F('notas__segundo_momento'), 0) + Coalesce(F('notas__tercer_momento'), 0)) / 3, 2), FloatField()
                 )
             )
+        isCualitativa(justificaciones, 'definitivaTemplate')
         periodo_actual = Periodos.objects.latest('id')
+
         return render(request, 'notas-estudiante.html', {
             
             # Se envían los objetos para mostrar datos en plantillas o enviar en formularios
+            'usuario': usuario,
             'estudiante': estudiante,
             'periodo_actual': periodo_actual,
             'justificaciones': justificaciones,  
@@ -51,7 +57,7 @@ def notasEstudiante(request, id_estudiante):
 
 def cargarNota(request):
     
-    try: 
+    try:
         if request.method == 'POST':
         
         # Se obtienen los datos enviados por el formulario
@@ -80,9 +86,12 @@ def cargarNota(request):
             
             # Si la nota ya existe, se actualiza
             else:
+                print("else")
+                print(periodo)
                 nota_existente = Notas.objects.get(estudiante=estudiante, materia=materia, periodos=periodo)
+                print("else2")
                 justificacion_cargar = Justificaciones.objects.get(notas=nota_existente.id)
-                
+                print("else2")
                 if momento == 'segundo_momento':
                     nota_existente.segundo_momento = nota
                     justificacion_cargar.segundo_momento = justificacion
@@ -91,10 +100,10 @@ def cargarNota(request):
                     nota_existente.tercer_momento = nota
                     justificacion_cargar.tercer_momento = justificacion
                     justificacion_cargar.save()
-                elif momento == 'revision':
+                """elif momento == 'revision':
                     nota_existente.revision = nota
                     print(nota_existente.revision)
-                nota_existente.save()
+                nota_existente.save()"""
 
             # Se envía un mensaje de éxito si todo se ejecuta según lo esperado
             return JsonResponse({'success': True, 'message': "Nota cargada exitosamente."})
