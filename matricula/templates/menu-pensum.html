@@ -1,0 +1,183 @@
+{% extends 'layouts/sidebar.html' %}
+
+{% block main %}
+{% load static %}
+<head>
+    <title>Pénsums</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            position: relative; /* Para el posicionamiento absoluto de los botones */
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            overflow-x: auto;
+            margin-top: 15px;
+            margin-left: 150px;
+            margin-right: 100px;
+        }
+        .button {
+            background-color: #dadedf;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin: 30px;
+            text-align: center;
+            font-size: 35px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex: 0 0 20%; /* Define el ancho de cada botón */
+            max-width: 20%; /* Limita el ancho máximo */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-decoration: none;
+            font-weight:500;
+            color: #233c43; /* Cambia el color del texto a verde oscuro */
+        }
+        .button:hover {
+            background-color: #fafafa;
+        }
+        h1 {
+            margin-left: -800px;
+            text-align: left;
+            margin-top: -30px;
+            font-size: 35px; /* Aumenta el tamaño del texto del encabezado */
+            color: #233c43; /* Cambia el color del texto a verde oscuro */
+        }
+        /* Estilos para los botones de la derecha */
+        .side-buttons {
+            position: fixed; /* Fijo en la pantalla */
+            right: 20px; /* Espacio desde la derecha */
+            top: 90%; /* Centrado verticalmente */
+            transform: translateY(-50%); /* Ajusta el centrado */
+            display: flex;
+            flex-direction: column; /* Coloca los botones en columna */
+        }
+    </style>
+</head>
+<body>
+    <h1>Pénsums</h1>
+    <div class="container">
+        {% for pensum in pensums %}
+        <a href="{% url 'materias_pensum' pensum.id %}" class="button">{{ pensum.nombre_pensum }}</a>
+
+        <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarPensumModal{{ forloop.counter }}">
+        <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="40" height="40">
+        </button>
+        <!--Ventana modal para modificar Pensums-->
+
+        <div class="modal fade" id="modificarPensumModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark text-white rounded-0">
+                    <div class="modal-header">
+                            <h5 class="modal-title">Modificar Pensum</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </button>
+                    </div>
+                    <!--Formulario para modificar el pensum-->
+                    <div class="modal-body">
+                        <form id="modificarPensumForm{{ forloop.counter }}">
+                            {% csrf_token %}
+                            
+                            {# Pensum #}
+                            <div class="mb-3">
+                                <label for="nombre_pensum_modificar" class="form-label">Pensum:</label>
+                                <input type="text" name="nombre_pensum_modificar" id="nombre_pensum_modificar" class="form-control form-control-lg" value= '{{pensum.nombre_pensum}}' required>
+                            </div>
+                            
+                            <div>
+                                {# input oculto Pensumid #}
+                                <input type="text" name="pensumid_modificar" value="{{ pensum.id }}" hidden>
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+                            
+        <script>
+            document.getElementById('modificarPensumForm{{ forloop.counter }}').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "modificarPensum" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha modificado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('modificarPensumModal{{ forloop.counter }}'));
+                    modal.hide();
+                    window.location.reload();
+                    } 
+                    else {
+                    alert("Error al modificar la pensum.");
+                    }
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                        alert("Ocurrió un error inesperado.");
+                    });
+                })
+        </script>
+        {% empty %}
+        <h1>No se encontraron pénsums</h1>
+        {% endfor %}
+    </div>
+
+    <!-- Botones en el lado derecho -->
+    <div class="side-buttons">
+        <button style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modalAgregarPensum">
+            <img src="{% static 'images/icons/add-icon.png' %}" alt="Añadir" width="50" height="50">
+        </button>
+    </div>
+
+    <script>
+        // Aquí se puede agregar cualquier funcionalidad adicional si es necesario
+    </script>
+</body>
+
+{# Modal para agregar pensum #}
+<div class="modal fade" id="modalAgregarPensum" tabindex="-1" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white rounded-0">
+        <div class="modal-header">
+            <h5 class="modal-title fs5" id="modalLabel">Agregar pénsum</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+            <form id="agregarPensum">
+            {% csrf_token %}
+
+            {# Campo para nombre #}
+            <div class="mb-3">
+                <label for="pensum" class="form-label">Nombre del Pénsum:</label>
+                <input type="text" class="form-control" id="pensum" name="pensum" placeholder="Escribe el nombre del pénsum" required>
+            </div>
+
+            <div class="text-center">
+                <button onClick="submit" class="btn btn-light rounded-0 pd-5">Guardar pénsum</button>
+            </div>
+            </form>
+            <script src="{% static 'dom/registrarPensum.js' %}"></script>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center">
+    <a class="md-5" href="{% url 'pensum-matricula' %}">
+        <button class="btn btn-outline-dark">Volver</button>
+    </a>
+</div>
+
+{% endblock main %}

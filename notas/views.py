@@ -100,10 +100,10 @@ def cargarNota(request):
                     nota_existente.tercer_momento = nota
                     justificacion_cargar.tercer_momento = justificacion
                     justificacion_cargar.save()
-                """elif momento == 'revision':
+                elif momento == 'revision':
                     nota_existente.revision = nota
                     print(nota_existente.revision)
-                nota_existente.save()"""
+                nota_existente.save()
 
             # Se envía un mensaje de éxito si todo se ejecuta según lo esperado
             return JsonResponse({'success': True, 'message': "Nota cargada exitosamente."})

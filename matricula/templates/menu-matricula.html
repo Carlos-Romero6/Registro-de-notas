@@ -1,0 +1,142 @@
+{% extends 'layouts/sidebar.html' %}
+
+{% block main %}
+{% load static %}
+<head>
+    <title>Matriculas</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            position: relative; /* Para el posicionamiento absoluto de los botones */
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            overflow-x: auto;
+            margin-top: 15px;
+            margin-left: 200px;
+            margin-right: 100px;
+        }
+        .button {
+            background-color: #dadedf;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px 90px;
+            margin: 20px;
+            text-align: center;
+            font-size: 35px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-decoration: none;
+            font-weight:500;
+            color: #233c43; /* Cambia el color del texto a verde oscuro */
+        }
+        .button:hover {
+            background-color: #fafafa;
+        }
+        h1 {
+            margin-left: -800px;
+            text-align: left;
+            margin-top: -30px;
+            font-size: 35px; /* Aumenta el tamaño del texto del encabezado */
+            color:#233c43; /* Cambia el color del texto a verde oscuro */
+        }
+        /* Estilos para los botones de la derecha */
+        .side-buttons {
+            position: fixed; /* Fijo en la pantalla */
+            right: 30px; /* Espacio desde la derecha */
+            top: 50%; /* Centrado verticalmente */
+            transform: translateY(-50%); /* Ajusta el centrado */
+            display: flex;
+            flex-direction: column; /* Coloca los botones en columna */
+        }
+    </style>
+</head>
+<body>
+    <h1>Matriculas</h1>
+    <div class="container">
+        {% for matricula in matriculas %}
+        <a href="{% url 'secciones_matricula' matricula.id %}" class="button">{{ matricula.promocion}}</a>
+
+        {% empty %}
+        <h1>No se encontraron matriculas</h1>
+        {% endfor %}
+    </div>
+
+    <!-- Botones en el lado derecho -->
+    <div class="side-buttons">
+        <button style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modalAgregarMatricula">
+            <img src="{% static 'images/icons/add-icon.png' %}" alt="Añadir" width="50" height="50">
+        </button>
+    </div>
+</body>
+
+{# Modal para agregar matricula #}
+<div class="modal fade" id="modalAgregarMatricula" tabindex="-1" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white rounded-0">
+        <div class="modal-header">
+            <h5 class="modal-title fs5" id="modalLabel">Agregar matricula</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+            <form id="agregarMatricula">
+            {% csrf_token %}
+
+            {# Campo para promocion #}
+            <div class="mb-3">
+                <label for="promocion" class="form-label">Nombre de la promoción:</label>
+                <input type="text" class="form-control form-control-lg" id="promocion" name="promocion" placeholder="Escribe el nombre de la promoción" required>
+            </div>
+
+            {# Campo para pensum #}
+            <div class="mb-3">
+                <label for="pensumid" class="form-label">Pensum:</label>
+                <select name="pensumid" id="pensumid" class="form-select form-select-lg mb-3" required>
+                    <option value="" disabled selected>Selecciona el pensum</option>
+                    {% for pensum in pensums %} {# Itera sobre la lista de diccionarios con los valores de los pensums #}
+                    <option value="{{ pensum.id }}">{{ pensum.nombre_pensum }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {# Campo para curso #}
+            <div class="mb-3">
+                <label for="curso" class="form-label">Curso:</label>
+                <select name="curso" id="curso" class="form-select form-select-lg mb-3" required>
+                    {% if not matriculas_curso_1 %}
+                        <option value="1" selected>1er año</option>
+                    {% else %}
+                    <option value="" disabled selected>No hay curso disponible</option>
+                    {% endif %}
+                </select>
+            </div>
+
+            {# Campo para secciones #}
+            <div class="mb-3">
+                <label class="form-label" for="secciones">Cantidad de secciones:</label>
+                <input id="secciones" type="number" max="6" min="0" step="0" name="secciones" class="form-control form-control-lg" placeholder="Ingrese la cantidad de secciones" required>
+            </div>
+
+            <div class="text-center">
+                <button onClick="submit" class="btn btn-light rounded-0 pd-5">Guardar matricula</button>
+            </div>
+            </form>
+            <script src="{% static 'dom/registrarMatricula.js' %}"></script>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center">
+    <a class="md-5" href="{% url 'pensum-matricula' %}">
+        <button class="btn btn-outline-dark">Volver</button>
+    </a>
+</div>
+
+{% endblock main %}

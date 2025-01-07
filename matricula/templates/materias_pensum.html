@@ -1,0 +1,691 @@
+{% extends 'layouts/sidebar.html' %}
+
+{% block main %}
+{% load static %}
+
+</head>
+<style>
+.table {
+  border: 1px solid #233c43; /*  */
+  width: 100%; /* Asegúra de que la tabla ocupe el 100% del contenedor */
+  max-width: 350; /* Establece un ancho máximo para las tablas */
+}
+
+.table td {
+    padding: 1px; /* Ajusta el relleno de las celdas */
+    text-align: center; /* Centra el texto en las celdas */
+    color:#233c43; /* Cambia el color del texto a verde oscuro */
+    font-weight:500; /* Fuente en negrita */
+}
+
+.table.table-bordered {
+    border: 2px solid black;
+    width: 100%;
+}
+.scroll-container {
+    overflow-x: auto; /* Permite el desplazamiento horizontal */
+    white-space: nowrap; /* Evita que las tablas se envuelvan */
+    height: 600px;
+    right: 50px;
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+    width: 100%;
+}
+
+h2, h1{
+    color: #233c43; /* Cambia el color del texto a verde oscuro */
+}
+
+.container {
+    display: inline-block; /* Permite que las tablas se alineen horizontalmente */
+    margin: 35px 65px; /* Espacio superior y lateral (top, right/left) */
+    max-width: 500px; /* Establece un ancho máximo para el contenedor */
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+}
+
+.side-buttons {
+            position: fixed; /* Fijo en la pantalla */
+            left: 700px; /* Espacio desde la derecha */
+            bottom: 20px; /* Espacio desde la parte inferior */
+            display: flex;
+}
+
+.button1 {
+    position: absolute;
+    bottom: 10px;
+    left:20px
+}
+
+.button2 {
+    position: absolute;
+    bottom: 10px;
+    right: 0px;
+}
+
+</style>
+
+<body>
+        <div class="scroll-container">
+            <div class="container">
+                <div class = "text-center">
+                    <h2>1er Año</h2>
+                    </div>
+                <table class="table table-bordered">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Materias</th>
+                            <th>Cuantitativa</th>
+                            <th>Ac</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for materia in materias %}
+                        {% if materia.curso == 1 %}
+                            <tr>
+                                <td>{{ materia.nombre_materia }}</td>
+                                <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
+                                <td>
+                                    <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarMateriaModal{{ forloop.counter }}">
+                                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="20" height="20">
+                                    </button>
+                                    </td>
+                            </tr>
+            
+                            <!--Ventana modal para modificar Materias-->
+
+        <div class="modal fade" id="modificarMateriaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark text-white rounded-0">
+                    <div class="modal-header">
+                            <h5 class="modal-title">Modificar materia</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </button>
+                    </div>
+                    <!--Formularios para modificar la materia-->
+                    <div class="modal-body">
+                        <form id="modificarMateriaForm{{ forloop.counter }}">
+                            {% csrf_token %}
+
+                            {# Materia #}
+                            <div class="mb-3">
+                                <label for="nombremateria_modificar" class="form-label">Materia:</label>
+                                <input type="text" name="nombremateria_modificar" id="nombremateria_modificar" class="form-control form-control-lg" value= '{{materia.nombre_materia}}' required>
+                            </div>
+
+                            {# Cualitativa #}
+                            <div class="mb-3">
+                                <label for="cualitativomateria_modificar" class="form-label">Cuantitativo:</label>
+                                <select name="cualitativomateria_modificar" id="cualitativomateria_modificar" class="form-select form-select-lg mb-3" required>
+                                    <option value="False">Sí</option>
+                                    <option value="True">No</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                {# input oculto Curso #}
+                                <input type="text" name="cursomateria_modificar" value="{{ materia.curso }}" hidden>
+
+                                {# input oculto Pensum #}
+                                <input type="text" name="pensummateria_modificar" value="{{ pensum.id }}" hidden>
+
+                                {# input oculto Materia_id #}
+                                <input type="text" name="materiaid_modificar" value="{{ materia.id }}" hidden>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+
+        <script>
+            document.getElementById('modificarMateriaForm{{ forloop.counter }}').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "modificarMateria" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha modificado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('modificarMateriaModal{{ forloop.counter }}'));
+                    modal.hide();
+                    window.location.reload();
+                    } 
+                    else {
+                    alert("Error al modificar la materia.");
+                    }
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                        alert("Ocurrió un error inesperado.");
+                    });
+                })
+        </script>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+            </div>
+            <div class="container">
+                <div class = "text-center">
+                <h2>2do Año</h2>
+                </div>
+                <table class="table table-bordered">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Materias</th>
+                            <th>Cuantitativa</th>
+                            <th>Ac</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for materia in materias %}
+                        {% if materia.curso == 2 %}
+                            <tr>
+                                <td>{{ materia.nombre_materia }}</td>
+                                <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
+                                <td>
+                                <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarMateriaModal{{ forloop.counter }}">
+                                <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="20" height="20">
+                                </button>
+                                </td>
+                            </tr>
+                </div>
+                                        <!--Ventana modal para modificar Materias-->
+
+        <div class="modal fade" id="modificarMateriaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark text-white rounded-0">
+                    <div class="modal-header">
+                            <h5 class="modal-title">Modificar materia</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </button>
+                    </div>
+                    <!--Formularios para modificar la materia-->
+                    <div class="modal-body">
+                        <form id="modificarMateriaForm{{ forloop.counter }}">
+                            {% csrf_token %}
+
+                            {# Materia #}
+                            <div class="mb-3">
+                                <label for="nombremateria_modificar" class="form-label">Materia:</label>
+                                <input type="text" name="nombremateria_modificar" id="nombremateria_modificar" class="form-control form-control-lg" value= '{{materia.nombre_materia}}' required>
+                            </div>
+
+                            {# Cualitativa #}
+                            <div class="mb-3">
+                                <label for="cualitativomateria_modificar" class="form-label">Cuantitativo:</label>
+                                <select name="cualitativomateria_modificar" id="cualitativomateria_modificar" class="form-select form-select-lg mb-3" required>
+                                    <option value="False">Sí</option>
+                                    <option value="True">No</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                {# input oculto Curso #}
+                                <input type="text" name="cursomateria_modificar" value="{{ materia.curso }}" hidden>
+
+                                {# input oculto Pensum #}
+                                <input type="text" name="pensummateria_modificar" value="{{ pensum.id }}" hidden>
+
+                                {# input oculto Materia_id #}
+                                <input type="text" name="materiaid_modificar" value="{{ materia.id }}" hidden>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('modificarMateriaForm{{ forloop.counter }}').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "modificarMateria" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha modificado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('modificarMateriaModal{{ forloop.counter }}'));
+                    modal.hide();
+                    window.location.reload();
+                    } 
+                    else {
+                    alert("Error al modificar la materia.");
+                    }
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                        alert("Ocurrió un error inesperado.");
+                    });
+                })
+        </script>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="container">
+                <div class = "text-center">
+                    <h2>3er Año</h2>
+                    </div>
+                <table class="table table-bordered">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Materias</th>
+                            <th>Cuantitativa</th>
+                            <th>Ac</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for materia in materias %}
+                        {% if materia.curso == 3 %}
+                            <tr>
+                                <td>{{ materia.nombre_materia }}</td>
+                                <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
+                                <td>
+                                    <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarMateriaModal{{ forloop.counter }}">
+                                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="20" height="20">
+                                    </button>
+                                    </td>
+                            </tr>
+            </div>
+                            <!--Ventana modal para modificar Materias-->
+
+        <div class="modal fade" id="modificarMateriaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark text-white rounded-0">
+                    <div class="modal-header">
+                            <h5 class="modal-title">Modificar materia</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </button>
+                    </div>
+                    <!--Formularios para modificar la materia-->
+                    <div class="modal-body">
+                        <form id="modificarMateriaForm{{ forloop.counter }}">
+                            {% csrf_token %}
+
+                            {# Materia #}
+                            <div class="mb-3">
+                                <label for="nombremateria_modificar" class="form-label">Materia:</label>
+                                <input type="text" name="nombremateria_modificar" id="nombremateria_modificar" class="form-control form-control-lg" value= '{{materia.nombre_materia}}' required>
+                            </div>
+
+                            {# Cualitativa #}
+                            <div class="mb-3">
+                                <label for="cualitativomateria_modificar" class="form-label">Cuantitativo:</label>
+                                <select name="cualitativomateria_modificar" id="cualitativomateria_modificar" class="form-select form-select-lg mb-3" required>
+                                    <option value="False">Sí</option>
+                                    <option value="True">No</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                {# input oculto Curso #}
+                                <input type="text" name="cursomateria_modificar" value="{{ materia.curso }}" hidden>
+
+                                {# input oculto Pensum #}
+                                <input type="text" name="pensummateria_modificar" value="{{ pensum.id }}" hidden>
+
+                                {# input oculto Materia_id #}
+                                <input type="text" name="materiaid_modificar" value="{{ materia.id }}" hidden>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('modificarMateriaForm{{ forloop.counter }}').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "modificarMateria" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha modificado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('modificarMateriaModal{{ forloop.counter }}'));
+                    modal.hide();
+                    window.location.reload();
+                    } 
+                    else {
+                    alert("Error al modificar la materia.");
+                    }
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                        alert("Ocurrió un error inesperado.");
+                    });
+                })
+        </script>   
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="container">
+                <div class = "text-center">
+                    <h2>4to Año</h2>
+                    </div>
+                <table class="table table-bordered">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Materias</th>
+                            <th>Cuantitativa</th>
+                            <th>Ac</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for materia in materias %}
+                        {% if materia.curso == 4 %}
+                            <tr>
+                                <td>{{ materia.nombre_materia }}</td>
+                                <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
+                                <td>
+                                    <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarMateriaModal{{ forloop.counter }}">
+                                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="20" height="20">
+                                    </button>
+                                    </td>
+                            </tr>
+            </div>
+                            <!--Ventana modal para modificar Materias-->
+
+        <div class="modal fade" id="modificarMateriaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark text-white rounded-0">
+                    <div class="modal-header">
+                            <h5 class="modal-title">Modificar materia</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </button>
+                    </div>
+                    <!--Formularios para modificar la materia-->
+                    <div class="modal-body">
+                        <form id="modificarMateriaForm{{ forloop.counter }}">
+                            {% csrf_token %}
+
+                            {# Materia #}
+                            <div class="mb-3">
+                                <label for="nombremateria_modificar" class="form-label">Materia:</label>
+                                <input type="text" name="nombremateria_modificar" id="nombremateria_modificar" class="form-control form-control-lg" value= '{{materia.nombre_materia}}' required>
+                            </div>
+
+                            {# Cualitativa #}
+                            <div class="mb-3">
+                                <label for="cualitativomateria_modificar" class="form-label">Cuantitativo:</label>
+                                <select name="cualitativomateria_modificar" id="cualitativomateria_modificar" class="form-select form-select-lg mb-3" required>
+                                    <option value="False">Sí</option>
+                                    <option value="True">No</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                {# input oculto Curso #}
+                                <input type="text" name="cursomateria_modificar" value="{{ materia.curso }}" hidden>
+
+                                {# input oculto Pensum #}
+                                <input type="text" name="pensummateria_modificar" value="{{ pensum.id }}" hidden>
+
+                                {# input oculto Materia_id #}
+                                <input type="text" name="materiaid_modificar" value="{{ materia.id }}" hidden>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('modificarMateriaForm{{ forloop.counter }}').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "modificarMateria" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha modificado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('modificarMateriaModal{{ forloop.counter }}'));
+                    modal.hide();
+                    window.location.reload();
+                    } 
+                    else {
+                    alert("Error al modificar la materia.");
+                    }
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                        alert("Ocurrió un error inesperado.");
+                    });
+                })
+        </script>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="container">
+                <div class = "text-center">
+                    <h2>5to Año</h2>
+                    </div>
+                <table class="table table-bordered">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Materias</th>
+                            <th>Cuantitativa</th>
+                            <th>Ac</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for materia in materias %}
+                        {% if materia.curso == 5 %}
+                            <tr>
+                                <td>{{ materia.nombre_materia }}</td>
+                                <td>{% if materia.cualitativa %} No {% else %} Si {% endif %}</td>
+                                <td>
+                                    <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarMateriaModal{{ forloop.counter }}">
+                                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="20" height="20">
+                                    </button>
+                                    </td>
+                            </tr>
+            </div>
+                            <!--Ventana modal para modificar Materias-->
+
+        <div class="modal fade" id="modificarMateriaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark text-white rounded-0">
+                    <div class="modal-header">
+                            <h5 class="modal-title">Modificar materia</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </button>
+                    </div>
+                    <!--Formularios para modificar la materia-->
+                    <div class="modal-body">
+                        <form id="modificarMateriaForm{{ forloop.counter }}">
+                            {% csrf_token %}
+
+                            {# Materia #}
+                            <div class="mb-3">
+                                <label for="nombremateria_modificar" class="form-label">Materia:</label>
+                                <input type="text" name="nombremateria_modificar" id="nombremateria_modificar" class="form-control form-control-lg" value= '{{materia.nombre_materia}}' required>
+                            </div>
+
+                            {# Cualitativa #}
+                            <div class="mb-3">
+                                <label for="cualitativomateria_modificar" class="form-label">Cuantitativo:</label>
+                                <select name="cualitativomateria_modificar" id="cualitativomateria_modificar" class="form-select form-select-lg mb-3" required>
+                                    <option value="False">Sí</option>
+                                    <option value="True">No</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                {# input oculto Curso #}
+                                <input type="text" name="cursomateria_modificar" value="{{ materia.curso }}" hidden>
+
+                                {# input oculto Pensum #}
+                                <input type="text" name="pensummateria_modificar" value="{{ pensum.id }}" hidden>
+
+                                {# input oculto Materia_id #}
+                                <input type="text" name="materiaid_modificar" value="{{ materia.id }}" hidden>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('modificarMateriaForm{{ forloop.counter }}').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(`{% url "modificarMateria" %}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                    alert("Se ha modificado correctamente.");
+                    const modal = new bootstrap.Modal(document.getElementById('modificarMateriaModal{{ forloop.counter }}'));
+                    modal.hide();
+                    window.location.reload();
+                    } 
+                    else {
+                    alert("Error al modificar la materia.");
+                    }
+                    })
+                    .catch(error => {
+                        console.error('Error: ', error);
+                        alert("Ocurrió un error inesperado.");
+                    });
+                })
+        </script>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {# boton para volver #}
+            <div class="side-buttons">
+                <div class = "button1">
+                    <a class="md-5" href="{% url 'menu-pensum' %}">
+                        <button class="btn btn-outline-dark">Volver</button>
+                    </a>
+                </div>
+            </div>
+
+            {# boton para añadir materias #}
+            <div class="side-buttons">
+                <div class= "button2">
+                    <button style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modalAgregarMateria">
+                        <img src="{% static 'images/icons/add-icon.png' %}" alt="Añadir" width="50" height="50">
+                    </button>
+                </div>
+
+            </div>
+        </div>
+</body>
+
+{# Modal para agregar materia #}
+<div class="modal fade" id="modalAgregarMateria" tabindex="-1" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white rounded-0">
+        <div class="modal-header">
+            <h5 class="modal-title fs5" id="modalLabel">Agregar materia</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+            <form id="agregarMateria">
+            {% csrf_token %}
+
+            {# Campo para curso #}
+            <div class="mb-3">
+                <label for="cursomateria" class="form-label">Curso:</label>
+                <select class="form-control" id="cursomateria" name="cursomateria" required>
+                    <option value="" disabled selected>Selecciona el curso</option> <!-- Opción por defecto -->
+                    <option value="1">1er Año</option>
+                    <option value="2">2do Año</option>
+                    <option value="3">3er Año</option>
+                    <option value="4">4to Año</option>
+                    <option value="5">5to Año</option>
+                </select>
+            </div>
+            {# Campo para nombre de la materia #}
+            <div class="mb-3">
+                <label for="nombremateria" class="form-label">Nombre de la materia:</label>
+                <input type="text" class="form-control" id="nombremateria" name="nombremateria" placeholder="Escribe el nombre de la materia" required>
+            </div>
+            {# Campo para cuantitativo #}
+            <div class="mb-3">
+                <label for="cuantitativomateria" class="form-label">Cuantitativo:</label>
+                <select class="form-control" id="cuantitativomateria" name="cuantitativomateria" required>
+                    <option value="False">Sí</option>  <!-- Se guarda como False -->
+                    <option value="True">No</option>    <!-- Se guarda como True -->
+                </select>
+            </div>  
+            {# Campo de pensum #}
+            <div class="mb-3 d-flex">
+                <div class="btn btn-secondary rounded-end-0">
+                <label for="pensummateria" class="form-label">Pensum:</label>
+                </div>
+                <select id="pensummateria" class="form-control rounded-start-0" disabled>
+                <option selected>{{ pensum.nombre_pensum }}</option>
+                </select>
+                {# El curso será el mismo de la tabla en la que nos encontramos #}
+                <input type="hidden" name="pensummateria" value="{{ pensum.nombre_pensum }}">
+            </div>    
+
+            <div class="text-center">
+                <button onClick="submit" class="btn btn-light rounded-0 pd-5">Guardar Materia</button>
+            </div>
+            </form>
+            <script src="{% static 'dom/registrarMateria.js' %}"></script>
+        </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock main %}

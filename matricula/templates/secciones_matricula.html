@@ -1,0 +1,231 @@
+{% extends 'layouts/sidebar.html' %}
+
+{% block main %}
+{% load static %}
+
+<style>
+
+    .matricula-container {
+    background-color: #e0e0e0; /* Color de fondo gris claro */
+         border: 1px solid #ccc; /* Borde gris claro */
+         border-radius: 5px; /* Bordes redondeados */
+         padding: 0px 20px; /* Espacio interno */
+        text-align: center; /* Centra el texto horizontalmente */
+        font-size: 18px; /* Tamaño de la fuente */
+        font-weight: 500; /* Fuente en negrita */
+         color: #333; /* Color del texto gris oscuro */
+        display: flex;
+        margin-top: -500px;
+        color: #233c43; /* Cambia el color del texto a verde oscuro */
+        position: fixed;
+    }
+
+    .matricula-text {
+        margin-right: 100px; /* Agregamos un margen a la derecha del texto */
+        font-size: 40px;
+    }
+
+    .content-container {
+        text-align: center; /* Centra el texto */
+        margin-top: 50px;
+    }
+
+    .logo {
+        margin-top: 6px;
+        width: 50px; 
+        height: 50px;
+    }
+
+    .section-list {
+        list-style: none;
+        padding: 0;
+    }
+
+
+    tr:nth-child(even) {
+    background-color: #f2f2f2; /* Alternar colores de fondo */
+    }
+
+    h3, h4{
+        color:#233c43; /* Cambia el color del texto a verde oscuro */
+    }
+
+    .section-list li {
+        list-style: none; /* Elimina los marcadores de lista */
+        border: 1px solid #233c43; /* Agrega un borde */
+        border-radius: 10px; /* Redondea las esquinas */
+        padding: 6px;
+        margin-bottom: 4px;
+        font-weight: bold; /* Fuente en negrita */
+        color:#233c43; /* Cambia el color del texto a verde oscuro */
+        font-size: 18px;
+        display: flex;
+        justify-content: center;
+        margin: 4px;
+        justify-content: flex-start;
+    }
+
+    .grissecciones{
+        background-color: #f5f5f5; /* Color de fondo gris claro */
+    }
+
+    .seccion-label {
+        padding-right: 150px;
+        padding-left: 10px;
+    }
+
+    .right-column {
+    height: 100vh;
+    }
+
+    .button1 {
+        position: fixed; /* Fijo en la pantalla */
+            left: 560px; /* Espacio desde la izquierda */
+            bottom: 10px; /* Espacio desde la parte inferior */
+            display: flex;
+    }
+
+
+</style>
+
+
+<div class="row w-100">
+    {# Columna izquierda (formulario) #}
+    <div class="col-md-8 d-flex flex-column align-items-center justify-content-center">
+    <div class="matricula-container">
+        <span class="matricula-text">Matrícula {{ matricula.promocion }}</span>
+        <img src="{% static 'images/icons/edit-icon.png' %}"  alt="Logo del pensum" class="logo">
+    </div>
+
+    <div class="content-container">    
+
+        <h3>Pensum {{ pensum.nombre_pensum }}</h3>
+
+        <ul class="section-list">
+            <h4>Curso: {{ matricula.curso }}</h4>
+            <li>
+                <ul>
+                {% for seccion in secciones %}
+                    <li class="grissecciones">
+                        <span class="seccion-label">Sección </span>
+                        <span class="seccion-value">{{ seccion }}</span>
+                    </li>
+                {% endfor %}
+                </ul>
+            </li>
+        </ul>
+        <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarMatriculaModal">
+        <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="50" height="50">
+        </button></div>
+
+        {# boton para volver #}
+        <div class="button1">
+            <a class="md-5" href="{% url 'menu-matricula' %}">
+                <button class="btn btn-outline-dark">Volver</button>
+            </a>
+        </div>
+    </div>
+
+    {# Columna derecha (texto) #}
+    <div class="col-md-4 d-flex align-items-center justify-content-center right-column" style="background-color: #dadedf;">
+    <p class="text-center text-muted" style="font-size:1.5rem; padding: 20px;">
+        Puedes modificar las secciónes que pertenecen a la promoción(matricula), asi como también su nombre y el pénsum al que pertenece.
+    </p>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="modificarMatriculaModal" tabindex="-1" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white rounded-0">
+            <div class="modal-header">
+                    <h5 class="modal-title">Modificar matricula</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!--Formularios para modificar la matricula-->
+            <div class="modal-body">
+                <form id="modificarMatriculaForm">
+                    {% csrf_token %}
+
+                    {# Promocion #}
+                    <div class="mb-3">
+                        <label for="promocion_modificar" class="form-label">Promoción:</label>
+                        <input type="text" name="promocion_modificar" id="promocion_modificar" class="form-control form-control-lg" value= '{{matricula.promocion}}' required>
+                    </div>
+
+                    {# Campo para secciones #}
+                    <div class="mb-3">
+                        <label class="form-label" for="secciones_modificar">Cantidad de secciones:</label>
+                        <input id="secciones_modificar" type="number" max="6" min="0" step="0" name="secciones_modificar" class="form-control form-control-lg" value= '{{matricula.n_secciones}}' required>
+                    </div>
+
+                    {# Campo para pensum nuevo #}
+                    <div class="mb-3">
+                        <label for="pensumnuevo_modificar" class="form-label">Pensum:</label>
+                        <select name="pensumnuevo_modificar" id="pensumnuevo_modificar" class="form-select form-select-lg mb-3" required>
+                            <option value="" disabled selected>Selecciona el pensum</option>
+                            {% for pensum in pensums %} {# Itera sobre la lista de diccionarios con los valores de los pensums #}
+                            <option value="{{ pensum.id }}">{{ pensum.nombre_pensum }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    {# Campo de curso #}
+                    <div class="mb-3 d-flex">
+                        <div class="btn btn-secondary rounded-end-0">
+                        <label for="curso_modificar" class="form-label">Curso:</label>
+                        </div>
+                        <select id="curso_modificar" class="form-control rounded-start-0" disabled>
+                        <option selected>{{ matricula.curso }}</option>
+                        </select>
+                        {# El curso será el mismo de la tabla en la que nos encontramos #}
+                        <input type="hidden" name="curso_modificar" value="{{ matricula.curso }}">
+                    </div>    
+
+                    <div>
+                        {# input oculto Matricula_id #}
+                        <input type="text" name="matriculaid_modificar" value="{{ matricula.id }}" hidden>
+
+                        {# input oculto Pensum_id_viejo #}
+                        <input type="text" name="pensum_modificar" value="{{ pensum.id }}" hidden>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    document.getElementById('modificarMatriculaForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        fetch(`{% url "modificarMatricula" %}`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+            alert("Se ha modificado correctamente.");
+            const modal = new bootstrap.Modal(document.getElementById('modificarMatriculaModal'));
+            modal.hide();
+            window.location.reload();
+            } 
+            else {
+            alert("Error al modificar la matricula.");
+            }
+            })
+            .catch(error => {
+                console.error('Error: ', error);
+                alert("Ocurrió un error inesperado.");
+            });
+        })
+</script>
+
+{% endblock main %}
