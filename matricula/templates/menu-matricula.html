@@ -5,12 +5,7 @@
 <head>
     <title>Matriculas</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #fff;
-            position: relative; /* Para el posicionamiento absoluto de los botones */
-        }
+
         .container {
             display: flex;
             flex-wrap: wrap;
@@ -59,8 +54,10 @@
 </head>
 <body>
     <h1>Matriculas</h1>
+    <!--Ciclo for para recorrer la lsita de diccionarios de las matriculas-->
     <div class="container">
         {% for matricula in matriculas %}
+        <!--Mostramos en pantalla los botones y le pasamos el id de esa matricula a la siguiente url-->
         <a href="{% url 'secciones_matricula' matricula.id %}" class="button">{{ matricula.promocion}}</a>
 
         {% empty %}
@@ -68,7 +65,7 @@
         {% endfor %}
     </div>
 
-    <!-- Botones en el lado derecho -->
+    <!-- Boton en el lado derecho -->
     <div class="side-buttons">
         <button style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modalAgregarMatricula">
             <img src="{% static 'images/icons/add-icon.png' %}" alt="Añadir" width="50" height="50">
@@ -133,6 +130,7 @@
     </div>
 </div>
 
+<!--Boton para volver -->
 <div class="text-center">
     <a class="md-5" href="{% url 'pensum-matricula' %}">
         <button class="btn btn-outline-dark">Volver</button>

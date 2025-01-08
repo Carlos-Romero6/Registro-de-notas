@@ -3,14 +3,9 @@
 {% block main %}
 {% load static %}
 <head>
-    <title>Pénsums</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #fff;
-            position: relative; /* Para el posicionamiento absoluto de los botones */
-        }
+
+        /* Contenedor para todos los botones de pensums */
         .container {
             display: flex;
             flex-wrap: wrap;
@@ -19,6 +14,8 @@
             margin-left: 150px;
             margin-right: 100px;
         }
+
+        /* Diseño de los botones de pénsums */
         .button {
             background-color: #dadedf;
             border: 1px solid #ccc;
@@ -38,17 +35,22 @@
             font-weight:500;
             color: #233c43; /* Cambia el color del texto a verde oscuro */
         }
+
+        /* Se le añade un efecto al pasar por encima de cada botón de pénsum */
         .button:hover {
             background-color: #fafafa;
         }
+
+        /* Estilo del titulo de pénsums */
         h1 {
             margin-left: -800px;
             text-align: left;
-            margin-top: -30px;
+            margin-top: -30px; 
             font-size: 35px; /* Aumenta el tamaño del texto del encabezado */
             color: #233c43; /* Cambia el color del texto a verde oscuro */
         }
-        /* Estilos para los botones de la derecha */
+
+        /* Estilo para el boton de la derecha */
         .side-buttons {
             position: fixed; /* Fijo en la pantalla */
             right: 20px; /* Espacio desde la derecha */
@@ -62,14 +64,15 @@
 <body>
     <h1>Pénsums</h1>
     <div class="container">
-        {% for pensum in pensums %}
-        <a href="{% url 'materias_pensum' pensum.id %}" class="button">{{ pensum.nombre_pensum }}</a>
+        {% for pensum in pensums %} <!--Ciclo for para recorrer la lsita de diccionarios de los pénsums-->
+        <a href="{% url 'materias_pensum' pensum.id %}" class="button">{{ pensum.nombre_pensum }}</a><!--Mostramos en pantalla los botones y le pasamos el id de ese pénsum a la siguiente url-->
 
+        <!--Se crea un boton modificar pénsum unico para cada pénsum y se asocia a una ventana modal-->
         <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarPensumModal{{ forloop.counter }}">
         <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="40" height="40">
         </button>
-        <!--Ventana modal para modificar Pensums-->
 
+        <!--Ventana modal para modificar Pensums-->
         <div class="modal fade" id="modificarPensumModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
             <div class="modal-dialog">
                 <div class="modal-content bg-dark text-white rounded-0">
@@ -102,7 +105,8 @@
                 </div>
             </div>
         </div>
-                            
+
+        <!-- Script de javascript que envia el formulario a otra ruta para su modificación, luego mostrar mensaje si se logro modificar, cierra la ventana modal y recarga la pagina  -->
         <script>
             document.getElementById('modificarPensumForm{{ forloop.counter }}').addEventListener('submit', function(event) {
                 event.preventDefault();
@@ -140,10 +144,6 @@
             <img src="{% static 'images/icons/add-icon.png' %}" alt="Añadir" width="50" height="50">
         </button>
     </div>
-
-    <script>
-        // Aquí se puede agregar cualquier funcionalidad adicional si es necesario
-    </script>
 </body>
 
 {# Modal para agregar pensum #}
@@ -174,6 +174,7 @@
     </div>
 </div>
 
+{# Boton para volver #}
 <div class="text-center">
     <a class="md-5" href="{% url 'pensum-matricula' %}">
         <button class="btn btn-outline-dark">Volver</button>

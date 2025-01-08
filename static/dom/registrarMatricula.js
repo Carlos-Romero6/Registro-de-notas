@@ -1,4 +1,6 @@
 // Agregar Matricula
+
+/*Script de javascript que envia el formulario a otra ruta para ser agregado, luego mostrar mensaje si se logro agregar, cierra la ventana modal y recarga la pagina*/
 document.getElementById('agregarMatricula').addEventListener('submit', function(event) {
     event.preventDefault();
     const formData = new FormData(this);
