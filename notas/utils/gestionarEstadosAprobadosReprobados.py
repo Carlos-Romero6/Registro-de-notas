@@ -2,12 +2,12 @@ from mainapp.models import Estudiantes
 from django.db.models import F
 from decimal import Decimal
 
-def gestionarAprobadosReprobados(instance):
+def gestionarAprobadosReprobados(instance, reprobado_previo):
     print("gestionar")
     print(instance.__dict__)
     print(getattr(instance, 'definitiva'))
-    
-    if instance.definitiva is not None:
+    print(reprobado_previo)
+    if instance.definitiva is not None and not reprobado_previo:
         try:
             if getattr(instance, 'definitiva') <  Decimal(9.50):
                 print("funciona")
