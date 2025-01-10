@@ -3,6 +3,7 @@ from django.db.models.signals import post_save, pre_save
 from mainapp.models import Notas, Justificaciones, Estudiantes
 from .utils.saveDefinitiva import  saveDefinitiva
 from .utils.gestionarEstadosAprobadosReprobados import gestionarAprobadosReprobados
+from .utils.aprobadosPorRevision import aprobadosPorRevision
 from decimal import Decimal
 
 @receiver(pre_save, sender=Notas)
@@ -10,15 +11,17 @@ def gestionNotas(sender, instance,**kwargs):
     print("gestionOk")
     print(instance.__dict__)
     if instance.primer_momento is not None and instance.segundo_momento is not None and instance.tercer_momento is not None:
-        print("gestion")
+        print("Ok 3 ✅")
         try:
             if instance.definitiva is not None and instance.definitiva < Decimal(9.50):
                 reprobado_previo = True
             else:
                 reprobado_previo = False
+                
             print(reprobado_previo)
             saveDefinitiva(instance)
             gestionarAprobadosReprobados(instance, reprobado_previo)
+            aprobadosPorRevision(instance, reprobado_previo)
             print(instance.estado)
         except Exception as e:
             print(e)

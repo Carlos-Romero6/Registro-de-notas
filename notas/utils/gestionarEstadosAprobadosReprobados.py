@@ -7,17 +7,17 @@ def gestionarAprobadosReprobados(instance, reprobado_previo):
     print(instance.__dict__)
     print(getattr(instance, 'definitiva'))
     print(reprobado_previo)
-    if instance.definitiva is not None and not reprobado_previo:
+    if instance.definitiva is not None:
         try:
             if getattr(instance, 'definitiva') <  Decimal(9.50):
                 print("funciona")
-                instance.estado = "REPROBADO"
-                print(instance.estado)
-                estudiante = Estudiantes.objects.filter(pk=instance.estudiante_id).update(materias_reprobadas=F('materias_reprobadas') + 1 )
-                print(estudiante.__dict__)
+                if not reprobado_previo:
+                    instance.estado = "REPROBADO"
+                    estudiante = Estudiantes.objects.filter(pk=instance.estudiante_id).update(materias_reprobadas=F('materias_reprobadas') + 1 ) 
             else:
-                instance.estado = "APROBADO"
-                print(instance.estado)
+                if reprobado_previo:
+                    instance.estado = "APROBADO"
+                    estudiante = Estudiantes.objects.filter(pk=instance.estudiante_id).update(materias_reprobadas=F('materias_reprobadas') - 1 ) 
         except Exception as e:  
             print(e)
 

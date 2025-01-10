@@ -22,7 +22,7 @@ def consultarMomento(request):
             return JsonResponse({'momentos': momentos_nulos})
 
             # Se verifica si los momentos de la base de datos son nulos
-        momentos_a_verificar = ['segundo_momento', 'tercer_momento','revision']
+        momentos_a_verificar = ['segundo_momento', 'tercer_momento']
     
         for momento in momentos_a_verificar:
             valor_del_momento = getattr(notas, momento) # Se accede al valor de un campo del registro

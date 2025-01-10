@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from utils import cursosDeSeccionAjax, momentosDisponibles
+from utils import cursosDeSeccionAjax, momentosDisponibles, periodosRevisiones, materiasReprobadasRevision
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +26,6 @@ urlpatterns = [
     path('', include('mainapp.urls')),
     path('consultar-momentos/', momentosDisponibles.consultarMomento, name="consultar-momento"),
     path('pensum-matricula/', include('matricula.urls'), name="pensum-matricula"),
+    path('periodos-revisiones/', periodosRevisiones.periodoRevisiones, name="periodosRevisiones"),
+    path('materias-reprobadas-revision/', materiasReprobadasRevision.materiasReprobadasRevision, name="materiasReprobadas")
 ]

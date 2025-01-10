@@ -28,6 +28,11 @@
     text-align: center;
     display: block;
     }
+
+    .image {
+      width: 30px;
+      height: 30px;
+    }
   </style>
   
   <div class="container-fluid">
@@ -41,12 +46,12 @@
   
             <a href="{% url "notas" %}">
               <button class="btn" title="Gestion de notas">
-                <img src="{% static 'images/icons/sidebar-grades-icon.png' %}" style="width: 5em; height: 5em;">
+                <img src="{% static 'images/icons/sidebar-grades-icon.png' %}" style="width: 4.5em; height: 4.5em">
               </button>
             </a>
             <a href=" {% url "pensum-matricula" %}">
               <button class="btn" title="Pensum y matrícula">
-                <img src="{% static 'images/icons/sidebar-pensum-icon.png' %}" style="width: 4em; height: 4em;">
+                <img src="{% static 'images/icons/sidebar-pensum-icon.png' %}" style="width: 4.5em; height: 4.5em;">
               </button>
             </a>
             <a href="{% url "estudiantes" %}">

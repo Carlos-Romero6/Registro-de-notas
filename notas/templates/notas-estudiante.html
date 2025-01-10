@@ -27,12 +27,15 @@
     }
     .table-container {
         overflow-y: scroll;
-        width: 150vh;
+        width: 90%;
         height: 70vh;
     }
 input[type="number"] {
     -moz-appearance: textfield;
     outline: none;
+}
+.d-flex.flex-column.align-items-center {
+    max-width: 100%;
 }
 </style>
         <!-- Tabla de notas del estudiante -->
@@ -86,9 +89,11 @@ input[type="number"] {
                             <!-- Botón para modificar la nota -->
                             {% if usuario.is_staff %}
                             <td style="z-index: 1; position: sticky; right:0;"> 
+                                {% if justificacion.notas.revision is None %}
                                 <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent;" data-bs-toggle="modal" data-bs-target="#modificarNotaModal{{ forloop.counter }}" title="Modificar nota">
                                     <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="30" height="30">
                                 </button>
+                                {% endif %}
                             </td>
                         </tr>
                             {% endif %}
@@ -224,24 +229,32 @@ input[type="number"] {
                 </tbody>
             </table>
         </div>
-    </section>
+
             <!-- Botones para volver a la página anterior y cargar una nueva nota -->
 
         <div class="d-flex justify-content-center">
+            {% if estudiante.materias_reprobadas > 0 %}
+            
+            <a>
+                <button class="btn btn-custom ms-3" data-bs-toggle="modal" data-bs-target="#cargarRevisionModal" id="cargarRevisionButton" data-url="{% url 'periodosRevisiones' %}">Revisiones</button>
+            </a>
+            {% endif %}
 
             {# Botón para volver a la página anterior usando un formulario para transferir datos#}
             <form action="{% url "notas" %}" method="POST">
                 {% csrf_token %}
                 <input type="text" value="{{ estudiante.seccion }}" name="seccion" hidden>
                 <input type="text" value="{{ matricula.curso }}" name="curso" hidden>
-                    <button type="submit" class="btn btn-outline-custom me-3">Volver</button>
+                    <button type="submit" class="btn btn-outline-custom ms-3">Volver</button>
             </form>
 
             <a class="md-5">
-                    <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#cargarNotaModal">
+                    <button class="btn btn-custom ms-3" data-bs-toggle="modal" data-bs-target="#cargarNotaModal">
                         Cargar nota
                     </button>
             </a>
+
+
         </div>
 
 
@@ -287,7 +300,7 @@ input[type="number"] {
                         <input id="nota" type="number" max="20" min="0" step="0.01" name="nota" class="form-control form-control-lg" placeholder="Ingrese la nota respectiva" required>
                     </div>
                 
-                {# Selector de justificaciones (uso de función de Javascript para dinamismo en caso de revision)#}
+                {# Selector de justificaciones #}
                     <div class="mb-3">
                         <label for="justificacion" class="form-label">Justificación</label>
                             <select name="justificacion" id="justificacion" class="form-select form-select-lg mb-3" aria-label="Selecione una justificacion" required>
@@ -305,51 +318,87 @@ input[type="number"] {
                         <button id="cargar" type="submit" class="btn btn-light rounded-0 pd-5" style="text-center">Cargar</button>
                     </div>
 
-                    {# Campos ocultos para transferir datos a otras funciones (selectorDeMomentos, cargarNotas)#}
+                    {# Campos ocultos para transferir datos a otras funciones (selectorDeMomentos, cargarNota)#}
                     <input type="text" value="{{ estudiante.id }}" name="estudiante" style="display:none;" id="estudiante" hidden>
                     <input type="text" value="{{ periodo_actual.id }}" name="periodo" style="display:none;" id="periodo" hidden>
+                    <input type="text" value="{% url "cargarNota" %}" name="urlCargarNotas" id="urlCargarNotas" style="display:none;"hidden>
+
                 </form>
             </div>
         </div>
     </div>
 
 
-        {# Scripts para el funcionamiento de la ventana modal#}
+        {# Scripts para el funcionamiento de la ventana modal para cargar notas #}
 
         <script src= {% static "dom/selectorMomentos.js" %}></script>
-        <script src= {% static "dom/selectorRevision.js" %}></script>
 
 
         {# Script para cargar notas #}
-        <script>
-            document.getElementById('cargarNota').addEventListener('submit', function(event) {
-                event.preventDefault();
-                const formData = new FormData(this);
-                fetch(`{% url "cargarNota" %}`, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                    alert("Se ha cargado correctamente.");
-                    const modal = new bootstrap.Modal(document.getElementById('cargarNotaModal'));
-                    modal.hide();
-                    this.reset();
-                    window.location.reload();
-                    } 
-                    else {
-                    alert("Error al cargar nota.");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error: ', error);
-                    alert("Ocurrió un error inesperado.");
-                });
-            
-            })
-            
-        </script>
+        <script src="{% static "dom/cargarNota.js" %}"></script>
+
+</div>
+
+
+        <!--Ventana modal para cargar revisiones-->
+
+<div class="modal fade" id="cargarRevisionModal" tabindex="-1" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white rounded-0">
+
+            <!--Encabezado de la ventana modal-->
+            <div class="modal-header">
+                <h5 class="modal-title fs5" id="modalLabelRevision">Cargar revisión</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" arial-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="cargarRevision">
+                {% csrf_token %}
+
+                {# Selector de períodos#}
+
+                <div class="mb-3">
+                    <label for="periodoRevision" class="form-label">Período:</label>
+                    <select name="periodoRevision" id="periodoRevision" class="form-select form-select-lg mb-3" arial-label="Seleccione un período" required>
+                    </select>
+                </div>
+                {# Selector de materias #}
+
+                <div class="mb-3">
+                    <label for="materiaRevision" class="form-label">Materia:</label>
+                        <select name="materiaRevision" id="materiaRevision" class="form-select form-select-lg mb-3" arial-label="Seleccione una materia" required disabled>
+                            <option value="">Seleccione una materia</option>
+                        </select>
+                </div>
+
+                {# Input para recibir la nota de la revisión #}
+
+                <div class="mb-3">
+                    <label for="revisionCargar" class="form-label">Revisión:</label>
+                        <input type="number" max="20" min="0" step="0.01" id="revisionCargar" name="cargarRevision" class="form-control form-control-lg mb-3" placeholder="Ingrese la revisión correspondiente" required>
+                </div>
+
+                <div class="text-center">
+                    <button  id="cargarRevision" type="submit" class="btn btn-light rounded-0 pd-5" style="text-center">Cargar revisión</button>
+                </div>
+                <div>
+                    <input type="text" hidden value="{% url "cargarRevision" %}" name="urlCargarRevision" id="urlCargarRevision">
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+    {# Scripts para el funcionamiento de los selectores #}
+
+<script src="{% static "dom/selectoresCargarRevision.js" %}"></script>
+
+    {# Script para cargar la revisión #}
+
+<script src="{% static "dom/CargarRevision.js" %}"></script>
+</section>
+
 
 
 {% endblock main %}
