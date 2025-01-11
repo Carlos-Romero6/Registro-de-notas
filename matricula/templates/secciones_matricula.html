@@ -201,6 +201,9 @@
 
                         {# input oculto Pensum_id_viejo #}
                         <input type="text" name="pensum_modificar" value="{{ pensum.id }}" hidden>
+
+                        {# input oculto última sección con estudiante en ella #}
+                        <input type="text" name="ultima_secc_estudiante" value="{{ ultima_seccion_disponible }}" hidden>
                     </div>
 
                     <div class="text-center">
@@ -231,7 +234,7 @@
             window.location.reload();
             } 
             else {
-            alert("Error al modificar la matricula.");
+            alert("Error al modificar la matrícula. Posiblemente porque aún hay estudiantes asignados a secciones que se eliminaran. De ser así, por favor reasigne a los estudiantes antes de continuar. ");
             }
             })
             .catch(error => {
