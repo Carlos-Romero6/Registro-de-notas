@@ -1,11 +1,13 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
-from mainapp.models import Notas, Justificaciones, Estudiantes
+from django.db.models import F
+from mainapp.models import Notas, Justificaciones, Estudiantes, Periodos, Matricula
 from .utils.saveDefinitiva import  saveDefinitiva
 from .utils.gestionarEstadosAprobadosReprobados import gestionarAprobadosReprobados
 from .utils.aprobadosPorRevision import aprobadosPorRevision
 from decimal import Decimal
 
+# Receptor notas
 @receiver(pre_save, sender=Notas)
 def gestionNotas(sender, instance,**kwargs):
     print("gestionOk")
@@ -25,6 +27,13 @@ def gestionNotas(sender, instance,**kwargs):
             print(instance.estado)
         except Exception as e:
             print(e)
+            
+# Receptor períodos
+@receiver(pre_save, sender=Periodos)
+def gestionPeriodos(sender, instance, **kwargs):
+    # Gestionar el aumento de los cursos para indicar que ya pasaron el período académico actual
+    Matricula.objects.filter(curso__range=(1,5)).update(curso=F('curso') + 1)
+
 
 '''@receiver(pre_save, sender=Notas)
 def saveDefinitiva(sender, instance,**kwargs):

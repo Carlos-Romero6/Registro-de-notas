@@ -13,6 +13,7 @@ from .utils.definitivasCualitativas import isCualitativa
 @login_required
 def notas(request):
     if request.method == 'GET':
+        usuario = request.user
         return render(request, 'menuNotas.html',cursosDisponibles.obtener())
     
     elif request.method == 'POST':
@@ -35,14 +36,15 @@ def notasEstudiante(request, id_estudiante):
         curso = matricula.curso
         pensum = matricula.pensum
         materias = Materias.objects.filter(pensum=pensum, curso=curso)
-        notas = Notas.objects.filter(estudiante=id_estudiante, materia__pensum=pensum, materia__curso=curso)
+        periodo_actual = Periodos.objects.latest('id')
+        notas = Notas.objects.filter(estudiante=id_estudiante, materia__pensum=pensum, materia__curso=curso, periodos=periodo_actual)
         justificaciones = Justificaciones.objects.filter(notas__in=notas).annotate(
             definitivaTemplate=Cast(
                 Round((Coalesce(F('notas__primer_momento'), 0) + Coalesce(F('notas__segundo_momento'), 0) + Coalesce(F('notas__tercer_momento'), 0)) / 3, 2), FloatField()
                 )
             )
         isCualitativa(justificaciones, 'definitivaTemplate')
-        periodo_actual = Periodos.objects.latest('id')
+        print(periodo_actual)
 
         return render(request, 'notas-estudiante.html', {
             
@@ -125,9 +127,8 @@ def modificarNota(request):
             primer_momento = request.POST.get('primer_momento_modificar')
             segundo_momento = request.POST.get('segundo_momento_modificar')
             tercer_momento = request.POST.get('tercer_momento_modificar')
-            revision = request.POST.get('revision_modificar')
 
-            # Dterminación del registro de las notas y justificaciones que cumplen con la materia, el periodo y el estudiante en cuestión
+            # Determinación del registro de las notas y justificaciones que cumplen con la materia, el periodo y el estudiante en cuestión
             materia = Materias.objects.get(pk=materia_id)
             periodo = Periodos.objects.get(pk=periodo_id)
             estudiante = Estudiantes.objects.get(pk=estudiante_id)
@@ -147,9 +148,6 @@ def modificarNota(request):
             if notas.tercer_momento is not None and justificacion.tercer_momento is not None:
                 notas.tercer_momento = tercer_momento
                 justificacion.tercer_momento = justificacion_tercer_momento
-            
-            if notas.revision:
-                notas.revision = revision
                 
             # Guardado de lo modificado en la base de datos
             
@@ -198,3 +196,29 @@ def cargarRevisiones(request):
         print(e)
         return JsonResponse({'success': False, 'message': 'Error inesperado'})
         print(e)
+        
+def culminarPeriodo(request):
+    if request.method == 'POST':
+        print("OK2")
+        try:
+            ultimo_periodo = Periodos.objects.latest('id')
+            print(ultimo_periodo)
+            if ultimo_periodo is None:
+                print("OK3")
+                ultima_matricula = Matricula.objects.latest('id')
+                if ultima_matricula is None:
+                    return JsonResponse({'success': False, 'message': 'No se ha encontrado una matrícula, por favor carga una matrícula e inténtelo de nuevo.'})
+                else:
+                    inicio = int(ultima_matricula.promocion)
+                    print(inicio)
+                    nuevo_periodo = Periodos(inicio=inicio, finalizacion=inicio + 1)
+                    nuevo_periodo.save()
+                    return JsonResponse({'success': True, 'message': 'El período se ha culminado y se ha iniciado uno nuevo exitosamente'})
+            else:
+                inicio = int(ultimo_periodo.finalizacion)
+                nuevo_periodo = Periodos(inicio=inicio, finalizacion=inicio + 1)
+                nuevo_periodo.save()
+                return JsonResponse({'success': True, 'message': 'El período se ha culminado y se ha iniciado uno nuevo exitosamente.'})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'success': False, 'message': e})
