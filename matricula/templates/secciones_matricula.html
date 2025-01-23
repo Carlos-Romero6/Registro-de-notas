@@ -87,12 +87,12 @@
     height: 100vh;
     }
 
-    /*Diseño del boton de añadir matricula*/
+    /*Diseño del boton de volver*/
     .button1 {
-        position: fixed; /* Fijo en la pantalla */
-            left: 560px; /* Espacio desde la izquierda */
-            bottom: 10px; /* Espacio desde la parte inferior */
-            display: flex;
+        position: center; /* Fijo en la pantalla */
+        margin-top:8px; 
+        margin-bottom: 10px; /* Espacio desde la parte inferior */
+        display: flex;
     }
 
 
@@ -163,7 +163,7 @@
                     {# Promocion #}
                     <div class="mb-3">
                         <label for="promocion_modificar" class="form-label">Promoción:</label>
-                        <input type="text" name="promocion_modificar" id="promocion_modificar" class="form-control form-control-lg" value= '{{matricula.promocion}}' required>
+                        <input type="number" name="promocion_modificar" id="promocion_modificar" class="form-control form-control-lg" value= '{{matricula.promocion}}' required>
                     </div>
 
                     {# Campo para secciones #}

@@ -30,10 +30,12 @@ def materias_pensum(request, id_pensum):#Vista para el menu de las materias de l
         pensum = Pensum.objects.get(pk=id_pensum)
         matriculas = Matricula.objects.filter(pensum=pensum.id)
         materias = Materias.objects.filter(pensum=pensum.id)
+        contador = 0;
         return render(request, 'materias_pensum.html', {
             'materias': materias,
             'pensum': pensum,
-            "matriculas": matriculas
+            "matriculas": matriculas,
+            "contador": contador
             })  
 
 def modificarMateria(request):#Vista que recibe una serie de datos de un formulario para modificar una materia 
