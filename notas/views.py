@@ -7,6 +7,7 @@ from utils import cursosDisponibles
 from django.db.models import F, FloatField
 from django.db.models.functions import Cast, Coalesce, Round
 from .utils.definitivasCualitativas import isCualitativa
+from .utils.estudianteRepitiente import estudianteRepitiente
 # Create your views here.
 
 # Filtrado de estudiantes por curso y sección
@@ -19,10 +20,12 @@ def notas(request):
     elif request.method == 'POST':
                 
                 ESTUDIANTES = Estudiantes.objects.filter(matricula__curso = request.POST['curso'], seccion=request.POST['seccion'], estado=True)
+                periodos_exist = Periodos.objects.exists()
                 return render(request, 'estudiantes-resultado.html',{
                 'estudiantes': ESTUDIANTES,
                 'curso': request.POST['curso'],
                 'seccion': request.POST['seccion'],
+                'periodos_exist': periodos_exist
             })
 
 # Filtrado de notas de un estudiante en cada materia con sus respectivas justificaciones
@@ -30,34 +33,37 @@ def notas(request):
 def notasEstudiante(request, id_estudiante):
 
     if request.method == 'GET':
-        usuario = request.user
-        estudiante = Estudiantes.objects.get(pk=id_estudiante, estado=1)
-        matricula = Matricula.objects.get(pk=estudiante.matricula_id)
-        curso = matricula.curso
-        pensum = matricula.pensum
-        materias = Materias.objects.filter(pensum=pensum, curso=curso)
-        periodo_actual = Periodos.objects.latest('id')
-        notas = Notas.objects.filter(estudiante=id_estudiante, materia__pensum=pensum, materia__curso=curso, periodos=periodo_actual)
-        justificaciones = Justificaciones.objects.filter(notas__in=notas).annotate(
-            definitivaTemplate=Cast(
-                Round((Coalesce(F('notas__primer_momento'), 0) + Coalesce(F('notas__segundo_momento'), 0) + Coalesce(F('notas__tercer_momento'), 0)) / 3, 2), FloatField()
+        if Periodos.objects.exists():
+            usuario = request.user
+            estudiante = Estudiantes.objects.get(pk=id_estudiante, estado=1, flotante=0)
+            matricula = Matricula.objects.get(pk=estudiante.matricula_id)
+            curso = matricula.curso
+            pensum = matricula.pensum
+            materias = Materias.objects.filter(pensum=pensum, curso=curso)
+            periodo_actual = Periodos.objects.latest('id')
+            notas = Notas.objects.filter(estudiante=id_estudiante, materia__pensum=pensum, materia__curso=curso, periodos=periodo_actual)
+            justificaciones = Justificaciones.objects.filter(notas__in=notas).annotate(
+                definitivaTemplate=Cast(
+                    Round((Coalesce(F('notas__primer_momento'), 0) + Coalesce(F('notas__segundo_momento'), 0) + Coalesce(F('notas__tercer_momento'), 0)) / 3, 2), FloatField()
+                    )
                 )
-            )
-        isCualitativa(justificaciones, 'definitivaTemplate')
-        print(periodo_actual)
+            isCualitativa(justificaciones, 'definitivaTemplate')
+            print(periodo_actual)
 
-        return render(request, 'notas-estudiante.html', {
-            
-            # Se envían los objetos para mostrar datos en plantillas o enviar en formularios
-            'usuario': usuario,
-            'estudiante': estudiante,
-            'periodo_actual': periodo_actual,
-            'justificaciones': justificaciones,  
-            'materias': materias,
-            'matricula': matricula,
-        })
+            return render(request, 'notas-estudiante.html', {
 
+                # Se envían los objetos para mostrar datos en plantillas o enviar en formularios
+                'usuario': usuario,
+                'estudiante': estudiante,
+                'periodo_actual': periodo_actual,
+                'justificaciones': justificaciones,  
+                'materias': materias,
+                'matricula': matricula,
+            })
+        else:
+            return render(request, 'notas-estudiante.html', {'message': 'No hay periodos activos, cree su primer período académico y vuelva a intentarlo.'})
 
+# Carga de notas y justificaciones en la base de datos
 def cargarNota(request):
     
     try:
@@ -188,6 +194,7 @@ def cargarRevisiones(request):
                 else:
                     notas_existentes.revision = revision
                     notas_existentes.save()
+                    estudianteRepitiente(notas_existentes)
                     print("Ok 2 ✅")
                     return JsonResponse({'success': True, 'message': "La revisón ha sido cargada exitosamente."})
             else:
@@ -201,24 +208,27 @@ def culminarPeriodo(request):
     if request.method == 'POST':
         print("OK2")
         try:
-            ultimo_periodo = Periodos.objects.latest('id')
-            print(ultimo_periodo)
-            if ultimo_periodo is None:
-                print("OK3")
-                ultima_matricula = Matricula.objects.latest('id')
-                if ultima_matricula is None:
-                    return JsonResponse({'success': False, 'message': 'No se ha encontrado una matrícula, por favor carga una matrícula e inténtelo de nuevo.'})
-                else:
+            if Matricula.objects.filter(curso=1).exists():
+                if Periodos.objects.exists():
+                    ultimo_periodo = Periodos.objects.latest('id')
+                    print(ultimo_periodo)
+                    inicio = int(ultimo_periodo.finalizacion)
+                    nuevo_periodo = Periodos(inicio=inicio, finalizacion=inicio + 1)
+                    nuevo_periodo.save()
+                    return JsonResponse({'success': True, 'message': 'El período se ha culminado y se ha iniciado uno nuevo exitosamente.'})
+
+                elif Matricula.objects.exists():
+                    ultima_matricula = Matricula.objects.latest('id')
                     inicio = int(ultima_matricula.promocion)
                     print(inicio)
                     nuevo_periodo = Periodos(inicio=inicio, finalizacion=inicio + 1)
                     nuevo_periodo.save()
                     return JsonResponse({'success': True, 'message': 'El período se ha culminado y se ha iniciado uno nuevo exitosamente'})
+
+                else:
+                    return JsonResponse({'success': False, 'message': 'No se ha encontrado una matrícula, por favor carga una matrícula e inténtelo de nuevo.'})
             else:
-                inicio = int(ultimo_periodo.finalizacion)
-                nuevo_periodo = Periodos(inicio=inicio, finalizacion=inicio + 1)
-                nuevo_periodo.save()
-                return JsonResponse({'success': True, 'message': 'El período se ha culminado y se ha iniciado uno nuevo exitosamente.'})
+                return JsonResponse({'message': 'No se ha encontrado una matrícula correspondiente al primer año, por favor cargue una e intente de nuevo.'}) 
         except Exception as e:
             print(e)
             return JsonResponse({'success': False, 'message': e})

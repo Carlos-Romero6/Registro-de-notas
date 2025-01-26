@@ -40,6 +40,7 @@ input[type="number"] {
 </style>
         <!-- Tabla de notas del estudiante -->
 <section class="d-flex flex-column align-items-center">
+    {% if message is defined %}<p>{{ message }}</p>{% endif %}
         <h2>Período: {{ periodo_actual.inicio }} - {{ periodo_actual.finalizacion}} </h2>
         <h3 class="Display-3">Notas del estudiante: {{ estudiante.nombres }} {{ estudiante.apellidos }} </h3>
         <div class="table-container mb-3">
