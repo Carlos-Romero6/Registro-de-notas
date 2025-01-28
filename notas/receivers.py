@@ -60,6 +60,15 @@ def gestionPeriodos(sender, instance, **kwargs):
     
     # Gestionar el aumento de los cursos para indicar que ya pasaron el período académico actual
     Matricula.objects.filter(curso__range=(1,5)).update(curso=F('curso') + 1)
+    
+    
+    
+@receiver(post_save, sender=Matricula)
+def asignarMatriculaAFlotantes(sender, created, instance, **kwargs):
+    if created:
+        Estudiantes.objects.filter(flotante=1).update(matricula=instance, seccion="A", flotante=0)
+    
+
 '''@receiver(pre_save, sender=Notas)
 def saveDefinitiva(sender, instance,**kwargs):
     print("Señal OK")

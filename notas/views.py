@@ -19,13 +19,11 @@ def notas(request):
     
     elif request.method == 'POST':
                 
-                ESTUDIANTES = Estudiantes.objects.filter(matricula__curso = request.POST['curso'], seccion=request.POST['seccion'], estado=True)
-                periodos_exist = Periodos.objects.exists()
+                ESTUDIANTES = Estudiantes.objects.filter(matricula__curso = request.POST['curso'], seccion=request.POST['seccion'], estado=1, flotante=0)
                 return render(request, 'estudiantes-resultado.html',{
                 'estudiantes': ESTUDIANTES,
                 'curso': request.POST['curso'],
-                'seccion': request.POST['seccion'],
-                'periodos_exist': periodos_exist
+                'seccion': request.POST['seccion']
             })
 
 # Filtrado de notas de un estudiante en cada materia con sus respectivas justificaciones
@@ -35,7 +33,7 @@ def notasEstudiante(request, id_estudiante):
     if request.method == 'GET':
         if Periodos.objects.exists():
             usuario = request.user
-            estudiante = Estudiantes.objects.get(pk=id_estudiante, estado=1, flotante=0)
+            estudiante = Estudiantes.objects.get(pk=id_estudiante, estado=1)
             matricula = Matricula.objects.get(pk=estudiante.matricula_id)
             curso = matricula.curso
             pensum = matricula.pensum

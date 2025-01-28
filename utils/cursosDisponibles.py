@@ -1,4 +1,4 @@
-from mainapp.models import Matricula
+from mainapp.models import Matricula, Periodos
 
 # Obtiene las secciones disponibles
 def obtener():
@@ -11,8 +11,9 @@ def obtener():
 
     # Devolvera un diccionario con los cursos existentes
     cursos = [ {"id": iterable + 1, "nombre": numeroCurso(iterable), "habilitado": (iterable + 1) in cursosDisponibles} for iterable in range(5)]
-
-    return {'cursos' : cursos} # Devuelve los cursos obtenidos
+    periodos_exist = Periodos.objects.exists()
+    return {'cursos' : cursos,
+            'periodos_exist': periodos_exist} # Devuelve los cursos obtenidos
 
 """    for iterable in range(5):
         curso = {
