@@ -3,3 +3,4 @@ Script.py
 generar_datos.py
 script_notas.py
 create_users.py
+db.sqlite3
