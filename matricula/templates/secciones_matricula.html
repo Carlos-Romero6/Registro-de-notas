@@ -4,7 +4,7 @@
 {% load static %}
 
 <style>
-
+    /* Contenedor y diseño para el contenedor del titulo de matricula */
     .matricula-container {
     background-color: #e0e0e0; /* Color de fondo gris claro */
          border: 1px solid #ccc; /* Borde gris claro */
@@ -20,36 +20,36 @@
         position: fixed;
     }
 
+    /* Diseño del texto del titulo de matricula */
     .matricula-text {
         margin-right: 100px; /* Agregamos un margen a la derecha del texto */
         font-size: 40px;
     }
 
+    /*Centrado del texto de pénsum y curso*/
     .content-container {
         text-align: center; /* Centra el texto */
         margin-top: 50px;
     }
 
+    /*Tamaño del icono de modificar en el titulo*/
     .logo {
         margin-top: 6px;
         width: 50px; 
         height: 50px;
     }
-
+    /*Acomoda un poco la ubicacion de la tabla*/
     .section-list {
         list-style: none;
         padding: 0;
     }
 
-
-    tr:nth-child(even) {
-    background-color: #f2f2f2; /* Alternar colores de fondo */
-    }
-
+    /*Diseño de las etiquetas h3 y h4*/
     h3, h4{
         color:#233c43; /* Cambia el color del texto a verde oscuro */
     }
 
+    /*Diseño de la lista de secciones*/
     .section-list li {
         list-style: none; /* Elimina los marcadores de lista */
         border: 1px solid #233c43; /* Agrega un borde */
@@ -64,25 +64,35 @@
         margin: 4px;
         justify-content: flex-start;
     }
-
+    
+    /*Añade un gris claro a las etiquetas li mas internas*/
     .grissecciones{
         background-color: #f5f5f5; /* Color de fondo gris claro */
     }
 
+    /*Espaciado entre la palabra Seccion y cada una de las letras de las secciones*/
     .seccion-label {
         padding-right: 150px;
         padding-left: 10px;
     }
 
+    /*Quita las flechitas en en el modal de modificar matricula en el apartado de secciones*/
+    input[type="number"] {
+        -mozappearance: textfield;
+        outline: none; 
+    }
+
+    /*Configura la altura de la columna derecha*/
     .right-column {
     height: 100vh;
     }
 
+    /*Diseño del boton de volver*/
     .button1 {
-        position: fixed; /* Fijo en la pantalla */
-            left: 560px; /* Espacio desde la izquierda */
-            bottom: 10px; /* Espacio desde la parte inferior */
-            display: flex;
+        position: center; /* Fijo en la pantalla */
+        margin-top:8px; 
+        margin-bottom: 10px; /* Espacio desde la parte inferior */
+        display: flex;
     }
 
 
@@ -114,6 +124,8 @@
                 </ul>
             </li>
         </ul>
+
+        <!--Se crea un boton modificar matricula y se asocia a una ventana modal-->
         <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent" data-bs-toggle="modal" data-bs-target="#modificarMatriculaModal">
         <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="50" height="50">
         </button></div>
@@ -135,7 +147,7 @@
 </div>
 
 
-
+<!--Ventana modal para modificar Matriculas-->
 <div class="modal fade" id="modificarMatriculaModal" tabindex="-1" data-bs-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content bg-dark text-white rounded-0">
@@ -151,7 +163,7 @@
                     {# Promocion #}
                     <div class="mb-3">
                         <label for="promocion_modificar" class="form-label">Promoción:</label>
-                        <input type="text" name="promocion_modificar" id="promocion_modificar" class="form-control form-control-lg" value= '{{matricula.promocion}}' required>
+                        <input type="number" name="promocion_modificar" id="promocion_modificar" class="form-control form-control-lg" value= '{{matricula.promocion}}' required>
                     </div>
 
                     {# Campo para secciones #}
@@ -189,6 +201,9 @@
 
                         {# input oculto Pensum_id_viejo #}
                         <input type="text" name="pensum_modificar" value="{{ pensum.id }}" hidden>
+
+                        {# input oculto última sección con estudiante en ella #}
+                        <input type="text" name="ultima_secc_estudiante" value="{{ ultima_seccion_disponible }}" hidden>
                     </div>
 
                     <div class="text-center">
@@ -201,6 +216,7 @@
     </div>
 </div>
 
+        <!-- Script de javascript que envia el formulario a otra ruta para su modificación, luego mostrar mensaje si se logro modificar, cierra la ventana modal y recarga la pagina  -->
 <script>
     document.getElementById('modificarMatriculaForm').addEventListener('submit', function(event) {
         event.preventDefault();
@@ -218,7 +234,7 @@
             window.location.reload();
             } 
             else {
-            alert("Error al modificar la matricula.");
+            alert("Error al modificar la matrícula. Posiblemente porque aún hay estudiantes asignados a secciones que se eliminaran. De ser así, por favor reasigne a los estudiantes antes de continuar. ");
             }
             })
             .catch(error => {

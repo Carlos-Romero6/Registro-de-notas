@@ -5,12 +5,8 @@
 
 </head>
 <style>
-.table {
-  border: 1px solid #233c43; /*  */
-  width: 100%; /* Asegúra de que la tabla ocupe el 100% del contenedor */
-  max-width: 350; /* Establece un ancho máximo para las tablas */
-}
 
+/*Modifica el texto dentro de las tablas*/
 .table td {
     padding: 1px; /* Ajusta el relleno de las celdas */
     text-align: center; /* Centra el texto en las celdas */
@@ -18,23 +14,28 @@
     font-weight:500; /* Fuente en negrita */
 }
 
+/*Modifica los bordes de las tablas*/
 .table.table-bordered {
     border: 2px solid black;
     width: 100%;
 }
+
+/*Scroll horizontal de las tablas*/
 .scroll-container {
     overflow-x: auto; /* Permite el desplazamiento horizontal */
     white-space: nowrap; /* Evita que las tablas se envuelvan */
-    height: 600px;
+    height:720px;
     right: 50px;
     box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
     width: 100%;
 }
 
+/*Modificación de las etiquetas h2 y h1*/
 h2, h1{
     color: #233c43; /* Cambia el color del texto a verde oscuro */
 }
 
+/*Contenedor de cada una de las tablas*/
 .container {
     display: inline-block; /* Permite que las tablas se alineen horizontalmente */
     margin: 35px 65px; /* Espacio superior y lateral (top, right/left) */
@@ -42,19 +43,22 @@ h2, h1{
     box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
 }
 
+/*Ubicacion y posicionamiento de los botones modificar y volver*/
 .side-buttons {
             position: fixed; /* Fijo en la pantalla */
-            left: 700px; /* Espacio desde la derecha */
+            left: 820px; /* Espacio desde la izquierda */
             bottom: 20px; /* Espacio desde la parte inferior */
             display: flex;
 }
 
+/*Posicionamiento del boton de volver*/
 .button1 {
     position: absolute;
     bottom: 10px;
     left:20px
 }
 
+/*Posicionamiento del boton de añadir materia*/
 .button2 {
     position: absolute;
     bottom: 10px;

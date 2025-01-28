@@ -1,4 +1,6 @@
 // Agregar Pensum
+
+/*Script de javascript que envia el formulario a otra ruta para ser agregado, luego mostrar mensaje si se logro agregar, cierra la ventana modal y recarga la pagina*/
 document.getElementById('agregarPensum').addEventListener('submit', function(event) {
     event.preventDefault();
     const formData = new FormData(this);
