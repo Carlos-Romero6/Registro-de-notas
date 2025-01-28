@@ -4,6 +4,8 @@
 {% load static %}
 
 <style>
+
+    /* Para colorear la mitad de la pantalla en gris */
     main {
     margin: 0;
     padding: 0;
@@ -13,12 +15,14 @@
     background: linear-gradient(to right, white 0%, white 50%, #dadedf 50%, #dadedf 100%);
     }
 
+    /* Contenedor general de los dos botones */
     .container {
     position: absolute;
     top: 150px;
     width: 100%;
     }
     
+    /* Diseño de los botones */
     .btn-custom {
     font-size: 30px;
     letter-spacing: 1px;
@@ -35,18 +39,18 @@
 </style>
 <div class="container">
     <div class="row justify-content-center mx-auto margin-left-right: 20px">
+        {# Boton que redirecciona a la sección de matriculas #}
         <div class="col-md-5">
             <a href="{% url 'menu-matricula' %}" class="btn-custom ">
                 Matrícula
             </a>
         </div>
+
+        {# Boton que redirecciona a la seccion de pensums #}
         <div class="col-md-2">
             <a href="{% url 'menu-pensum' %}" class="btn-custom ">
                 Pénsum
             </a>
-            <div id="pensum">
-
-            </div>
         </div>
     </div>
 </div>
