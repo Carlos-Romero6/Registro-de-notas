@@ -1,2 +1,2 @@
 # _Registro-de-notas_
-Un sistema de registro y gestión de notas del LN Hugo Rafael Chávez Frías a través de  una base de  datos MySQL y el framework Django.
+Un sistema de registro y gestión de calificaciones automatizado de estudiantes usando el framework Django y como motor de base de datos SQLite.
