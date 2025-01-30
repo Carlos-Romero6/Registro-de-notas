@@ -95,6 +95,17 @@
         display: flex;
     }
 
+    .btn-outline-custom {
+        border: 2px solid #223941;
+        border-radius: 5px;
+        font-weight: bold;
+        color: #3c6569;  
+    }
+    .btn-outline-custom:hover {
+        border: 2px solid #6f989c;
+        color: #6f989c;
+        border-radius: 5px;    
+    }
 
 </style>
 
@@ -133,7 +144,7 @@
         {# boton para volver #}
         <div class="button1">
             <a class="md-5" href="{% url 'menu-matricula' %}">
-                <button class="btn btn-outline-dark">Volver</button>
+                <button class="btn btn-outline-custom">Volver</button>
             </a>
         </div>
     </div>

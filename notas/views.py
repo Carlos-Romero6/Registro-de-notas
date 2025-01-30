@@ -84,12 +84,11 @@ def cargarNota(request):
             nota = float(nota)
             
             # Se verifica si la nota ya existe en la base de datos
-            if momento == 'primer_momento':
+            if momento == 'primer_momento' and not Notas.objects.filter(estudiante=estudiante, materia=materia, periodos=periodo).exists():
                 nueva_nota = Notas(estudiante=estudiante, materia=materia, periodos=periodo, primer_momento=nota)
                 nueva_nota.save()
                 nueva_justificacion = Justificaciones(notas=nueva_nota, primer_momento=justificacion)
                 nueva_justificacion.save()
-                
             
             # Si la nota ya existe, se actualiza
             else:

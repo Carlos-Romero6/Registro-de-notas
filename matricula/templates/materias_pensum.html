@@ -24,7 +24,7 @@
 .scroll-container {
     overflow-x: auto; /* Permite el desplazamiento horizontal */
     white-space: nowrap; /* Evita que las tablas se envuelvan */
-    height:720px;
+    height: 100%;
     right: 50px;
     box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
     width: 100%;
@@ -52,7 +52,19 @@ h2, h1{
 }
 
 /*Posicionamiento del boton de volver*/
-.button1 {
+.btn-outline-custom {
+    border: 2px solid #223941;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #3c6569;
+    position: absolute;
+    bottom: 10px;
+    left:20px
+}
+.btn-outline-custom:hover {
+    border: 2px solid #6f989c;
+    color: #6f989c;
+    border-radius: 5px;    
     position: absolute;
     bottom: 10px;
     left:20px
@@ -613,7 +625,7 @@ h2, h1{
             <div class="side-buttons">
                 <div class = "button1">
                     <a class="md-5" href="{% url 'menu-pensum' %}">
-                        <button class="btn btn-outline-dark">Volver</button>
+                        <button class="btn btn-outline-custom">Volver</button>
                     </a>
                 </div>
             </div>

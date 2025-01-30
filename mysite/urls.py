@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('mainapp.urls')),
     path('consultar-momentos/', momentosDisponibles.consultarMomento, name="consultar-momento"),
     path('pensum-matricula/', include('matricula.urls'), name="pensum-matricula"),
+    path('ver/',include('ver.urls'), name="ver"),
     path('periodos-revisiones/', periodosRevisiones.periodoRevisiones, name="periodosRevisiones"),
     path('materias-reprobadas-revision/', materiasReprobadasRevision.materiasReprobadasRevision, name="materiasReprobadas")
 ]

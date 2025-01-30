@@ -88,11 +88,11 @@
     {# Columna derecha (texto) #}
     <div class="col-md-4 d-flex align-items-center justify-content-center right-column" style="background-color: #dadedf;">
         <p class="text-center text-muted" style="font-size:1.5rem; padding: 20px;">
-            Seleccione curso y sección para cargar las notas de un estudiante.
+            Seleccione curso y sección para cargar las notas de un estudiante.{% if request.user.is_staff %} Y si desea cear un nuevo período, haga click en el botón correspondiente.{% endif %}
         </p>
     </div>
     {% if request.user.is_staff %}
-    <div class="mt-auto mb-10 w-100 d-flex justify-content-center flex-column align-items-center" style="position: absolute; bottom: 0; right: 6%; width: 100%; height: 50px;">
+    <div class="mt-auto mb-10 w-100 d-flex justify-content-center flex-column align-items-center" style="position: absolute; bottom: 5%; right: 6%; width: 100%; height: 50px;">
       <button class="btn btn-outline-dark btn-outline-dark-custom mb-3" data-bs-toggle="modal" data-bs-target="#culminarPeriodo">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar2-x" viewBox="0 0 16 16">
           <path d="M6.146 8.146a.5.5 0 0 1 .708 0L8 9.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 10l1.147 1.146a.5.5 0 0 1-.708.708L8 10.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 10 6.146 8.854a.5.5 0 0 1 0-.708"/>

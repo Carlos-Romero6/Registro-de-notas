@@ -6,7 +6,7 @@ def consultarSecciones(request):
     if not curso:
         return JsonResponse({'error' : 'Curso no proporcionado'})
 
-    POSIBLES_SECCIONES = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+    POSIBLES_SECCIONES = ['A', 'B', 'C', 'D', 'E', 'F']
     try:
         # Obtener la matricula para el curso proporcionado
         matricula = Matricula.objects.get(curso=curso)
