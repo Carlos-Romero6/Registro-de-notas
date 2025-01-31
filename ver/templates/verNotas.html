@@ -24,7 +24,7 @@
             display: flex;
             justify-content: center;
             margin-left: 42%;
-            background-color: #f5f5f5; 
+            background-color: #f5f5f5;
         }
         .estudiante-container {
             background-color: #e0e0e0; /* Color de fondo gris claro */
@@ -112,7 +112,14 @@
     {% for periodo in periodos %}
 
     <section class="d-flex flex-column align-items-center mt-5">
-        <h4 class="periodos mb-3">Período académico {{ periodo.inicio }} - {{periodo.finalizacion}}</h4>
+        <h4 class="periodos mb-3 d-flex align-items-center">
+            Período académico {{ periodo.inicio }} - {{periodo.finalizacion}}
+            <a href="{% url 'descargarExcel' %}?periodo={{ periodo.id }}&estudiante={{ estudiante.id }}" style="margin-left: 0.5em;">
+                <button class="btn" style="" title="Descargar excel">
+                    <img src="{% static 'images/icons/download_excell.png' %}" alt="" style="width: 3em;height: 3em;">
+                </button>
+            </a>
+        </h4>
         <div class="table-container mb-3">
             <table class="table table-success table-striped table-bordered">
                 <thead class="table-dark" style="position: sticky; top: 0; z-index:2">

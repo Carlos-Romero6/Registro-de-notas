@@ -3,6 +3,7 @@ from mainapp.models import Matricula, Notas, Estudiantes, Periodos, Justificacio
 from django.db.models import F, FloatField
 from django.db.models.functions import Cast, Coalesce, Round
 from notas.utils.definitivasCualitativas import isCualitativa
+from .utils.excel import generarExcel
 # Create your views here.
 
 def ver(request):
@@ -55,3 +56,6 @@ def notasVer(request, curso):
             'periodos': periodos,
             'cursos': cursos
         })
+
+def descargarExcel(request):
+    return generarExcel(request.GET.get('periodo'), request.GET.get('estudiante'))

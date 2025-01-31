@@ -1,4 +1,5 @@
 __pycache__/
+migrations/
 Script.py 
 generar_datos.py
 db.sqlite3
