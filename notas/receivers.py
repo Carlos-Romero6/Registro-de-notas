@@ -35,6 +35,9 @@ def gestionNotas(sender, instance,**kwargs):
 # Receptor períodos
 @receiver(pre_save, sender=Periodos)
 def gestionPeriodos(sender, instance, **kwargs):
+    if not Periodos.objects.exists():
+        return
+    
     estudiantes_repitientes = Estudiantes.objects.filter(repitiente=1, estado=1)
     
     for estudiante in estudiantes_repitientes: 

@@ -36,6 +36,7 @@
                 font-weight: bold; /* Fuente en negrita */
                  color: #333; /* Color del texto gris oscuro */
                 color: #233c43; /* Cambia el color del texto a verde oscuro */
+                max-width: 45rem;
             }
         .sidebar {
             position:fixed;
@@ -85,12 +86,12 @@
 </head>
 <body>
 
-<div class="d-flex flex-column align-items-center mt-5 mb-5">
+<div class="d-flex flex-column align-items-center mt-5 mb-5 ms-0">
     <h3 class="text-center estudiante-container"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-clipboard-data me-3" viewBox="0 0 16 16">
         <path d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z"/>
         <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
         <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
-    </svg>Estudiante {{ estudiante.nombres }} {{ estudiante.apellidos }} </h3>
+    </svg>{{ estudiante.nombres }} {{ estudiante.apellidos }} </h3>
 </div>
 <div class="d-flex flex-column align-items-center pagination-container text-center">
     <nav aria-label="Paginador de cursos">
