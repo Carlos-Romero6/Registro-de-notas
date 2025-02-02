@@ -14,7 +14,7 @@ class Matricula(models.Model):
 class Estudiantes(models.Model):
     nombres = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
-    ci = models.CharField(max_length=8)
+    ci = models.CharField(max_length=8, unique=True)
     genero = models.CharField(max_length=10, null=True)
     seccion = models.CharField(max_length=1)
     estado = models.BooleanField(default=True)

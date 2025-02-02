@@ -65,7 +65,7 @@ document.getElementById('editarEstudiante').addEventListener('submit', function 
             modal.hide();
             window.location.reload();
         } else {
-            alert("Error al actualizar el estudiante.");
+            alert(`${data.message}`);
         }
     })
     .catch(error => {
