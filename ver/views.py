@@ -1,17 +1,21 @@
-from django.shortcuts import render
 from mainapp.models import Matricula, Notas, Estudiantes, Periodos, Justificaciones
-from django.db.models import F, FloatField
-from django.db.models.functions import Cast, Coalesce, Round
 from notas.utils.definitivasCualitativas import isCualitativa
+from django.db.models.functions import Cast, Coalesce, Round
+from django.contrib.auth.decorators import login_required
+from django.db.models import F, FloatField
 from .utils.excel import generarExcel
+from django.shortcuts import render
 # Create your views here.
 
+@login_required
 def ver(request):
     if request.method == 'GET':
         matriculas = Matricula.objects.all()
         return render(request, 'ver.html', {
             'matriculas': matriculas
         })
+    
+@login_required
 def secciones(request, id_matricula):
     if request.method == 'GET':
         SECCIONES_POSIBLES = ["A", "B", "C", "D", "E", "F", "G"]
@@ -24,6 +28,7 @@ def secciones(request, id_matricula):
             'pensum': pensum
         })
 
+@login_required
 def estudiantes(request):
     if request.method == 'GET':
         matricula_id = request.GET.get('matricula')
@@ -36,6 +41,7 @@ def estudiantes(request):
             'estudiantes': estudiantes
         })
 
+@login_required
 def notasVer(request, curso):
     if request.method == 'GET':
         estudiante_id = request.GET.get('estudiante')
@@ -57,5 +63,6 @@ def notasVer(request, curso):
             'cursos': cursos
         })
 
+@login_required
 def descargarExcel(request):
     return generarExcel(request.GET.get('periodo'), request.GET.get('estudiante'))

@@ -1,14 +1,17 @@
-from django.shortcuts import render, get_list_or_404, redirect 
-from django.http import JsonResponse
 from mainapp.models import Notas, Estudiantes, Materias, Matricula, Pensum, Justificaciones, Periodos
-from django.urls import reverse
+from django.shortcuts import render, get_list_or_404, redirect 
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.db.models import Count
-# Create your views here.
+from django.urls import reverse
 
+# Create your views here.
+@login_required
 def pensum_matricula(request):#Vista del menú pénsum y matricula
     if request.method == 'GET':
         return render(request, 'menu-pensum-matricula.html')
 
+@login_required
 def menu_matricula(request):#Vista del menú de matricula
     if request.method == 'GET':
         matriculas = Matricula.objects.filter(curso__range=(1, 5))#Obtenemos las matriculas cuyo curso esta dentro de un rango de 1 a 5
@@ -19,12 +22,14 @@ def menu_matricula(request):#Vista del menú de matricula
             'pensums': pensums,
             'matriculas_curso_1': num_matriculas_curso_1
             })
-    
+
+@login_required
 def menu_pensum(request):#Vista para el menú de pénsums
     if request.method == 'GET':
         pensums = Pensum.objects.all()
         return render(request, 'menu-pensum.html', {'pensums': pensums})
 
+@login_required
 def materias_pensum(request, id_pensum):#Vista para el menu de las materias de los pénsums
     if request.method == 'GET':
         pensum = Pensum.objects.get(pk=id_pensum)
@@ -38,6 +43,7 @@ def materias_pensum(request, id_pensum):#Vista para el menu de las materias de l
             "contador": contador
             })  
 
+@login_required
 def modificarMateria(request):#Vista que recibe una serie de datos de un formulario para modificar una materia 
     try:
         if request.method == 'POST':
@@ -64,6 +70,7 @@ def modificarMateria(request):#Vista que recibe una serie de datos de un formula
     except:
         return JsonResponse({'success': False, 'message': 'Ha ocurrido un fallo inesperado'})
     
+@login_required
 def modificarPensum(request):#Vista que recibe una serie de datos de un formulario para modificar el pénsum 
     try:
         if request.method == 'POST':
@@ -85,6 +92,7 @@ def modificarPensum(request):#Vista que recibe una serie de datos de un formular
     except:
         return JsonResponse({'success': False, 'message': 'Ha ocurrido un fallo inesperado'})
 
+@login_required
 def secciones_matricula(request, id_matricula):#Vista del menú de secciones de cada matricula 
     if request.method == 'GET':
         matricula = Matricula.objects.get(pk=id_matricula)
@@ -117,6 +125,7 @@ def secciones_matricula(request, id_matricula):#Vista del menú de secciones de 
             'ultima_seccion_disponible': ult_seccion_estudiante,
             })
 
+@login_required
 def modificarMatricula(request):#Vista que recibe una serie de datos de un formulario para modificar la matricula
     try:
         if request.method == 'POST':

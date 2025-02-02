@@ -24,7 +24,7 @@ document.getElementById('agregarEstudiante').addEventListener('submit', function
       modal.hide();
       window.location.reload();
     } else {
-      alert("Error al cargar estudiante.");
+      alert(`${data.message}`);
     }
   })
   .catch(error => {
