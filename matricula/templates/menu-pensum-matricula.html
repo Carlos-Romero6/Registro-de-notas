@@ -1,0 +1,58 @@
+{% extends 'layouts/sidebar.html' %}
+
+{% block main %}
+{% load static %}
+
+<style>
+
+    /* Para colorear la mitad de la pantalla en gris */
+    main {
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, white 0%, white 50%, #dadedf 50%, #dadedf 100%);
+    }
+
+    /* Contenedor general de los dos botones */
+    .container {
+    position: absolute;
+    top: 150px;
+    width: 100%;
+    }
+    
+    /* Diseño de los botones */
+    .btn-custom {
+    font-size: 30px;
+    letter-spacing: 1px;
+    background: linear-gradient(to left, #233c43, #406d70);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    width: 100px;
+    text-decoration: none;
+    font-weight:500;
+    padding: 5px 15px;
+    }
+
+</style>
+<div class="container">
+    <div class="row justify-content-center mx-auto margin-left-right: 20px">
+        {# Boton que redirecciona a la sección de matriculas #}
+        <div class="col-md-5">
+            <a href="{% url 'menu-matricula' %}" class="btn-custom ">
+                Matrícula
+            </a>
+        </div>
+
+        {# Boton que redirecciona a la seccion de pensums #}
+        <div class="col-md-2">
+            <a href="{% url 'menu-pensum' %}" class="btn-custom ">
+                Pénsum
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock main %}

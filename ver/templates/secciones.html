@@ -1,0 +1,178 @@
+{% extends "layouts/sidebar.html" %}
+
+{% block main %}
+{% load static %}
+
+<head>
+    <title>Secciones</title>
+    <style>
+        .btn-custom {
+            background: linear-gradient(to left, #233c43, #406d70);
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+            min-width: 7rem;
+        }
+
+        .btn-custom:hover {
+            background: linear-gradient(to left, #455e65, #628f92);
+            color: white;
+        }
+        .btn-outline-custom {
+            border: 2px solid #223941;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #3c6569;  
+        }
+        .btn-outline-custom:hover {
+            border: 2px solid #6f989c;
+            color: #6f989c;
+            border-radius: 5px;    
+        }
+
+        /* Contenedor y diseño para el contenedor del titulo de matricula */
+        .matricula-container {
+        background-color: #e0e0e0; /* Color de fondo gris claro */
+             border: 1px solid #ccc; /* Borde gris claro */
+             border-radius: 5px; /* Bordes redondeados */
+             padding: 0px 20px; /* Espacio interno */
+            text-align: center; /* Centra el texto horizontalmente */
+            font-size: 18px; /* Tamaño de la fuente */
+            font-weight: 500; /* Fuente en negrita */
+             color: #333; /* Color del texto gris oscuro */
+            display: flex;
+            margin-top: -500px;
+            color: #233c43; /* Cambia el color del texto a verde oscuro */
+            position: fixed;
+        }
+    
+        /* Diseño del texto del titulo de matricula */
+        .matricula-text {
+            margin-right: 100px; /* Agregamos un margen a la derecha del texto */
+            font-size: 40px;
+        }
+    
+        /*Centrado del texto de pénsum y curso*/
+        .content-container {
+            text-align: center; /* Centra el texto */
+            margin-top: 50px;
+        }
+    
+        /*Tamaño del icono de modificar en el titulo*/
+        .logo {
+            margin-top: 6px;
+            width: 50px; 
+            height: 50px;
+        }
+        /*Acomoda un poco la ubicacion de la tabla*/
+        .section-list {
+            list-style: none;
+            padding: 0;
+        }
+    
+        /*Diseño de las etiquetas h3 y h4*/
+        h3, h4{
+            color:#233c43; /* Cambia el color del texto a verde oscuro */
+        }
+    
+        /*Diseño de la lista de secciones*/
+        .section-list li {
+            list-style: none; /* Elimina los marcadores de lista */
+            border: 1px solid #233c43; /* Agrega un borde */
+            border-radius: 10px; /* Redondea las esquinas */
+            padding: 6px;
+            margin-bottom: 4px;
+            font-weight: bold; /* Fuente en negrita */
+            color:#233c43; /* Cambia el color del texto a verde oscuro */
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            margin: 4px;
+            justify-content: flex-start;
+        }
+        .badge-custom {
+            color:#233c43;
+        }
+        /*Añade un gris claro a las etiquetas li mas internas*/
+        .grissecciones{
+            background-color: #f5f5f5; /* Color de fondo gris claro */
+        }
+    
+        /*Espaciado entre la palabra Seccion y cada una de las letras de las secciones*/
+        .seccion-label {
+            padding-right: 150px;
+            padding-left: 10px;
+        }
+    
+        /*Quita las flechitas en en el modal de modificar matricula en el apartado de secciones*/
+        input[type="number"] {
+            -mozappearance: textfield;
+            outline: none; 
+        }
+    
+        /*Configura la altura de la columna derecha*/
+        .right-column {
+        height: 100vh;
+        }
+    
+        /*Diseño del boton de volver*/
+        .button1 {
+            position: center; /* Fijo en la pantalla */
+            margin-top:8px; 
+            margin-bottom: 10px; /* Espacio desde la parte inferior */
+            display: flex;
+        }
+    
+    </style>
+</head>
+
+<body>
+    <div class="row w-100">
+
+        <div class="col-md-8 d-flex flex-column align-items-center justify-content-center">
+        <div class="matricula-container">
+            <span class="matricula-text">Matrícula {{ matricula.promocion }}</span>
+            <img src="{% static 'images/icons/edit-icon.png' %}"  alt="Logo del pensum" class="logo">
+        </div>
+    
+        <div class="content-container">    
+    
+            <h3 class="mt-3">Pénsum: {{ pensum.nombre_pensum }}</h3>
+    
+            <ul class="section-list">
+                <h4>Curso: {% if matricula.curso > 5 %} <span class="badge rounded-pill bg-dark">Egresado</span> {% else %} {{ matricula.curso }} {% endif %}</h4>
+                <li>
+                    <ul>
+                    {% for seccion in secciones %}
+                        <li class="grissecciones">
+                            <span class="seccion-label">Sección </span>
+                            <span class="seccion-value">{{ seccion }}</span>
+                            <a href="{% url "estudiantesVer" %}?seccion={{seccion}}&matricula={{matricula.id}}">
+                                <button type="submit" style="cursor: pointer; border: none; outline: none; background-color: transparent; width: 35px; height: 35px;" title="Ir a los estudiantes">
+                                    <img src="{% static "images/icons/ir_1.png" %}" alt="Ir a los estudiantes" width="40" height="40">
+                                </button>
+                            </a>
+                        </form>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        {# boton para volver #}
+        <div class="button1">
+            <a class="md-5" href="{% url 'ver' %}">
+                <button class="btn btn-outline-custom">Volver</button>
+            </a>
+        </div>
+        </div>
+            {# Columna derecha (texto) #}
+    <div class="col-md-4 d-flex align-items-center justify-content-center right-column" style="background-color: #dadedf;">
+        <p class="text-center text-muted" style="font-size:1.5rem; padding: 20px;">
+            Seleccione una sección para ver los estudiantes pertenecientes a la misma.
+        </p>
+        </div>
+    </div>
+    </div>
+    
+{% endblock main %}

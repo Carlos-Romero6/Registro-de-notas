@@ -1,0 +1,72 @@
+{% extends "layouts/sidebar.html" %}
+
+{% block main %}
+{% load static %}
+<head>
+    <title>Matrículas</title>
+    <style>
+        .sidebar {
+            position:fixed;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            overflow-x: auto;
+            margin: auto;
+            margin-left: 20%;
+        }
+        .button {
+            background-color: #dadedf;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px 90px;
+            margin: 20px;
+            text-align: center;
+            font-size: 35px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            text-decoration: none;
+            font-weight:500;
+            color: #233c43; /* Cambia el color del texto a verde oscuro */
+            max-width: 23%; /* Limita el ancho máximo */
+        }
+        .button:hover {
+            background-color: #fafafa;
+        }
+        h1 {
+            margin-left: -800px;
+            text-align: left;
+            margin-top: 20px;
+            font-size: 35px; /* Aumenta el tamaño del texto del encabezado */
+            color:#233c43; /* Cambia el color del texto a verde oscuro */
+            margin-left: 22%;
+        }
+        .button1 {
+            position: center; /* Fijo en la pantalla */
+            margin-top:20px; 
+            margin-bottom: 10px; /* Espacio desde la parte inferior */
+            display: flex;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>Matrículas</h1>
+    <!--Ciclo for para recorrer la lista de diccionarios de las matriculas-->
+    <div class="container">
+        {% for matricula in matriculas %}
+        <!--Mostramos en pantalla los botones y le pasamos el id de esa matricula a la siguiente url-->
+        <a href="{% url 'secciones' matricula.id %}" class="button">{{ matricula.promocion}}</a>
+
+        {% empty %}
+        <h1 class="ms-2">No se encontraron matrículas</h1>
+        {% endfor %}
+
+    </div>
+</body>
+
+
+{% endblock main %}

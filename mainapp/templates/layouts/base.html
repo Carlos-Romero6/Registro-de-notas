@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Gestion de Notas</title>
+  <link rel="stylesheet" href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static "fonts.css" %}">
+  <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.png' %}">
+  <script src="{% static 'node_modules/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+  <style>
+    body {
+      font-family: montserrat;
+    }
+
+    select option {
+      font-family: 'montserrat', sans-serif;
+      font-weight: 200;
+    } 
+  </style>
+</head>
+<body>
+  {% block content %}
+  {% endblock content %}
+</body>
+</html>

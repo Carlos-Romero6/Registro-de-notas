@@ -1,0 +1,140 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+{% load static %}
+<style>
+    body {
+        height: 100vh;
+        display: flex;
+        margin: 0;
+    }
+    .container {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .row {
+        width: 100%;
+        height: 100%;
+    }
+    .bg-left {
+        background-color: white;
+    }
+    .bg-right {
+        background: linear-gradient(to top, #233c43, #406d70);
+        color: white;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        padding: 0 20px;
+    }
+    .bg-right img {
+        width: 12em;
+        height: 12em;
+        margin-bottom: 20px;
+    }
+    .bg-left img {
+        width: 8em;
+        height: 8em;
+    }
+    label {
+        background: white;
+        padding: 10px 20px;
+        border: 1px solid #757575;
+        margin-bottom: 25px;
+    }
+    .form-control {
+        background-color: #cccccc;
+        font-size: 12px;
+        padding: 10px 5px;
+        border-color: #757575;
+        border-left: transparent;
+        margin: auto;
+        margin-bottom: 25px;
+    }
+    .card-form {
+        background: linear-gradient(to bottom right, #cccccc, #ffffff);
+        padding: 100px 20px 25px 20px;
+        border: 1px solid #355a60;
+        border-radius: 25px;
+        max-width: 70%;
+        margin: auto;
+        position: relative;
+        z-index: 0;
+    }
+    form div {
+        max-width: 85%;
+        margin:auto;
+    }
+    form .btn-custom {
+        background: linear-gradient(to left, #233c43, #406d70);
+        letter-spacing: 1px;
+        color: white;
+        margin-top: 25px;
+        padding: 3px 25px;
+    }
+    form .btn-custom:hover {
+        background: linear-gradient(to left, #455e65, #628f92);
+        color: white;
+    }
+    form button strong {
+        font-size: 16px;
+    }
+    .card-form-container {
+        position: relative;
+        display: flex;
+        justify-content: center;
+    }
+    .card-form-container img {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, -80%);
+        z-index: 1;
+    }
+</style>
+<div class="container">
+    <div class="row d-flex align-items-center justify-content-center">
+        {# Left Section: Login Form #}
+        <div class="bg-left col-md-6 px-4">
+            <div class="p-4">
+                {# User Icon #}
+                <div class="card-form-container">
+                    <img src="{% static 'images/login/user-login.png' %}" alt="User Icon">
+                </div>
+                {# Login Form #}
+                <form action="{% url 'login-process' %}" method="POST" class="card card-body card-form">
+                    {% csrf_token %}
+                    <div class="mb-3 d-flex">
+                        <label for="username"></label>
+                        <input type="text" required name="username" id="username" class="form-control rounded-0" placeholder="USUARIO">
+                    </div>
+                    <div class="mb-3 d-flex">
+                        <label for="password"></label>
+                        <input type="password" required name="password" id="password" class="form-control rounded-0" placeholder="CONTRASEÑA">
+                    </div>
+
+                    {% if error %}
+                    <p>{{ error }}</p>
+                    {% endif %}
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-custom rounded-0"><strong>INICIA SESIÓN</strong></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {# Right Section: Logo and Text #}
+        <div class="bg-right col-md-6 text-light">
+            <img src="{% static 'images/login/school.png' %}" alt="Logo" class="mb-2">
+            <h4 class="fw-bold font-size: 20px;">Base de datos</h4>
+            <p style="font-size: 22px;">Liceo Nacional Hugo Rafael Chávez Frías</p>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
