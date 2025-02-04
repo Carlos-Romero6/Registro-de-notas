@@ -1,0 +1,406 @@
+{% extends "layouts/sidebar.html" %}
+{% load static %}
+{% block main %}
+
+<style>
+    .btn-custom {
+        background: linear-gradient(to left, #233c43, #406d70);
+        color: white;
+        font-weight: bold;
+        border-radius: 5px;
+        min-width: 7rem;
+    }
+    .btn-custom:hover {
+        background: linear-gradient(to left, #455e65, #628f92);
+        color: white;
+    }
+    .btn-outline-custom {
+        border: 2px solid #223941;
+        border-radius: 5px;
+        font-weight: bold;
+        color: #3c6569;  
+    }
+    .btn-outline-custom:hover {
+        border: 2px solid #6f989c;
+        color: #6f989c;
+        border-radius: 5px;    
+    }
+    .table-container {
+        overflow-y: scroll;
+        width: 90%;
+        height: 70vh;
+    }
+input[type="number"] {
+    -moz-appearance: textfield;
+    outline: none;
+}
+.d-flex.flex-column.align-items-center {
+    max-width: 100%;
+}
+</style>
+        <!-- Tabla de notas del estudiante -->
+<section class="d-flex flex-column align-items-center">
+    {% if message is defined %}<p>{{ message }}</p>{% endif %}
+        <h2>Período: {{ periodo_actual.inicio }} - {{ periodo_actual.finalizacion}} </h2>
+        <h3 class="Display-3">Notas del estudiante: {{ estudiante.nombres }} {{ estudiante.apellidos }} </h3>
+        <div class="table-container mb-3">
+            <table class="table table-success table-striped table-bordered">
+                <thead class="table-dark" style="position: sticky; top: 0; z-index:2">
+                    <tr>
+                        
+                        <th style="text-align: center">#</th>
+                        <th style="text-align: center">Materia</th>
+                        <th style="text-align: center">Primer momento</th>
+                        <th style="text-align: center">Justificación</th>
+                        <th style="text-align: center">Segundo momento</th>
+                        <th style="text-align: center">Justificación</th>
+                        <th style="text-align: center">Tercer momento</th>
+                        <th style="text-align: center">Justificación</th>
+                        <th style="text-align: center">Definitiva</th>
+                        <th style="text-align: center">Revisión</th>
+                        <th style="text-align: center">Estado</th>
+                        {% if usuario.is_staff %}
+                        <th style="text-align: center; z-index: 1; position: sticky; right:0;"> Acciones</th>
+                        {% endif %}
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {# Notas del estudiate en la tabla con sus respectivos momentos y justificaciones#}
+                    {% for justificacion in justificaciones %}
+                        <tr>
+                            <td style="text-align: center">{{ forloop.counter }}</td>
+                            <td style="text-align: center">{{ justificacion.notas.materia.nombre_materia }}</td>
+                            <td style="text-align: center">{% if justificacion.notas.primer_momento is None %} — {% else %} {{ justificacion.notas.primer_momento }} {% endif %}</td>
+                            <td style="text-align: center">{% if justificacion.primer_momento is None %} — {% else %} {{ justificacion.primer_momento }} {% endif %}</td>
+                            <td style="text-align: center">{% if justificacion.notas.segundo_momento is None %} — {% else %}{{ justificacion.notas.segundo_momento }}{% endif %}</td>
+                            <td style="text-align: center">{% if justificacion.segundo_momento is None %} — {% else %} {{ justificacion.segundo_momento }} {% endif %}</td>
+                            <td style="text-align: center">{% if justificacion.notas.tercer_momento is None %} — {% else %} {{ justificacion.notas.tercer_momento }} {% endif %}</td>
+                            <td style="text-align: center"> {% if justificacion.tercer_momento is None %} — {% else %} {{ justificacion.tercer_momento }} {% endif %}</td>
+                            <td style="text-align: center">{% if justificacion.notas.definitiva is None or justificacion.notas.materia.cualitativa == 1 %} {{ justificacion.definitivaTemplate }} {% else %} {{ justificacion.notas.definitiva }} {% endif %}</td>
+
+
+
+
+                            <td style="text-align: center">{% if justificacion.notas.revision is None %} No proporcionado. {% else %} {{ justificacion.notas.revision }} {% endif %}</td>
+
+                            <td style="text-align: center">{% if justificacion.notas.estado is None %} <span class="badge rounded-pill text-bg-secondary">A CONFIRMAR</span> {% elif justificacion.notas.estado == "APROBADO" %} <span class="badge rounded-pill text-bg-success">{{ justificacion.notas.estado }}</span> {% else %} <span class="badge rounded-pill text-bg-danger">{{ justificacion.notas.estado }}</span>{% endif %}</td>
+
+                            <!-- Botón para modificar la nota -->
+                            {% if usuario.is_staff %}
+                            <td style="z-index: 1; position: sticky; right:0;"> 
+                                {% if justificacion.notas.revision is None %}
+                                <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent;" data-bs-toggle="modal" data-bs-target="#modificarNotaModal{{ forloop.counter }}" title="Modificar nota">
+                                    <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="30" height="30">
+                                </button>
+                            {% endif %}
+                            </td>
+                        </tr>
+                            {% endif %}
+                <!--Ventana modal para modificar notas-->
+
+            <div class="modal fade" id="modificarNotaModal{{ forloop.counter }}" tabindex="-1" data-bs-keyboard="false">
+                <div class="modal-dialog">
+                    <div class="modal-content bg-dark text-white rounded-0">
+                        <div class="modal-header">
+                                <h5 class="modal-title">Modificar notas</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </button>
+                        </div>
+                        <!--Formularios para modificar notas-->
+                        <div class="modal-body">
+                            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                </svg>
+                                <div style="margin-top: 15px; margin-left: 5px;">
+                                    <p>Todas las notas se cambiarán simultáneamente cuando presione el botón <strong>Modificar</strong>.</p>
+                                </div>
+                            </div>
+                            <form id="modificarNotaForm{{ forloop.counter }}">
+                                {% csrf_token %}
+
+                                {# Materia #}
+                                <div class="mb-3">
+                                    <label for="materia_mostrar" class="form-label">Materia:</label>
+                                    <select name="materia_mostrar" id="materia_mostrar" class="form-select form-select-lg mb-3" disabled required>
+                                        <option value="{{ justificacion.notas.materia.id}}"> {{ justificacion.notas.materia.nombre_materia }}</option>
+                                    </select>
+                                    <input type="text" name="materia_modificar" id="materia_modificar" value="{{ justificacion.notas.materia.id }}" hidden>
+                                </div>
+                                <div>
+                                    <input type="text" name="estudiante_modificar" value="{{ estudiante.id }}" hidden>
+                                    <input type="text" name="periodo_modificar" value="{{ periodo_actual.id }}" hidden>
+                                    <input type="text" name="notas_modificar" value="{{ justificacion.notas.id}}" hidden>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="primer_momento_modificar" class="form-label">Primer momento:</label>
+                                    <input type="number" id="primer_momento_modificar" max="20" min="0" step="0.01"  class="form-control form-control-lg" value= "{{ justificacion.notas.primer_momento }}" name="primer_momento_modificar" {% if justificacion.notas.primer_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="justificacion_primer_momento_modificar">Justificación</label>
+                                    <select id="justificacion_primer_momento_modificar" name="justificacion_primer_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.primer_momento }}" {% if justificacion.primer_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                        <option value="{{ justificacion.primer_momento }}">{% if justificacion.primer_momento is None %} No proporcionado. {% else %}{{ justificacion.primer_momento }}</option> {% endif %}
+                                        <option value="C">C (cursado)</option>
+                                        <option value="I">I (inasistente)</option>
+                                        <option value="NC">NC (no cursado)</option>
+                                        <option value="NP">NP (no presentado)</option>
+                                        <option value="EXO">EXO (exonerado)</option>
+                                        <option value="RT">RT (retirado)</option>
+                                        <option value="DES">DES (desertor)</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="segundo_momento_modificar" class="form-label">Segundo momento:</label>
+                                    <input type="number" id="segundo_momento_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value= "{{ justificacion.notas.segundo_momento }}" name="segundo_momento_modificar"  {% if justificacion.notas.segundo_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="justificacion_segundo_momento_modificar">Justificación</label>
+                                    <select id="justificacion_segundo_momento_modificar" name="justificacion_segundo_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.segundo_momento }}" {% if justificacion.segundo_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                        <option value="{{ justificacion.segundo_momento }}">{% if justificacion.segundo_momento is None %} No proporcionado. {% else %}{{ justificacion.segundo_momento }}</option> {% endif %}
+                                        <option value="C">C (cursado)</option>
+                                        <option value="I">I (inasistente)</option>
+                                        <option value="NC">NC (no cursado)</option>
+                                        <option value="NP">NP (no presentado)</option>
+                                        <option value="EXO">EXO (exonerado)</option>
+                                        <option value="RT">RT (retirado)</option>
+                                        <option value="DES">DES (desertor)</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tercer_momento_modificar" class="form-label">Tercer momento</label>
+                                    <input type="number" id="tercer_momento_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value="{{ justificacion.notas.tercer_momento }}" name="tercer_momento_modificar" {% if justificacion.notas.tercer_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="justificacion_tercer_momento_modificar">Justificacion</label>
+                                    <select id="justificacion_tercer_momento_modificar" name="justificacion_tercer_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.tercer_momento }}" {% if justificacion.tercer_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                        <option value="{{ justificacion.tercer_momento }}">{% if justificacion.tercer_momento is None %} No proporcionado. {% else %}{{ justificacion.tercer_momento }}</option> {% endif %}
+                                        <option value="C">C (cursado)</option>
+                                        <option value="I">I (inasistente)</option>
+                                        <option value="NC">NC (no cursado)</option>
+                                        <option value="NP">NP (no presentado)</option>
+                                        <option value="EXO">EXO (exonerado)</option>
+                                        <option value="RT">RT (retirado)</option>
+                                        <option value="DES">DES (desertor)</option>
+                                    </select>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-light rounded-0 pd-5">Modificar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <script>
+                document.getElementById('modificarNotaForm{{ forloop.counter }}').addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const formData = new FormData(this);
+                    fetch(`{% url "modificarNota" %}`, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                        alert("Se ha modificado correctamente.");
+                        const modal = new bootstrap.Modal(document.getElementById('modificarNotaModal{{ forloop.counter }}'));
+                        modal.hide();
+                        window.location.reload();
+                        } 
+                        else {
+                        alert("Error al modificar nota.");
+                        }
+                        })
+                        .catch(error => {
+                            console.error('Error: ', error);
+                            alert("Ocurrió un error inesperado.");
+                        });
+                    })
+            </script>
+                        {% empty %}
+
+                        {# Mensaje en caso de que no se encuentren notas cargadas#}
+                        <tr>
+                            <td colspan="12" class="text-center">No se encontraron notas cargadas.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+            <!-- Botones para volver a la página anterior y cargar una nueva nota -->
+
+        <div class="d-flex justify-content-center">
+            {% if estudiante.materias_reprobadas > 0 %}
+            
+            <a>
+                <button class="btn btn-custom ms-3" data-bs-toggle="modal" data-bs-target="#cargarRevisionModal" id="cargarRevisionButton" data-url="{% url 'periodosRevisiones' %}">Revisiones</button>
+            </a>
+            {% endif %}
+
+            {# Botón para volver a la página anterior usando un formulario para transferir datos#}
+            <form action="{% url "notas" %}" method="POST">
+                {% csrf_token %}
+                <input type="text" value="{{ estudiante.seccion }}" name="seccion" hidden>
+                <input type="text" value="{{ matricula.curso }}" name="curso" hidden>
+                    <button type="submit" class="btn btn-outline-custom ms-3">Volver</button>
+            </form>
+
+            <a class="md-5">
+                    <button class="btn btn-custom ms-3" data-bs-toggle="modal" data-bs-target="#cargarNotaModal">
+                        Cargar nota
+                    </button>
+            </a>
+
+
+        </div>
+
+
+    <!-- Ventana modal para cargar notas -->
+
+            <!-- Encabezado de la ventana modal -->
+
+    <div class="modal fade" id="cargarNotaModal" tabindex="-1" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white rounded-0">
+            <div class="modal-header">
+                <h5 class="modal-title fs5" id="modalLabel">Cargar notas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <!-- Formulario para cargar notas -->
+        <div class="modal-body">
+                <form id="cargarNota">
+                {% csrf_token %}
+
+                {# Selector de materias #}
+                    <div class="mb-3"> 
+                        <label for="materia" class="form-label">Materia:</label>
+                        <select name="materia" id="materia" class="form-select form-select-lg mb-3" aria-label="Selecione una materia" required>
+                            <option value="">Seleccione una materia</option>
+                            {% for materia in materias  %}
+                                <option value="{{ materia.id }}">{{ materia.nombre_materia }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                {# Selector de momentos (uso de función AJAX)#}
+                    <div class="mb-3">
+                        <label for="momento" class="form-label">Momento:</label>
+                            <select name="momento" id="momento" class="form-select form-select-lg mb-3" aria-label="Selecione un momento" required>
+                                <option value="">Seleccione un momento</option>
+                            </select>
+                    </div>
+                
+                {# Formulario de notas #}
+                    <div class="mb-3">
+                        <label class="form-label" for="nota">Nota:</label>
+                        <input id="nota" type="number" max="20" min="0" step="0.01" name="nota" class="form-control form-control-lg" placeholder="Ingrese la nota respectiva" required>
+                    </div>
+                
+                {# Selector de justificaciones #}
+                    <div class="mb-3">
+                        <label for="justificacion" class="form-label">Justificación</label>
+                            <select name="justificacion" id="justificacion" class="form-select form-select-lg mb-3" aria-label="Selecione una justificacion" required>
+                                <option value="">Seleccione una justificación</option>
+                                <option value="C">C (cursado)</option>
+                                <option value="I">I (inasistente)</option>
+                                <option value="NC">NC (no cursado)</option>
+                                <option value="NP">NP (no presentado)</option>
+                                <option value="EXO">EXO (exonerado)</option>
+                                <option value="RT">RT (retirado)</option>
+                                <option value="DES">DES (desertor)</option>
+                            </select>
+                    </div>
+                    <div class="text-center">
+                        <button id="cargar" type="submit" class="btn btn-light rounded-0 pd-5" style="text-center">Cargar</button>
+                    </div>
+
+                    {# Campos ocultos para transferir datos a otras funciones (selectorDeMomentos, cargarNota)#}
+                    <input type="text" value="{{ estudiante.id }}" name="estudiante" style="display:none;" id="estudiante" hidden>
+                    <input type="text" value="{{ periodo_actual.id }}" name="periodo" style="display:none;" id="periodo" hidden>
+                    <input type="text" value="{% url "cargarNota" %}" name="urlCargarNotas" id="urlCargarNotas" style="display:none;"hidden>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+        {# Scripts para el funcionamiento de la ventana modal para cargar notas #}
+
+        <script src= {% static "dom/notas/selectores/selectorMomentos.js" %}></script>
+
+
+        {# Script para cargar notas #}
+        <script src="{% static "dom/notas/cargarNota.js" %}"></script>
+
+</div>
+
+
+        <!--Ventana modal para cargar revisiones-->
+
+<div class="modal fade" id="cargarRevisionModal" tabindex="-1" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white rounded-0">
+
+            <!--Encabezado de la ventana modal-->
+            <div class="modal-header">
+                <h5 class="modal-title fs5" id="modalLabelRevision">Cargar revisión</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" arial-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="cargarRevision">
+                {% csrf_token %}
+
+                {# Selector de períodos#}
+
+                <div class="mb-3">
+                    <label for="periodoRevision" class="form-label">Período:</label>
+                    <select name="periodoRevision" id="periodoRevision" class="form-select form-select-lg mb-3" arial-label="Seleccione un período" required>
+                    </select>
+                </div>
+                {# Selector de materias #}
+
+                <div class="mb-3">
+                    <label for="materiaRevision" class="form-label">Materia:</label>
+                        <select name="materiaRevision" id="materiaRevision" class="form-select form-select-lg mb-3" arial-label="Seleccione una materia" required disabled>
+                            <option value="">Seleccione una materia</option>
+                        </select>
+                </div>
+
+                {# Input para recibir la nota de la revisión #}
+
+                <div class="mb-3">
+                    <label for="revisionCargar" class="form-label">Revisión:</label>
+                        <input type="number" max="20" min="0" step="0.01" id="revisionCargar" name="cargarRevision" class="form-control form-control-lg mb-3" placeholder="Ingrese la revisión correspondiente" required>
+                </div>
+
+                <div class="text-center">
+                    <button  id="cargarRevision" type="submit" class="btn btn-light rounded-0 pd-5" style="text-center">Cargar revisión</button>
+                </div>
+                <div>
+                    <input type="text" hidden value="{% url "cargarRevision" %}" name="urlCargarRevision" id="urlCargarRevision">
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+    {# Scripts para el funcionamiento de los selectores #}
+
+<script src="{% static "dom/notas/selectores/selectoresCargarRevision.js" %}"></script>
+
+    {# Script para cargar la revisión #}
+
+<script src="{% static "dom/notas/CargarRevision.js" %}"></script>
+</section>
+
+
+
+{% endblock main %}
