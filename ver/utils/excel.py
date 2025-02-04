@@ -21,50 +21,79 @@ def generarExcel(periodo, estudiante):
     response = HttpResponse(content_type="application/ms-excel")
     response["Content-Disposition"] = f'attachment; filename="{estudiante.ci}_{periodo.inicio}-{periodo.finalizacion}.xls"'
 
-    wb = xlwt.Workbook(encoding="utf-8")
-    ws = wb.add_sheet("Datos")
+    # Crea el objeto de la clase que corresponde a la hoja de excel
+    workbook = xlwt.Workbook(encoding="utf-8")
+    worksheet = workbook.add_sheet("Datos")
+
+    # Creación de un estilo para los campos de la hoja de cálculo
+    estiloCampo = xlwt.XFStyle()
+    # Creación de una fuente para el estilo
+    fuente = xlwt.Font()
+    fuente.bold = True
+    estiloCampo.font = fuente
+    # Creación de un patron para el estilo
+    patronCampo = xlwt.Pattern()
+    patronCampo.pattern = xlwt.Pattern.SOLID_PATTERN
+    patronCampo.pattern_fore_colour = 7
+    estiloCampo.pattern = patronCampo
+
+    # Creación de un estilo para los nombres de las materias en la hoja de cálculo
+    estiloMateria = xlwt.XFStyle()
+    # Creación de un patrón para el estilo
+    patronMateria = xlwt.Pattern()
+    patronMateria.pattern = xlwt.Pattern.SOLID_PATTERN
+    patronMateria.pattern_fore_colour = 22
+    estiloMateria.pattern = patronMateria
+
+    # Creación de un estilo para los valores de la hoja de cálculo
+    estiloValor = xlwt.XFStyle()
+    # Creación de un patrón para el estilo
+    patronValor = xlwt.Pattern()
+    patronValor.pattern = xlwt.Pattern.SOLID_PATTERN
+    patronValor.pattern_fore_colour = 5
+    estiloValor.pattern = patronValor
 
     # Imprime las primeras columnas
     columnas = ['Materia', 'Primer momento', 'Justificación', 'Segundo momento', 'Justificación', 'Tercer momento', 'Justificación', 'Definitiva', 'Revisión']
-    for col_num, col_name in enumerate(columnas):
-        ws.write(0, col_num, col_name)
+    for columna, campo in enumerate(columnas):
+        worksheet.write(0, columna, campo, estiloCampo)
 
     # Imprime el valor de cada fila en el archivo excel
     for fila, justificacion in enumerate(justificaciones, start=1):
-            ws.write(fila, 0, justificacion.notas.materia.nombre_materia)
+            worksheet.write(fila, 0, justificacion.notas.materia.nombre_materia, estiloMateria)
             if justificacion.notas.primer_momento is None:
-                ws.write(fila, 1, "-")
+                worksheet.write(fila, 1, "-", estiloValor)
             else:
-                ws.write(fila, 1, justificacion.notas.primer_momento)
+                worksheet.write(fila, 1, justificacion.notas.primer_momento, estiloValor)
             if justificacion.primer_momento is None:
-                ws.write(fila, 2, "-")
+                worksheet.write(fila, 2, "-", estiloValor)
             else:
-                ws.write(fila, 2, justificacion.primer_momento)
+                worksheet.write(fila, 2, justificacion.primer_momento, estiloValor)
             if justificacion.notas.segundo_momento is None:
-                ws.write(fila, 3, "-")
+                worksheet.write(fila, 3, "-", estiloValor)
             else:
-                ws.write(fila, 3, justificacion.notas.segundo_momento)                
+                worksheet.write(fila, 3, justificacion.notas.segundo_momento, estiloValor)                
             if justificacion.segundo_momento is None:
-                ws.write(fila, 4, "-")
+                worksheet.write(fila, 4, "-", estiloValor)
             else:
-                ws.write(fila, 4, justificacion.segundo_momento)
+                worksheet.write(fila, 4, justificacion.segundo_momento, estiloValor)
             if justificacion.notas.tercer_momento is None:
-                ws.write(fila, 5, "-")
+                worksheet.write(fila, 5, "-", estiloValor)
             else:
-                ws.write(fila, 5, justificacion.notas.tercer_momento)
+                worksheet.write(fila, 5, justificacion.notas.tercer_momento, estiloValor)
             if justificacion.tercer_momento is None:
-                ws.write(fila, 6, "-")
+                worksheet.write(fila, 6, "-", estiloValor)
             else:
-                ws.write(fila, 6, justificacion.tercer_momento)
+                worksheet.write(fila, 6, justificacion.tercer_momento, estiloValor)
             if justificacion.notas.definitiva is None or justificacion.notas.materia.cualitativa == 1:
-                ws.write(fila, 7, justificacion.definitivaTemplate)
+                worksheet.write(fila, 7, justificacion.definitivaTemplate)
             else:
-                ws.write(fila, 7, justificacion.notas.definitiva)
+                worksheet.write(fila, 7, justificacion.notas.definitiva)
             if justificacion.notas.revision is None:
-                ws.write(fila, 8, "-")
+                worksheet.write(fila, 8, "-")
             else:
-                ws.write(fila, 8, justificacion.notas.revision)
+                worksheet.write(fila, 8, justificacion.notas.revision)
   
     #Guarda el archivo y lo retorna para enviarlo a la vista y  que el usuario lo descargue
-    wb.save(response)
+    workbook.save(response)
     return response
