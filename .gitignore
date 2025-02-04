@@ -1,0 +1,7 @@
+__pycache__/
+migrations/
+Script.py 
+generar_datos.py
+db.sqlite3
+script_notas.py
+create_users.py

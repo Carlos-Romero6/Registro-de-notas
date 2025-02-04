@@ -1,0 +1,142 @@
+{% extends "layouts/sidebar.html" %}
+
+{% block main %}
+{% load static %}
+<style>
+    .btn-custom {
+      font-size: 20px;
+      letter-spacing: 1px;
+      background: linear-gradient(to left, #233c43, #406d70);
+      color: white;
+      padding: 5px;
+      border-radius: 5px;
+      min-width: 7rem;
+    }
+    .btn-custom:hover {
+      background: linear-gradient(to left, #455e65, #628f92);
+      color: white;
+    }
+    .form-select {
+      border: 2px solid #223941;
+      border-radius: 5px;
+    }
+    .btn-outline-custom {
+      border: 2px solid #223941;
+      border-radius: 5px;
+      font-weight: bold;
+      color: #3c6569;  
+    }
+    .btn-outline-custom:hover {
+      border: 2px solid #6f989c;
+      color: #6f989c;
+      border-radius: 5px;    
+    }
+    .right-column {
+      height: 100vh;
+    }
+
+    .btn-outline-dark-custom {
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+      border-bottom: 3px solid #223941;
+      border-radius: 3px;
+      font-weight: bold;
+      color:  #223941;
+    }
+      .btn-outline-dark-custom:hover {
+        border-bottom: 3px solid #223941;
+        background: #223941;
+        color: white;
+    }
+  </style>
+
+  <div class="row w-100">
+    {# Columna izquierda (formulario) #}
+    <div class="col-md-8 d-flex flex-column align-items-center justify-content-center">
+        {# Formulario #}
+        <form class="p-4" style="width: 70%; max-width: 600px;" action="{% url 'notas' %}" method="POST">
+          {% csrf_token %}
+            <div class="mb-4">
+                <div class="d-flex">
+                  <label for="curso" class="form-label btn btn-custom me-1 mb-3 d-flex align-items-center justify-content-center"><strong>Curso</strong></label>
+                  <select name="curso" required class="form-select form-select-lg mb-3" id="curso"
+              aria-label="Selecciona el curso del estudiante">
+              <option value="">Selecciona el año</option>
+              {% for curso in cursos %} {# Itera sobre la lista de diccionarios con los valores de los cursos #}
+              <option value="{{ curso.id }}" {% if not curso.habilitado %}disabled{% endif %}>{{ curso.nombre }}</option>
+              {% endfor %}
+            </select>
+                </div>
+            </div>
+            <div class="mb-4">
+                <div class="d-flex">
+                  <label for="seccion" class="form-label btn btn-custom me-1 mb-5 d-flex align-items-center justify-content-center"><strong>Sección</strong></label>
+                  <select name="seccion" required class="form-select form-select-lg mb-5" id="seccion"
+              aria-label="Selecciona la seccion del estudiante en su curso.">
+              <option value="">Seleccione una sección</option>
+            </select>
+                </div>
+            </div>
+  
+            <script src="{% static 'dom/selectorCursos.js' %}"></script>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-outline-custom" style="width: 8em;">Buscar</button>
+            </div>
+        </form>
+    </div>
+    {# Columna derecha (texto) #}
+    <div class="col-md-4 d-flex align-items-center justify-content-center right-column" style="background-color: #dadedf;">
+        <p class="text-center text-muted" style="font-size:1.5rem; padding: 20px;">
+            Seleccione curso y sección para cargar las notas de un estudiante.{% if request.user.is_staff %} Y si desea cear un nuevo período, haga click en el botón correspondiente.{% endif %}
+        </p>
+    </div>
+    {% if request.user.is_staff %}
+    <div class="mt-auto mb-10 w-100 d-flex justify-content-center flex-column align-items-center" style="position: absolute; bottom: 5%; right: 6%; width: 100%; height: 50px;">
+      <button class="btn btn-outline-dark btn-outline-dark-custom mb-3" data-bs-toggle="modal" data-bs-target="#culminarPeriodo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar2-x" viewBox="0 0 16 16">
+          <path d="M6.146 8.146a.5.5 0 0 1 .708 0L8 9.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 10l1.147 1.146a.5.5 0 0 1-.708.708L8 10.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 10 6.146 8.854a.5.5 0 0 1 0-.708"/>
+          <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M2 2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z"/>
+          <path d="M2.5 4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5z"/>
+        </svg>  {% if periodos_exist %} Culminar período académico actual {% else %} Crear el primer período académico {% endif %}
+      </button>
+    {% endif %}
+    
+    <div class="modal fade" id="culminarPeriodo" tabindex="-1" data-bs-keyboard="false">
+      <div class="modal-dialog">
+          <div class="modal-content bg-dark text-white rounded-0">
+          <div class="modal-header">
+              <h5 class="modal-title fs5" id="modalLabel">Culminar período académico actual</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body p-4">
+            <form id="culminarPeriodoForm">
+              {% csrf_token %}
+            <div class="alert alert-danger d-flex align-items-center"  role="alert">
+              <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+            </svg>
+            <div class="d-flex align-items-center text-center" style="margin-top: 15px; margin-left: 5px;">
+              <p><strong>¡CUIDADO!</strong></p>
+            </div>
+            </div>
+            <p><strong>Asegúrese de lo siguiente (y sin excepción) antes de iniciar un nuevo período académico:</strong></p>
+            <ol>
+              <li class="mb-3">Todas las notas de todos los estudiantes han sido cargadas previamente.</li>
+              <li class="mb-3">Hay total seguridad de que no hay errores ocurridos durante el cargado de cada una de las notas.</li>
+              <li class="mb-3">Todas las revisiones (que estén aprobadas) pendientes han sido cargadas.</li>
+            </ol>
+            <p>Al presionar el botón de <strong>Culminar</strong> no se podrán descartar los cambios.</p>
+            <div class="form-check mb-3">
+              <input type="checkbox" class="form-check-input" value="" id="culminarPeriodo" required>
+              <label class="form-check-label" for="culminarPeriodo">He comprobado todo lo anterior y estoy seguro de ejecutar los cambios.</label>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-light rounded-0 pd-5">Culminar</button>
+            </div>
+            <input type="text" value="{% url "culminarPeriodo" %}" id="urlCulminarPeriodo" hidden>
+            <script src="{% static "dom/notas/culminarPeriodoAcademico.js" %}"></script>
+          </form>
+          </div>
+  </div>
+{% endblock main %}

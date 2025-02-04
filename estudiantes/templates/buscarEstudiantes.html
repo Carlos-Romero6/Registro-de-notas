@@ -1,0 +1,245 @@
+{% extends 'layouts/sidebar.html' %}
+
+{% block main %}
+{% load static %}
+
+<style>
+  .btn-custom {
+    background: linear-gradient(to left, #233c43, #406d70);
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    min-width: 7rem;
+  }
+  .btn-custom:hover {
+    background: linear-gradient(to left, #455e65, #628f92);
+    color: white;
+  }
+  .btn-outline-custom {
+    border: 2px solid #223941;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #3c6569;  
+  }
+  .btn-outline-custom:hover {
+    border: 2px solid #6f989c;
+    color: #6f989c;
+    border-radius: 5px;    
+  }
+  .table-container {
+    overflow-y: scroll;
+    width: 100%;
+    height: 70vh;
+  }
+</style>
+<section class="d-flex flex-column align-items-center">
+<h2>Gestion estudiantil</h2>
+<h3>Curso: {{ curso }} - Sección: {{ seccion }}</h3>
+<div class="table-container mb-3">
+<table class="table table-success table-striped table-bordered">
+  <thead class="table-dark" style="position: sticky; top: 0;">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Nombres</th>
+      <th scope="col">Apellidos</th>
+      <th scope="col">C.I</th>
+      <th scope="col">Género</th>
+      <th scope="col">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for estudiante in estudiantes %}
+    <tr id="fila-estudiante-{{ forloop.counter }}">
+      <td>
+        {{ forloop.counter }}
+      </td>
+      <td>
+        {{ estudiante.nombres }}
+      </td>
+      <td>
+        {{ estudiante.apellidos }}
+      </td>
+      <td>
+        {{ estudiante.ci }}
+      </td>
+      <td>
+        {{ estudiante.genero }}
+      </td>
+      <td>
+        {# Boton para editar #}
+        <button title="Editar" style="cursor:pointer; border: none; outline: none; background-color: transparent" onClick="editarEstudiante({{ estudiante.id }})">
+          <img src="{% static 'images/icons/edit-icon.png' %}" alt="Editar" width="30" height="30">
+        </button>
+        {# boton para eliminar #}
+        <button title="Eliminar" style="cursor: pointer; border: none; outline: none; background-color: transparent" onClick="borrarEstudiante({{ estudiante.id }})">
+          <img src="{% static 'images/icons/trash-icon.png' %}" alt="Eliminar" width="30" height="30">
+        </button>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6" class="text-center">No se encontraron estudiantes</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+</section>
+
+{# Boton para abrir modal para agregar estudiante #}
+<div class="d-flex">
+  <a href="{% url 'estudiantes' %}" class="md-5 me-2">
+    <button class="btn btn-outline-custom">Volver</button>
+  </a>
+  <button class="btn btn-custom" onClick="modalAgregarEstudiante()">
+    Agregar Estudiante
+  </button>
+</div>
+<script src="{% static 'dom/eliminarEstudiante.js' %}"></script>
+
+
+
+{# Modal #}
+<div class="modal fade" id="modalAgregarEstudiante" tabindex="-1" data-bs-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-white rounded-0">
+      <div class="modal-header">
+        <h5 class="modal-title fs5" id="modalLabel">Agregar estudiante</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="agregarEstudiante">
+          {% csrf_token %}
+
+          {# Campo para nombre #}
+          <div class="mb-3">
+            <label for="nombres" class="form-label">Nombres:</label>
+            <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Escribe los nombres del estudiante" minlength="3" maxlength="100" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" required>
+          </div>
+
+          {# Campo para apellidos #}
+          <div class="mb-3">
+            <label for="apellidos" class="form-label">Apellidos:</label>
+            <input type="text" class="form-control" id="apellidos" name="apellidos" placeholder="Escribe los apellidos del estudiante" minlength="3" maxlength="100" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" required>
+          </div>
+
+          {# Campo para cedula de identidad #}
+          <div class="mb-3">
+            <label for="cedula" class="form-label">Cedula de identidad:</label>
+            <input type="text" class="form-control" id="cedula" name="cedula" placeholder="Escribe la cedulad de indentidad del estudiante" minlength="7" maxlength="8" pattern="[0-9]+" required>
+          </div>
+
+          {# Campo para género #}
+          <div class="mb-5">
+            <label for="genero" class="form-label">Género:</label>
+            <select name="genero" id="genero" class="form-control" required>
+              <option value="">Elige el género del estudiante</option>
+              <option value="Femenino">Femenino</option>
+              <option value="Masculino">Masculino</option>
+            </select>
+          </div>
+
+          {# Campo de curso y sección #}
+          <div class="mb-3 d-flex">
+            <div class="btn btn-secondary rounded-end-0">
+              <label for="curso" class="form-label">Curso:</label>
+            </div>
+            <select id="curso" class="form-control rounded-start-0" disabled>
+              <option selected>{{ curso }}</option>
+            </select>
+            {# El curso será el mismo de la tabla en la que nos encontramos #}
+            <input type="hidden" name="curso" value="{{ curso }}">
+
+          </div>
+          <div class="mb-3 d-flex">
+            <div class="btn btn-secondary rounded-end-0">
+              <label for="seccion" class="form-label">Sección:</label>
+            </div>
+            <select class="form-control rounded-start-0" id="seccion" disabled>
+              <option selected>{{ seccion }}</option>
+            </select>
+          </div>
+          {# La seccion será la misma de la tabla en la que nos encontramos #}
+          <input type="hidden" name="seccion" value="{{ seccion }}">
+
+          <div class="text-center">
+            <button onClick="submit" class="btn btn-light rounded-0 pd-5">Guardar estudiante</button>
+          </div>
+        </form>
+        <script src="{% static 'dom/registrarEstudiante.js' %}"></script>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEditarEstudiante" tabindex="-1" data-bs-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-white rounded-0">
+      <div class="modal-header">
+        <h5 class="modal-title fs5" id="modalLabel">Editar estudiante</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editarEstudiante">
+          {% csrf_token %}
+
+          {# Campo para nombre #}
+          <div class="mb-3">
+            <label for="edit-nombres" class="form-label">Nombres:</label>
+            <input type="text" class="form-control" id="edit-nombres" name="nombres" placeholder="Escribe los nombres del estudiante" required>
+          </div>
+
+          {# Campo para apellidos #}
+          <div class="mb-3">
+            <label for="edit-apellidos" class="form-label">Apellidos:</label>
+            <input type="text" class="form-control" id="edit-apellidos" name="apellidos" placeholder="Escribe los apellidos del estudiante" required>
+          </div>
+
+          {# Campo para cedula de identidad #}
+          <div class="mb-3">
+            <label for="edit-cedula" class="form-label">Cedula de identidad:</label>
+            <input type="text" class="form-control" id="edit-cedula" name="cedula" placeholder="Escribe la cedulad de indentidad del estudiante" required>
+          </div>
+
+          {# Campo para género #}
+          <div class="mb-5">
+            <label for="edit-genero" class="form-label">Género:</label>
+            <select name="genero" id="edit-genero" class="form-control" required>
+              <option value="">Elige el género del estudiante</option>
+              <option value="Femenino">Femenino</option>
+              <option value="Masculino">Masculino</option>
+            </select>
+          </div>
+
+          {# Campo de curso y sección #}
+          <div class="mb-3 d-flex">
+            <div class="btn btn-secondary rounded-end-0">
+              <label for="edit-curso" class="form-label">Curso:</label>
+            </div>
+            <select id="edit-curso" class="form-control rounded-start-0" disabled>
+              <option selected>{{ curso }}</option>
+            </select>
+            {# El curso será el mismo de la tabla en la que nos encontramos #}
+            <input type="hidden" id="curso-edit" name="curso" value="{{ curso }}">
+
+          </div>
+          <div class="mb-3 d-flex">
+            <div class="btn btn-secondary rounded-end-0">
+              <label for="edit-seccion" class="form-label">Sección:</label>
+            </div>
+            <select class="form-control rounded-start-0" name="seccion" id="edit-seccion">
+              <option value="">Elige una seccion</option>
+            </select>
+          </div>
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-light rounded-0 pd-5">Guardar estudiante</button>
+          </div>
+        </form>
+        <script src="{% static 'dom/editarEstudiante.js' %}"></script>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock main %}

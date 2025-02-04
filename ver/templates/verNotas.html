@@ -1,0 +1,175 @@
+{% extends "layouts/sidebar.html" %}
+
+{% block main %}
+{% load static %}
+<head>
+    <title>Ver notas</title>
+    <style>
+        .pagination-custom {
+            color: #233c43;
+            font-weight: bold;
+        }
+        .pagination-custom:hover {
+            color: #333;
+            border: 1px solid #406d70;
+            font-weight: bold;
+        }
+        .periodos {
+            border-bottom: 2px solid #233c43; /* Agrega un borde */
+            padding: 10px;
+            margin-bottom: 4px;
+            font-weight: bold; /* Fuente en negrita */
+            color:#233c43; /* Cambia el color del texto a verde oscuro */
+            font-size: 1.5rem;
+            display: flex;
+            justify-content: center;
+            margin-left: 42%;
+            background-color: #f5f5f5;
+        }
+        .estudiante-container {
+            background-color: #e0e0e0; /* Color de fondo gris claro */
+                 border: 1px solid #ccc; /* Borde gris claro */
+                 border-radius: 5px; /* Bordes redondeados */
+                 padding: 10px 30px; /* Espacio interno */
+                text-align: center; /* Centra el texto horizontalmente */
+                font-size: 1.5rem; /* Tamaño de la fuente */
+                font-weight: bold; /* Fuente en negrita */
+                 color: #333; /* Color del texto gris oscuro */
+                color: #233c43; /* Cambia el color del texto a verde oscuro */
+            }
+        .sidebar {
+            position:fixed;
+        }
+        .btn-custom {
+            background: linear-gradient(to left, #233c43, #406d70);
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+            min-width: 7rem;
+        }
+        .btn-custom:hover {
+            background: linear-gradient(to left, #455e65, #628f92);
+            color: white;
+        }
+        .btn-outline-custom {
+            border: 2px solid #223941;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #3c6569;
+        }
+        .btn-outline-custom:hover {
+            border: 2px solid #6f989c;
+            color: #6f989c;
+            border-radius: 5px;    
+        }
+        .table-container {
+            overflow-y: scroll;
+            width: 90%;
+            margin-left: 42%;
+        }
+        .pagination-container {
+            max-width: 100%;
+            margin-left: 42%;
+        }
+    input[type="number"] {
+        -moz-appearance: textfield;
+        outline: none;
+    }
+    .d-flex.flex-column align-items-center {
+        max-width: 100%;
+        overflow-y: auto;
+        white-space: nowrap; /* Evita que las tablas se envuelvan */
+        width: 100%;
+    }
+    </style>
+</head>
+<body>
+
+<div class="d-flex flex-column align-items-center mt-5 mb-5">
+    <h3 class="text-center estudiante-container"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-clipboard-data me-3" viewBox="0 0 16 16">
+        <path d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z"/>
+        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
+        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
+    </svg>Estudiante {{ estudiante.nombres }} {{ estudiante.apellidos }} </h3>
+</div>
+<div class="d-flex flex-column align-items-center pagination-container text-center">
+    <nav aria-label="Paginador de cursos">
+        <ul class="pagination pagination-lg justify-content-center ml-5">
+        <li class="page-item disabled">
+            <a href="" class="page-link pagination-custom">Cursos</a>
+        </li>
+        {% for curso in  cursos %}
+        <li class="page-item">
+            <a class="page-link pagination-custom" href="{% url "verNotas"  curso  %}?estudiante={{estudiante.id}}">{{ curso }}</a>
+        </li>
+        {% endfor %}
+        <div>
+            <a href="{% url "estudiantesVer" %}?seccion={{ estudiante.seccion }}&matricula={{ estudiante.matricula.id }}" class="btn btn-outline-custom ms-3 mt-2">Volver</a>
+        </div>
+    </ul>
+</nav>
+</div>
+    {% for periodo in periodos %}
+
+    <section class="d-flex flex-column align-items-center mt-5">
+        <h4 class="periodos mb-3 d-flex align-items-center">
+            Período académico {{ periodo.inicio }} - {{periodo.finalizacion}}
+            <a href="{% url 'descargarExcel' %}?periodo={{ periodo.id }}&estudiante={{ estudiante.id }}" style="margin-left: 0.5em;">
+                <button class="btn" style="" title="Descargar excel">
+                    <img src="{% static 'images/icons/download_excell.png' %}" alt="" style="width: 3em;height: 3em;">
+                </button>
+            </a>
+        </h4>
+        <div class="table-container mb-3">
+            <table class="table table-success table-striped table-bordered">
+                <thead class="table-dark" style="position: sticky; top: 0; z-index:2">
+                    <tr>
+                        <th style="text-align: center">#</th>
+                        <th style="text-align: center">Materia</th>
+                        <th style="text-align: center">Primer momento</th>
+                        <th style="text-align: center">Justificación</th>
+                        <th style="text-align: center">Segundo momento</th>
+                        <th style="text-align: center">Justificación</th>
+                        <th style="text-align: center">Tercer momento</th>
+                        <th style="text-align: center">Justificación</th>
+                        <th style="text-align: center">Definitiva</th>
+                        <th style="text-align: center">Revisión</th>
+                        <th style="text-align: center">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+        {% for justificacion in justificaciones %}
+            {% if justificacion.notas.periodos == periodo %}
+            <tr>
+                <td style="text-align: center">{{ forloop.counter }}</td>
+                <td style="text-align: center">{{ justificacion.notas.materia.nombre_materia }}</td>
+                <td style="text-align: center">{% if justificacion.notas.primer_momento is None %} — {% else %} {{ justificacion.notas.primer_momento }} {% endif %}</td>
+                <td style="text-align: center">{% if justificacion.primer_momento is None %} — {% else %} {{ justificacion.primer_momento }} {% endif %}</td>
+                <td style="text-align: center">{% if justificacion.notas.segundo_momento is None %} — {% else %}{{ justificacion.notas.segundo_momento }}{% endif %}</td>
+                <td style="text-align: center">{% if justificacion.segundo_momento is None %} — {% else %} {{ justificacion.segundo_momento }} {% endif %}</td>
+                <td style="text-align: center">{% if justificacion.notas.tercer_momento is None %} — {% else %} {{ justificacion.notas.tercer_momento }} {% endif %}</td>
+                <td style="text-align: center"> {% if justificacion.tercer_momento is None %} — {% else %} {{ justificacion.tercer_momento }} {% endif %}</td>
+                <td style="text-align: center">{% if justificacion.notas.definitiva is None or justificacion.notas.materia.cualitativa == 1 %} {{ justificacion.definitivaTemplate }} {% else %} {{ justificacion.notas.definitiva }} {% endif %}</td>
+
+
+
+
+                <td style="text-align: center">{% if justificacion.notas.revision is None %} No proporcionado. {% else %} {{ justificacion.notas.revision }} {% endif %}</td>
+
+                <td style="text-align: center">{% if justificacion.notas.estado is None %} <span class="badge rounded-pill text-bg-secondary">A CONFIRMAR</span> {% elif justificacion.notas.estado == "APROBADO" %} <span class="badge rounded-pill text-bg-success">{{ justificacion.notas.estado }}</span> {% else %} <span class="badge rounded-pill text-bg-danger">{{ justificacion.notas.estado }}</span>{% endif %}</td>
+            </tr>
+        </tbody>
+
+            {% endif %}
+
+        {% endfor %}
+    </table>
+</div>
+</section>
+    {% empty %}
+    <h3 class="periodos mt-5">No se han encotrado registros de notas cargadas de este estudiante.</h3>
+    {% endfor %}
+
+</body>
+
+{% endblock main %}
