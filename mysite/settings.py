@@ -23,10 +23,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-o8&t@y^=9q^gqp!ber8t#nl%qy!t7^!@@l63*u^oa3=*^$7p=u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', 'staticfiles.local', 'registro-de-notas.local']
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://registro-de-notas.local',
+    'http://staticfiles.local',
+]
 
 # Application definition
 
@@ -121,7 +125,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 LOGIN_URL = '/login/'
-STATIC_URL = '/static/'
+STATIC_ROOT = '/xampp/htdocs/staticfiles.local'
+STATIC_URL = 'http://staticfiles.local/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]

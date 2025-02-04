@@ -20,6 +20,7 @@ def agregar(request):
             print(nuevoEstudiante)
             nuevoEstudiante.save()
 
+            return JsonResponse({'success': True, 'message': "Estudiante registrado exitosamente."})
         # En caso de que la cedula ya esté registrada en la base de datos
         except IntegrityError:
             estudianteRegistrado = Estudiantes.objects.get(ci=request.POST['cedula'])
