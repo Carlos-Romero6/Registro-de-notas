@@ -20,4 +20,4 @@ git clone git@github.com:Carlos-Romero6/Registro-de-notas.git
 ```
 
 ## Licencia
-Todos los derechos reservados
+> Todos los derechos reservados
