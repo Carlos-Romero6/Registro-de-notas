@@ -6,7 +6,13 @@ Programa desarrollado con el framework Django y el motor de base de datos SQLite
 1. Interprete de python
 2. Librerias utilizadas:
     1. Django
+    ```bash
+    pip install django
+    ```
     2. xlwt
+    ```bash
+    pip install xlwt
+    ```
 
 ## Clonar repositorio
 ```bash
