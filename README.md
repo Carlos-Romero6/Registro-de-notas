@@ -1,23 +1,12 @@
-# Sistema de gestión y almacenamiento de notas de un liceo
+<div align="center">
 
-Programa desarrollado con el framework Django y el motor de base de datos SQLite3, además del framework de css Bootstrap.
+# Sistema de Gestión de Notas
 
-## Requerimientos
-1. Interprete de python
-2. Librerias utilizadas:
-    1. Django
-```bash
-pip install django
-```
-    2. xlwt
-```bash
-pip install xlwt
-```
+### Programa para gestionar notas, matrículas y estudiantes de un liceo.
 
-## Clonar repositorio
-```bash
-git clone git@github.com:Carlos-Romero6/Registro-de-notas.git
-```
+![Django](https://img.shields.io/badge/Django-5.1.6-092E20?style=for-the-badge&logo=django&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
 
-## Licencia
-> Todos los derechos reservados
+</div>
