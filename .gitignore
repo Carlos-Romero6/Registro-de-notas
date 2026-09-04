@@ -4,5 +4,6 @@ staticfiles/
 media/
 generar_datos.py
 db.sqlite3
-.venv
+venv/
 .env
+staticfiles/
