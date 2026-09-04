@@ -2,7 +2,7 @@ import os
 import django
 
 # 1. Configurar el entorno de Django para ejecutar scripts independientes
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 django.setup()
 
 from django.contrib.auth.models import User
