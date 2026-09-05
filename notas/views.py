@@ -4,10 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from mainapp.models import Notas, Estudiantes, Materias, Matricula, Pensum, Justificaciones, Periodos
 from .utils import cursosDisponibles
-from django.db.models import F, FloatField
+from django.db.models import F, FloatField, Value
 from django.db.models.functions import Cast, Coalesce, Round
 from .utils.definitivasCualitativas import isCualitativa
 from .utils.estudianteRepitiente import estudianteRepitiente
+from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 
 # Filtrado de estudiantes por curso y sección
@@ -44,54 +45,55 @@ def notas(request):
 # Filtrado de notas de un estudiante en cada materia con sus respectivas justificaciones
 @login_required
 def notasEstudiante(request, id_estudiante):
-    if request.method == 'GET':
-        if not Periodos.objects.exists():
-            return render(request, 'notas-estudiante.html', {
-                'message': 'No hay periodos activos, cree su primer período académico y vuelva a intentarlo.'
-            })
-            
-        usuario = request.user
-        
-        # 1. Obtención segura del estudiante y su matrícula asociada
-        try:
-            estudiante = Estudiantes.objects.get(pk=id_estudiante, estado=1)
-            matricula = estudiante.matricula  # Acceso directo y eficiente a la relación
-            curso = matricula.curso
-            pensum = matricula.pensum
-        except Estudiantes.DoesNotExist:
-            return render(request, 'notas-estudiante.html', {'message': 'El estudiante no existe o está inactivo.'})
+    if request.method != 'GET':
+        return render(request, 'notas-estudiante.html', {'message': 'Método no permitido.'})
 
-        # 2. Obtener materias del plan de estudios del alumno
-        materias = Materias.objects.filter(pensum=pensum, curso=curso)
-        periodo_actual = Periodos.objects.latest('id')
-        
-        # 3. Obtener las notas existentes del alumno en este periodo
-        notas = Notas.objects.filter(estudiante=estudiante, periodos=periodo_actual)
-        
-        # 4. Corregimos el filtro de justificaciones usando los IDs de las notas obtenidas
-        justificaciones = Justificaciones.objects.filter(notas_id__in=notas).annotate(
-            definitivaTemplate=Cast(
-                Round(
-                    (Coalesce(F('notas__primer_momento'), 0) + 
-                     Coalesce(F('notas__segundo_momento'), 0) + 
-                     Coalesce(F('notas__tercer_momento'), 0)) / 3, 2
-                ), FloatField()
-            )
-        )
-        
-        # Ejecuta tu función de utilidades utilitaria
-        isCualitativa(justificaciones, 'definitivaTemplate')
-
+    # 1. Validar existencia de períodos
+    periodo_actual = Periodos.objects.order_by('-id').first()
+    if not periodo_actual:
         return render(request, 'notas-estudiante.html', {
-            'usuario': usuario,
-            'estudiante': estudiante,
-            'periodo_actual': periodo_actual,
-            'justificaciones': justificaciones,  
-            'materias': materias, # Garantizamos que las materias vayan a la plantilla
-            'matricula': matricula,
+            'message': 'No hay periodos activos. Cree un período académico y vuelva a intentarlo.'
         })
-    else:
-        return render(request, 'notas-estudiante.html', {'message': 'No hay periodos activos, cree su primer período académico y vuelva a intentarlo.'})
+
+    # 2. Obtención segura de Estudiante y Matrícula
+    try:
+        estudiante = Estudiantes.objects.get(pk=id_estudiante, estado=1)
+        matricula = estudiante.matricula  # Puede lanzar RelatedObjectDoesNotExist
+        curso = matricula.curso
+        pensum = matricula.pensum
+    except (Estudiantes.DoesNotExist, ObjectDoesNotExist):
+        return render(request, 'notas-estudiante.html', {
+            'message': 'El estudiante no existe, está inactivo o no tiene matrícula asignada.'
+        })
+
+    # 3. Obtener materias y notas
+    materias = Materias.objects.filter(pensum=pensum, curso=curso)
+    notas = Notas.objects.filter(estudiante=estudiante, periodos=periodo_actual)
+
+    # 4. Anotación con tipos explícitos para PostgreSQL
+    justificaciones = Justificaciones.objects.filter(notas__in=notas).annotate(
+        definitivaTemplate=Cast(
+            Round(
+                (Coalesce(Cast(F('notas__primer_momento'), FloatField()), Value(0.0)) + 
+                 Coalesce(Cast(F('notas__segundo_momento'), FloatField()), Value(0.0)) + 
+                 Coalesce(Cast(F('notas__tercer_momento'), FloatField()), Value(0.0))) / Value(3.0), 
+                2
+            ), 
+            FloatField()
+        )
+    )
+
+    # 5. Evaluación cualitativa
+    isCualitativa(justificaciones, 'definitivaTemplate')
+
+    return render(request, 'notas-estudiante.html', {
+        'usuario': request.user,
+        'estudiante': estudiante,
+        'periodo_actual': periodo_actual,
+        'justificaciones': justificaciones,
+        'materias': materias,
+        'matricula': matricula,
+    })
 
 # Carga de notas y justificaciones en la base de datos
 def cargarNota(request):
