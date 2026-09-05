@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
-from utils import buscarEstudiantes, cursosDisponibles
+from notas.utils import cursosDisponibles
+from utils import buscarEstudiantes
 from django.shortcuts import render
 # Create your views here.
 
