@@ -40,7 +40,7 @@ input[type="number"] {
 </style>
         <!-- Tabla de notas del estudiante -->
 <section class="d-flex flex-column align-items-center">
-    {% if message is defined %}<p>{{ message }}</p>{% endif %}
+    {% if message %}<p>{{ message }}</p>{% endif %}
         <h2>Período: {{ periodo_actual.inicio }} - {{ periodo_actual.finalizacion}} </h2>
         <h3 class="Display-3">Notas del estudiante: {{ estudiante.nombres }} {{ estudiante.apellidos }} </h3>
         <div class="table-container mb-3">
@@ -72,25 +72,25 @@ input[type="number"] {
                         <tr>
                             <td style="text-align: center">{{ forloop.counter }}</td>
                             <td style="text-align: center">{{ justificacion.notas.materia.nombre_materia }}</td>
-                            <td style="text-align: center">{% if justificacion.notas.primer_momento is None %} — {% else %} {{ justificacion.notas.primer_momento }} {% endif %}</td>
-                            <td style="text-align: center">{% if justificacion.primer_momento is None %} — {% else %} {{ justificacion.primer_momento }} {% endif %}</td>
-                            <td style="text-align: center">{% if justificacion.notas.segundo_momento is None %} — {% else %}{{ justificacion.notas.segundo_momento }}{% endif %}</td>
-                            <td style="text-align: center">{% if justificacion.segundo_momento is None %} — {% else %} {{ justificacion.segundo_momento }} {% endif %}</td>
-                            <td style="text-align: center">{% if justificacion.notas.tercer_momento is None %} — {% else %} {{ justificacion.notas.tercer_momento }} {% endif %}</td>
-                            <td style="text-align: center"> {% if justificacion.tercer_momento is None %} — {% else %} {{ justificacion.tercer_momento }} {% endif %}</td>
+                            <td style="text-align: center">{% if justificacion.notas.primer_momento == None %} — {% else %} {{ justificacion.notas.primer_momento }} {% endif %}</td>
+                            <td style="text-align: center">{% if justificacion.primer_momento == None %} — {% else %} {{ justificacion.primer_momento }} {% endif %}</td>
+                            <td style="text-align: center">{% if justificacion.notas.segundo_momento == None %} — {% else %}{{ justificacion.notas.segundo_momento }}{% endif %}</td>
+                            <td style="text-align: center">{% if justificacion.segundo_momento == None %} — {% else %} {{ justificacion.segundo_momento }} {% endif %}</td>
+                            <td style="text-align: center">{% if justificacion.notas.tercer_momento == None %} — {% else %} {{ justificacion.notas.tercer_momento }} {% endif %}</td>
+                            <td style="text-align: center"> {% if justificacion.tercer_momento == None %} — {% else %} {{ justificacion.tercer_momento }} {% endif %}</td>
                             <td style="text-align: center">{% if justificacion.notas.definitiva is None or justificacion.notas.materia.cualitativa == 1 %} {{ justificacion.definitivaTemplate }} {% else %} {{ justificacion.notas.definitiva }} {% endif %}</td>
 
 
 
 
-                            <td style="text-align: center">{% if justificacion.notas.revision is None %} No proporcionado. {% else %} {{ justificacion.notas.revision }} {% endif %}</td>
+                            <td style="text-align: center">{% if justificacion.notas.revision == None %} No proporcionado. {% else %} {{ justificacion.notas.revision }} {% endif %}</td>
 
-                            <td style="text-align: center">{% if justificacion.notas.estado is None %} <span class="badge rounded-pill text-bg-secondary">A CONFIRMAR</span> {% elif justificacion.notas.estado == "APROBADO" %} <span class="badge rounded-pill text-bg-success">{{ justificacion.notas.estado }}</span> {% else %} <span class="badge rounded-pill text-bg-danger">{{ justificacion.notas.estado }}</span>{% endif %}</td>
+                            <td style="text-align: center">{% if justificacion.notas.estado == None %} <span class="badge rounded-pill text-bg-secondary">A CONFIRMAR</span> {% elif justificacion.notas.estado == "APROBADO" %} <span class="badge rounded-pill text-bg-success">{{ justificacion.notas.estado }}</span> {% else %} <span class="badge rounded-pill text-bg-danger">{{ justificacion.notas.estado }}</span>{% endif %}</td>
 
                             <!-- Botón para modificar la nota -->
                             {% if usuario.is_staff %}
                             <td style="z-index: 1; position: sticky; right:0;"> 
-                                {% if justificacion.notas.revision is None %}
+                                {% if justificacion.notas.revision == None %}
                                 <button type="button" style="cursor: pointer; border: none; outline: none; background-color: transparent;" data-bs-toggle="modal" data-bs-target="#modificarNotaModal{{ forloop.counter }}" title="Modificar nota">
                                     <img src="{% static 'images/icons/edit-icon.png' %}" alt="Modificar" width="30" height="30">
                                 </button>
@@ -140,8 +140,8 @@ input[type="number"] {
                                 </div>
                                 <div class="mb-3">
                                     <label for="justificacion_primer_momento_modificar">Justificación</label>
-                                    <select id="justificacion_primer_momento_modificar" name="justificacion_primer_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.primer_momento }}" {% if justificacion.primer_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
-                                        <option value="{{ justificacion.primer_momento }}">{% if justificacion.primer_momento is None %} No proporcionado. {% else %}{{ justificacion.primer_momento }}</option> {% endif %}
+                                    <select id="justificacion_primer_momento_modificar" name="justificacion_primer_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.primer_momento }}" {% if justificacion.primer_momento == None %} disabled placeholder="No proporcionado."{% endif %}>
+                                        <option value="{{ justificacion.primer_momento }}">{% if justificacion.primer_momento == None %} No proporcionado. {% else %}{{ justificacion.primer_momento }}</option> {% endif %}
                                         <option value="C">C (cursado)</option>
                                         <option value="I">I (inasistente)</option>
                                         <option value="NC">NC (no cursado)</option>
@@ -153,12 +153,12 @@ input[type="number"] {
                                 </div>
                                 <div class="mb-3">
                                     <label for="segundo_momento_modificar" class="form-label">Segundo momento:</label>
-                                    <input type="number" id="segundo_momento_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value= "{{ justificacion.notas.segundo_momento }}" name="segundo_momento_modificar"  {% if justificacion.notas.segundo_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                    <input type="number" id="segundo_momento_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value= "{{ justificacion.notas.segundo_momento }}" name="segundo_momento_modificar"  {% if justificacion.notas.segundo_momento == None %} disabled placeholder="No proporcionado."{% endif %}>
                                 </div>
                                 <div class="mb-3">
                                     <label for="justificacion_segundo_momento_modificar">Justificación</label>
-                                    <select id="justificacion_segundo_momento_modificar" name="justificacion_segundo_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.segundo_momento }}" {% if justificacion.segundo_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
-                                        <option value="{{ justificacion.segundo_momento }}">{% if justificacion.segundo_momento is None %} No proporcionado. {% else %}{{ justificacion.segundo_momento }}</option> {% endif %}
+                                    <select id="justificacion_segundo_momento_modificar" name="justificacion_segundo_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.segundo_momento }}" {% if justificacion.segundo_momento == None %} disabled placeholder="No proporcionado."{% endif %}>
+                                        <option value="{{ justificacion.segundo_momento }}">{% if justificacion.segundo_momento == None %} No proporcionado. {% else %}{{ justificacion.segundo_momento }}</option> {% endif %}
                                         <option value="C">C (cursado)</option>
                                         <option value="I">I (inasistente)</option>
                                         <option value="NC">NC (no cursado)</option>
@@ -170,12 +170,12 @@ input[type="number"] {
                                 </div>
                                 <div class="mb-3">
                                     <label for="tercer_momento_modificar" class="form-label">Tercer momento</label>
-                                    <input type="number" id="tercer_momento_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value="{{ justificacion.notas.tercer_momento }}" name="tercer_momento_modificar" {% if justificacion.notas.tercer_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
+                                    <input type="number" id="tercer_momento_modificar" class="form-control form-control-lg" max="20" min="0" step="0.01" value="{{ justificacion.notas.tercer_momento }}" name="tercer_momento_modificar" {% if justificacion.notas.tercer_momento == None %} disabled placeholder="No proporcionado."{% endif %}>
                                 </div>
                                 <div class="mb-3">
                                     <label for="justificacion_tercer_momento_modificar">Justificacion</label>
-                                    <select id="justificacion_tercer_momento_modificar" name="justificacion_tercer_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.tercer_momento }}" {% if justificacion.tercer_momento is None %} disabled placeholder="No proporcionado."{% endif %}>
-                                        <option value="{{ justificacion.tercer_momento }}">{% if justificacion.tercer_momento is None %} No proporcionado. {% else %}{{ justificacion.tercer_momento }}</option> {% endif %}
+                                    <select id="justificacion_tercer_momento_modificar" name="justificacion_tercer_momento_modificar" class="form-control form-select-lg" value="{{ justificacion.tercer_momento }}" {% if justificacion.tercer_momento == None %} disabled placeholder="No proporcionado."{% endif %}>
+                                        <option value="{{ justificacion.tercer_momento }}">{% if justificacion.tercer_momento == None %} No proporcionado. {% else %}{{ justificacion.tercer_momento }}</option> {% endif %}
                                         <option value="C">C (cursado)</option>
                                         <option value="I">I (inasistente)</option>
                                         <option value="NC">NC (no cursado)</option>

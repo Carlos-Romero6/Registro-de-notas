@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from mainapp.models import Notas, Estudiantes, Materias, Matricula, Pensum, Justificaciones, Periodos
-from utils import cursosDisponibles
+from .utils import cursosDisponibles
 from django.db.models import F, FloatField
 from django.db.models.functions import Cast, Coalesce, Round
 from .utils.definitivasCualitativas import isCualitativa
