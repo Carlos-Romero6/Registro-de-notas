@@ -101,11 +101,11 @@
         </li>
         {% for curso in  cursos %}
         <li class="page-item">
-            <a class="page-link pagination-custom" href="{% url "verNotas"  curso  %}?estudiante={{estudiante.id}}">{{ curso }}</a>
+            <a class="page-link pagination-custom" href="{% url 'verNotas'  curso  %}?estudiante={{estudiante.id}}">{{ curso }}</a>
         </li>
         {% endfor %}
         <div>
-            <a href="{% url "estudiantesVer" %}?seccion={{ estudiante.seccion }}&matricula={{ estudiante.matricula.id }}" class="btn btn-outline-custom ms-3 mt-2">Volver</a>
+            <a href="{% url 'estudiantesVer' %}?seccion={{ estudiante.seccion }}&matricula={{ estudiante.matricula.id }}" class="btn btn-outline-custom ms-3 mt-2">Volver</a>
         </div>
     </ul>
 </nav>
