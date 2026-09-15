@@ -1,7 +1,7 @@
 from mainapp.models import Estudiantes, Periodos, Notas, Justificaciones
 from notas.utils.definitivasCualitativas import isCualitativa
 from django.db.models.functions import Cast, Coalesce, Round
-from django.db.models import F, FloatField
+from django.db.models import F, FloatField, DecimalField, Value
 from django.http import HttpResponse
 import xlwt
 
@@ -10,11 +10,24 @@ def generarExcel(periodo, estudiante):
     estudiante = Estudiantes.objects.get(pk=estudiante)
     periodo = Periodos.objects.get(pk=periodo)
     notas = Notas.objects.filter(estudiante=estudiante.id, periodos=periodo)
+    
+    # 1. Creamos la expresión matemática segura con valores flotantes
+    promedio_expr = (
+        Coalesce(F('notas__primer_momento'), Value(0.0)) + 
+        Coalesce(F('notas__segundo_momento'), Value(0.0)) + 
+        Coalesce(F('notas__tercer_momento'), Value(0.0))
+    ) / Value(3.0)
+
+    # 2. Casteamos a DecimalField antes del Round para que PostgreSQL lo procese
     justificaciones = Justificaciones.objects.filter(notas__in=notas).annotate(
-            definitivaTemplate=Cast(
-                Round((Coalesce(F('notas__primer_momento'), 0) + Coalesce(F('notas__segundo_momento'), 0) + Coalesce(F('notas__tercer_momento'), 0)) / 3, 2), FloatField()
-                )
-            )
+        definitivaTemplate=Cast(
+            Round(
+                Cast(promedio_expr, DecimalField(max_digits=5, decimal_places=2)), 
+                2
+            ), FloatField()
+        )
+    )
+    
     isCualitativa(justificaciones, 'definitivaTemplate')
 
     # Crea una respuesta http que correspondera a un archivo de excel y se determina el nombre

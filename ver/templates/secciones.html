@@ -147,7 +147,8 @@
                         <li class="grissecciones">
                             <span class="seccion-label">Sección </span>
                             <span class="seccion-value">{{ seccion }}</span>
-                            <a href="{% url "estudiantesVer" %}?seccion={{seccion}}&matricula={{matricula.id}}">
+                            <a href="{% url 'estudiantesVer' %}?seccion={{seccion}}&matricula={{matricula.id}}">
+
                                 <button type="submit" style="cursor: pointer; border: none; outline: none; background-color: transparent; width: 35px; height: 35px;" title="Ir a los estudiantes">
                                     <img src="{% static "images/icons/ir_1.png" %}" alt="Ir a los estudiantes" width="40" height="40">
                                 </button>
